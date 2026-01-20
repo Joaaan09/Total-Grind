@@ -26,8 +26,9 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=5000
-      - MONGO_URI=mongodb://mongodb:27017/totalgrind
-      - JWT_SECRET=${JWT_SECRET:-MiSecretoJWTSeguro2026}
+      # URI autenticada usando variables de entorno
+      - MONGO_URI=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb:27017/totalgrind?authSource=admin
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - mongodb
     volumes:
@@ -36,15 +37,18 @@ services:
       - reverse_proxy_network
       - internal
 
-  # Base de datos MongoDB (sin auth - red interna solamente)
+  # Base de datos MongoDB (CON AUTH)
   mongodb:
     image: mongo:7
     container_name: totalgrind-mongodb
     restart: unless-stopped
-    command: [ "mongod", "--bind_ip_all" ]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
-      # CAMBIO NOMBRE DE VOLUMEN PARA FORZAR LIMPIEZA
-      - mongodb_data_v2:/data/db
+      # Volvemos al volumen original (o uno nuevo v4 para asegurar limpieza)
+      # Usaremos v_auth para que sea fresco y con auth activada desde el inicio
+      - mongodb_data_auth:/data/db
     networks:
       - internal
 
@@ -55,5 +59,5 @@ networks:
     driver: bridge
 
 volumes:
-  mongodb_data_v2:
+  mongodb_data_auth:
   uploads:
