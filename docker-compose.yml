@@ -58,5 +58,5 @@ networks:
     driver: bridge
 
 volumes:
-  mongodb_data_NOAUTH:
+  mongodb_data_FINAL:
   uploads:
