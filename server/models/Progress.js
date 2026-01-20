@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const HistoryEntrySchema = new mongoose.Schema({
   date: String,
-  estimatedMax: Number, // e1RM calculated from reps
-  actualMax: Number     // Real max weight lifted (1 rep)
+  estimatedMax: Number, // e1RM calculado a partir de repeticiones
+  actualMax: Number     // Peso máximo real levantado (1 rep)
 });
 
 const ProgressSchema = new mongoose.Schema({

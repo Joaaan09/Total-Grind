@@ -5,14 +5,14 @@ const { authMiddleware, JWT_SECRET } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Generate JWT Token
+// Generar Token JWT
 const generateToken = (userId) => {
     return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 };
 
 // @route   POST /api/auth/register
-// @desc    Register a new user
-// @access  Public
+// @desc    Registrar un nuevo usuario
+// @access  Público
 router.post('/register', async (req, res) => {
     try {
         const { email, password, name, role } = req.body;
@@ -26,13 +26,13 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
         }
 
-        // Check if user exists
+        // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email: email.toLowerCase() });
         if (existingUser) {
             return res.status(400).json({ error: 'Ya existe una cuenta con este email' });
         }
 
-        // Create user
+        // Crear usuario
         const user = new User({
             email: email.toLowerCase(),
             password,
@@ -63,8 +63,8 @@ router.post('/register', async (req, res) => {
 });
 
 // @route   POST /api/auth/login
-// @desc    Login user
-// @access  Public
+// @desc    Iniciar sesión de usuario
+// @access  Público
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -74,14 +74,14 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'Por favor, ingresa email y contraseña' });
         }
 
-        // Find user
-        // Find user and populate coach
+        // Buscar usuario
+        // Buscar usuario y popular entrenador
         const user = await User.findOne({ email: email.toLowerCase() }).populate('coachId', 'name email');
         if (!user) {
             return res.status(400).json({ error: 'Credenciales inválidas' });
         }
 
-        // Check password
+        // Verificar contraseña
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             return res.status(400).json({ error: 'Credenciales inválidas' });
@@ -108,17 +108,17 @@ router.post('/login', async (req, res) => {
 });
 
 // @route   GET /api/auth/me
-// @desc    Get current user
-// @access  Private
+// @desc    Obtener usuario actual
+// @access  Privado
 router.get('/me', authMiddleware, async (req, res) => {
     try {
-        // Prevent caching to ensure profile picture updates are seen immediately
+        // Evitar caché para asegurar que las actualizaciones de foto de perfil se vean inmediatamente
         res.set('Cache-Control', 'no-store');
 
         // console.log('ME Called. User ID:', req.user._id);
         // console.log('ME User ProfilePicture:', req.user.profilePicture);
 
-        // Populate coach details if present
+        // Popular detalles del entrenador si está presente
         if (req.user.coachId) {
             await req.user.populate('coachId', 'name email');
         }

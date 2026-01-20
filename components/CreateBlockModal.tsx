@@ -10,10 +10,10 @@ interface CreateBlockModalProps {
     targetAthleteName?: string;
 }
 
-// Generate unique IDs
+// Genera IDs únicos para los elementos del bloque
 const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-// Create a default week structure
+// Crea una estructura de semana por defecto con un día inicial
 const createDefaultWeek = (weekNumber: number): TrainingWeek => ({
     id: generateId(),
     blockId: '',
@@ -21,7 +21,7 @@ const createDefaultWeek = (weekNumber: number): TrainingWeek => ({
     days: [createDefaultDay(1)]
 });
 
-// Create a default day structure  
+// Crea una estructura de día por defecto sin ejercicios
 const createDefaultDay = (dayNum: number): TrainingDay => ({
     id: generateId(),
     weekId: '',
@@ -77,7 +77,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     };
 
 
-    // Week management
+    // Gestión de semanas: añadir y eliminar
     const addWeek = () => {
         const newWeek = createDefaultWeek(weeks.length + 1);
         setWeeks([...weeks, newWeek]);
@@ -86,14 +86,14 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     const removeWeek = (weekIndex: number) => {
         if (weeks.length <= 1) return;
         const updatedWeeks = weeks.filter((_, i) => i !== weekIndex);
-        // Renumber weeks
+        // Renumerar semanas después de eliminar
         updatedWeeks.forEach((w, i) => w.weekNumber = i + 1);
         setWeeks(updatedWeeks);
         setSelectedWeekIndex(Math.max(0, selectedWeekIndex - 1));
         setSelectedDayIndex(0);
     };
 
-    // Day management
+    // Gestión de días: añadir, actualizar nombre y eliminar
     const addDay = () => {
         const newDay = createDefaultDay(currentWeek.days.length + 1);
         const updatedWeeks = [...weeks];
@@ -116,7 +116,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
         setSelectedDayIndex(Math.max(0, selectedDayIndex - 1));
     };
 
-    // Exercise management
+    // Gestión de ejercicios: añadir, actualizar y eliminar
     const addExercise = () => {
         const newExercise: Exercise = {
             id: generateId(),
@@ -148,7 +148,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
         setWeeks(updatedWeeks);
     };
 
-    // Set management
+    // Gestión de series: añadir, actualizar y eliminar
     const addSet = (exerciseIndex: number) => {
         const exercise = currentDay.exercises[exerciseIndex];
         const lastSet = exercise.sets[exercise.sets.length - 1];
@@ -181,7 +181,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in overflow-y-auto">
             <div className="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden my-4">
-                {/* Header */}
+                {/* Cabecera del modal */}
                 <div className="flex items-center justify-between p-4 border-b border-slate-800">
                     <div className="flex flex-col">
                         <h2 className="text-xl font-bold text-white">Nuevo Bloque de Entrenamiento</h2>
@@ -195,7 +195,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col max-h-[80vh]">
-                    {/* Block Info */}
+                    {/* Información básica del bloque */}
                     <div className="p-4 border-b border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-slate-300">Nombre del Bloque</label>
@@ -217,9 +217,9 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                         </div>
                     </div>
 
-                    {/* Week/Day Navigation */}
+                    {/* Navegación por semanas y días */}
                     <div className="p-4 border-b border-slate-800 bg-slate-950/50">
-                        {/* Weeks */}
+                        {/* Selector de semanas */}
                         <div className="flex items-center gap-2 mb-3">
                             <span className="text-sm text-slate-400 mr-2">Semana:</span>
                             <div className="flex gap-1 overflow-x-auto flex-1">
@@ -247,7 +247,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                             )}
                         </div>
 
-                        {/* Days */}
+                        {/* Selector de días */}
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-slate-400 mr-2">Día:</span>
                             <div className="flex gap-1 overflow-x-auto flex-1">
@@ -271,11 +271,11 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                         </div>
                     </div>
 
-                    {/* Day Editor */}
+                    {/* Editor del día seleccionado */}
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
                         {currentDay && (
                             <>
-                                {/* Day Name */}
+                                {/* Nombre del día editable */}
                                 <div className="flex items-center gap-2">
                                     <Input
                                         placeholder="Nombre del día"
@@ -295,7 +295,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                     )}
                                 </div>
 
-                                {/* Exercises */}
+                                {/* Lista de ejercicios del día */}
                                 <div className="space-y-4">
                                     {currentDay.exercises.length === 0 && (
                                         <div className="text-center py-8 text-slate-500 border border-dashed border-slate-700 rounded-lg">
@@ -306,7 +306,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                     {currentDay.exercises.map((exercise, exIndex) => (
                                         <Card key={exercise.id} className="border-slate-700 bg-slate-800/50">
                                             <CardContent className="p-4 space-y-3">
-                                                {/* Exercise Header */}
+                                                {/* Cabecera del ejercicio con selector de tipo */}
                                                 <div className="flex items-center gap-2">
                                                     <select
                                                         value={['Comp SQ', 'Comp BP', 'Comp DL'].includes(exercise.name) ? exercise.name : 'custom'}
@@ -343,7 +343,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                     </Button>
                                                 </div>
 
-                                                {/* Sets */}
+                                                {/* Series del ejercicio */}
                                                 <div className="space-y-2">
                                                     <div className="grid grid-cols-[40px_1fr_1fr_40px] gap-2 text-xs text-slate-500 uppercase px-1">
                                                         <span>#</span>
@@ -406,7 +406,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                         )}
                     </div>
 
-                    {/* Footer */}
+                    {/* Pie del modal con botones de acción */}
                     <div className="p-4 border-t border-slate-800 flex justify-end gap-2 bg-slate-950/50">
                         <Button type="button" variant="ghost" onClick={onClose} disabled={loading}>
                             Cancelar

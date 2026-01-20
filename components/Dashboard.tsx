@@ -11,25 +11,25 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progressData, onNavigate }) => {
-    // Calculate dynamic stats
+    // Calcular estadísticas dinámicas: total de sesiones completadas
     const totalSessions = activeBlocks.reduce((acc, block) => {
         return acc + block.weeks.reduce((wAcc, week) => {
             return wAcc + week.days.filter(d => d.isCompleted).length;
         }, 0);
     }, 0);
 
-    // Calculate streak
+    // Calcular racha de entrenamiento basada en sesiones
     const streak = totalSessions > 0 ? Math.floor(totalSessions / 2) + 1 : 0;
 
-    // Calculate SBD Total from progress history (using competition lifts)
+    // Calcular el Total SBD (Squat + Bench + Deadlift) del historial de progreso
     const getBestLift = (exerciseName: string) => {
         const exercise = progressData.find(p => p.exerciseName === exerciseName);
         if (!exercise || !exercise.history.length) return 0;
-        // Use estimatedMax for the total, fallback to actualMax
+        // Usar estimatedMax para el total, con fallback a actualMax
         return Math.max(...exercise.history.map(h => h.estimatedMax || h.actualMax || 0));
     };
 
-    // Use exact competition lift names
+    // Usar nombres exactos de levantamientos de competición
     const squat = getBestLift('Comp SQ');
     const bench = getBestLift('Comp BP');
     const deadlift = getBestLift('Comp DL');
@@ -38,7 +38,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
-            {/* Welcome Section */}
+            {/* Sección de bienvenida con nombre del usuario */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-white">Hola, {user.name.split(' ')[0]} 👋</h1>
@@ -51,7 +51,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
                 </div>
             </div>
 
-            {/* Quick Stats Grid */}
+            {/* Grid de estadísticas rápidas */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="bg-blue-900/20 border-blue-900/50">
                     <CardContent className="p-6">
@@ -109,7 +109,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
                 </Card>
             </div>
 
-            {/* Active Training Block */}
+            {/* Bloque de entrenamiento activo */}
             <section>
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold text-white">Entrenamiento Activo</h2>

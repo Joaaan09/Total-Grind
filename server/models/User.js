@@ -54,7 +54,7 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-// Hash password before saving
+// Hashear contraseña antes de guardar
 UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
 
@@ -63,12 +63,12 @@ UserSchema.pre('save', async function (next) {
     next();
 });
 
-// Compare password method
+// Método para comparar contraseñas
 UserSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Return user without password
+// Devolver usuario sin contraseña
 UserSchema.methods.toJSON = function () {
     const user = this.toObject();
     delete user.password;

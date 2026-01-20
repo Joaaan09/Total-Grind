@@ -15,19 +15,19 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
     const [isChangingRole, setIsChangingRole] = useState(false);
     const [invites, setInvites] = useState<any[]>([]);
 
-    // Name editing state
+    // Estados para editar el nombre del usuario
     const [isEditingName, setIsEditingName] = useState(false);
     const [editName, setEditName] = useState(user.name);
     const [isSavingName, setIsSavingName] = useState(false);
 
-    // Password Modal
+    // Estado para el modal de cambio de contraseña
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
-    // Image Upload
+    // Estados para subir imagen de perfil
     const [isUploadingImage, setIsUploadingImage] = useState(false);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-    // Upload Status
+    // Estado para mostrar mensajes de éxito o error en la subida
     const [uploadStatus, setUploadStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
     React.useEffect(() => {
@@ -63,7 +63,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
         try {
             const success = await TrainingService.changeRole(token, 'coach');
             if (success) {
-                // Refresh user data to update role
+                // Refrescar los datos del usuario para actualizar el rol
                 if (refreshUser) await refreshUser();
                 window.location.reload(); // Force reload to update nav
             }
@@ -142,7 +142,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                 const ctx = canvas.getContext('2d');
                 ctx?.drawImage(img, 0, 0, width, height);
 
-                // Compress to JPEG 0.7 quality and Upload as Blob
+                // Comprimir a JPEG con calidad 0.7 y subir como Blob
                 canvas.toBlob(async (blob) => {
                     if (!blob) {
                         setUploadStatus({ type: 'error', message: "Error al procesar imagen." });
@@ -150,7 +150,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                         return;
                     }
 
-                    // Upload
+                    // Subir imagen al servidor
                     try {
                         const result = await TrainingService.uploadAvatar(token, blob);
                         if (result.success) {
@@ -206,7 +206,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                             />
                         </div>
 
-                        {/* Status Info */}
+                        {/* Información del estado de subida */}
                         <div className="absolute -bottom-8 left-0 w-48">
                             {uploadStatus && (
                                 <p className={`text-xs font-bold ${uploadStatus.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
@@ -253,7 +253,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                     </CardHeader>
                 </Card>
 
-                {/* Role Section */}
+                {/* Sección de Rol (Entrenador/Atleta) */}
                 <Card className={user.role === 'coach' ? 'border-purple-500/30 bg-purple-950/10' : ''}>
                     <CardHeader>
                         <CardTitle className="text-xl flex items-center gap-2">
@@ -330,10 +330,10 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                     </CardContent>
                 </Card>
 
-                {/* Coach info or Invites for athletes */}
+                {/* Información del entrenador o invitaciones pendientes para atletas */}
                 {user.role === 'athlete' && (
                     <>
-                        {/* Active Coach */}
+                        {/* Entrenador activo */}
                         {user.coachId && (
                             <Card>
                                 <CardHeader>
@@ -361,7 +361,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                             </Card>
                         )}
 
-                        {/* Pending Invites */}
+                        {/* Invitaciones pendientes */}
                         {!user.coachId && invites.length > 0 && (
                             <Card className="border-blue-500/30 bg-blue-950/10">
                                 <CardHeader>

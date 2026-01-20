@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'powerlift-pro-secret-key-change-in
 
 const authMiddleware = async (req, res, next) => {
     try {
-        // Get token from header
+        // Obtener token del header
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -14,10 +14,10 @@ const authMiddleware = async (req, res, next) => {
 
         const token = authHeader.split(' ')[1];
 
-        // Verify token
+        // Verificar token
         const decoded = jwt.verify(token, JWT_SECRET);
 
-        // Get user from token
+        // Obtener usuario del token
         const user = await User.findById(decoded.userId).select('-password');
 
         if (!user) {
@@ -32,7 +32,7 @@ const authMiddleware = async (req, res, next) => {
     }
 };
 
-// Optional auth - doesn't fail if no token, just sets req.user if present
+// Autenticación opcional - no falla si no hay token, solo establece req.user si está presente
 const optionalAuth = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
@@ -46,7 +46,7 @@ const optionalAuth = async (req, res, next) => {
 
         next();
     } catch (error) {
-        // Token invalid, continue without user
+        // Token inválido, continuar sin usuario
         next();
     }
 };

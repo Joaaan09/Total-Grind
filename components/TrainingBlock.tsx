@@ -4,6 +4,7 @@ import { Button, Card, CardHeader, CardTitle, CardContent, Badge, Tabs, TabsList
 import { Calendar, ChevronRight, User, Plus, Edit2, PlayCircle } from 'lucide-react';
 import WorkoutSession from './WorkoutSession';
 
+// Props para la lista de bloques de entrenamiento
 interface TrainingBlockListProps {
   blocks: TrainingBlock[];
   onSelectBlock: (blockId: string) => void;
@@ -81,6 +82,7 @@ export const TrainingBlockList: React.FC<TrainingBlockListProps> = ({ blocks, on
   );
 };
 
+// Props para la vista de detalle de un bloque
 interface BlockDetailProps {
   block: TrainingBlock;
   onBack: () => void;
@@ -120,7 +122,7 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
         )}
       </div>
 
-      {/* Week Selector */}
+      {/* Selector de semanas */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         {block.weeks.map((week) => (
           <button
@@ -136,7 +138,7 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
         ))}
       </div>
 
-      {/* Days Grid */}
+      {/* Grid de días de entrenamiento */}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {currentWeek?.days.map((day) => (
           <Card key={day.id} className="relative overflow-hidden group">

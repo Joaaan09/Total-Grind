@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
     const [isLoading, setIsLoading] = useState(true);
 
-    // Check if user is authenticated on mount
+    // Comprobar si el usuario está autenticado al cargar el componente
     useEffect(() => {
         const checkAuth = async () => {
             const storedToken = localStorage.getItem('token');
@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                         setUser(data.user);
                         setToken(storedToken);
                     } else {
-                        // Token invalid, clear storage
+                        // Si el token es inválido, limpiar el almacenamiento local y el estado
                         localStorage.removeItem('token');
                         setToken(null);
                         setUser(null);

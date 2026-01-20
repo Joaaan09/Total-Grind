@@ -13,7 +13,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 
-// Configure Multer Storage
+// Configurar almacenamiento de Multer para subida de archivos
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dir = 'uploads/profiles';
@@ -23,40 +23,40 @@ const storage = multer.diskStorage({
     cb(null, dir);
   },
   filename: function (req, file, cb) {
-    // userId-timestamp.ext
+    // userId-timestamp.extension
     cb(null, req.user._id + '-' + Date.now() + path.extname(file.originalname));
   }
 });
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 } // Límite de 5MB
 });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-// Use 127.0.0.1 instead of localhost to avoid Node 17+ IPv6 resolution issues
+// Usar 127.0.0.1 en lugar de localhost para evitar problemas de resolución IPv6 en Node 17+
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/powerlift-pro';
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-// Auth Routes
-// Auth Routes
+// Rutas de Autenticación
+// Rutas de Autenticación
 app.use('/api/auth', authRoutes);
 
-// Serve uploads
+// Servir archivos subidos estáticamente
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-// --- ROUTES ---
+// --- RUTAS ---
 
-// Health Check
+// Verificación de estado del servidor
 app.get('/', (req, res) => {
   res.send('TotalGrind API is running');
 });
 
-// Upload Avatar Endpoint
+// Endpoint para subir avatar de usuario
 app.post('/api/user/avatar', authMiddleware, upload.single('avatar'), async (req, res) => {
   try {
     if (!req.file) {
@@ -65,7 +65,7 @@ app.post('/api/user/avatar', authMiddleware, upload.single('avatar'), async (req
 
     const user = await User.findById(req.user._id);
 
-    // Delete old avatar if it exists and is local
+    // Eliminar avatar anterior si existe y es local
     if (user.profilePicture && user.profilePicture.startsWith('/uploads')) {
       const oldPath = path.join(__dirname, user.profilePicture);
       if (fs.existsSync(oldPath)) {
@@ -73,13 +73,13 @@ app.post('/api/user/avatar', authMiddleware, upload.single('avatar'), async (req
       }
     }
 
-    // Set new path relative to server root
-    // Note: We prepend separator / to make it absolute path relative to domain
+    // Establecer nueva ruta relativa a la raíz del servidor
+    // Nota: Añadimos / al inicio para hacerlo ruta absoluta relativa al dominio
     const newPath = '/uploads/profiles/' + req.file.filename;
     // console.log('Saving profile picture path:', newPath);
     user.profilePicture = newPath;
 
-    // Explicitly mark modified (though not needed for direct assignment usually)
+    // Marcar explícitamente como modificado (aunque no es necesario para asignación directa)
     user.markModified('profilePicture');
 
     await user.save();
@@ -95,7 +95,7 @@ app.post('/api/user/avatar', authMiddleware, upload.single('avatar'), async (req
   }
 });
 
-// Get Blocks (Protected)
+// Obtener Bloques (Protegido)
 app.get('/api/blocks', authMiddleware, async (req, res) => {
   try {
     const blocks = await TrainingBlock.find({ ownerId: req.user._id.toString() });
@@ -105,7 +105,7 @@ app.get('/api/blocks', authMiddleware, async (req, res) => {
   }
 });
 
-// Update user profile (Name Only - Picture handled by /avatar)
+// Actualizar perfil de usuario (Solo Nombre - Foto se maneja en /avatar)
 app.put('/api/user/profile', authMiddleware, async (req, res) => {
   try {
     const { name } = req.body;
@@ -132,7 +132,7 @@ app.put('/api/user/profile', authMiddleware, async (req, res) => {
   }
 });
 
-// Change Password
+// Cambiar Contraseña
 app.put('/api/user/password', authMiddleware, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -147,13 +147,13 @@ app.put('/api/user/password', authMiddleware, async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    // Check current password
+    // Verificar contraseña actual
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
       return res.status(400).json({ error: 'Incorrect current password' });
     }
 
-    // Set new password (hashing happens in pre-save hook)
+    // Establecer nueva contraseña (el hash se hace en el hook pre-save)
     user.password = newPassword;
     await user.save();
 
@@ -163,7 +163,7 @@ app.put('/api/user/password', authMiddleware, async (req, res) => {
   }
 });
 
-// Create Block (Protected)
+// Crear Bloque (Protegido)
 app.post('/api/blocks', authMiddleware, async (req, res) => {
   try {
     const { title, source, weeks, startDate } = req.body;
@@ -195,13 +195,13 @@ app.post('/api/blocks', authMiddleware, async (req, res) => {
   }
 });
 
-// Update Block (Protected)
+// Actualizar Bloque (Protegido)
 app.put('/api/blocks/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
 
-    // Ensure user owns the block
+    // Verificar que el usuario es dueño del bloque
     const block = await TrainingBlock.findOne({ _id: id });
     if (!block) return res.status(404).json({ error: "Block not found" });
 
@@ -213,20 +213,20 @@ app.put('/api/blocks/:id', authMiddleware, async (req, res) => {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
-    // Restriction: Assigned blocks cannot be structurally edited by athlete (only by coach)
+    // Restricción: Los bloques asignados no pueden ser editados estructuralmente por el atleta (solo por el entrenador)
     if (isOwner && block.source === 'assigned') {
-      // If user is Owner (Athlete) AND block is assigned -> FORBID
+      // Si el usuario es Dueño (Atleta) Y el bloque es asignado -> PROHIBIR
       return res.status(403).json({ error: "Cannot edit assigned blocks. Contact your coach for changes." });
     }
-    // Coach can edit anything. Athlete can edit personal blocks.
+    // El entrenador puede editar todo. El atleta puede editar bloques personales.
 
-    // Update simple fields
+    // Actualizar campos simples
     if (updateData.title !== undefined) block.title = updateData.title;
     if (updateData.startDate !== undefined) block.startDate = updateData.startDate;
     if (updateData.source !== undefined) block.source = updateData.source;
     if (updateData.assignedBy !== undefined) block.assignedBy = updateData.assignedBy;
 
-    // Update weeks array - need to mark as modified for Mongoose to detect changes
+    // Actualizar array de semanas - necesita marcar como modificado para que Mongoose detecte cambios
     if (updateData.weeks !== undefined) {
       block.weeks = updateData.weeks;
       block.markModified('weeks');
@@ -240,25 +240,25 @@ app.put('/api/blocks/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Delete Block (Protected: Owner or Coach)
+// Eliminar Bloque (Protegido: Dueño o Entrenador)
 app.delete('/api/blocks/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user._id.toString();
 
-    // Find block first
+    // Buscar bloque primero
     const block = await TrainingBlock.findById(id);
     if (!block) {
       return res.status(404).json({ error: "Block not found" });
     }
 
-    // Check ownership
+    // Verificar propiedad
     if (block.ownerId === userId) {
       await TrainingBlock.deleteOne({ _id: id });
       return res.json({ success: true });
     }
 
-    // Check if requester is coach of the owner
+    // Verificar si el solicitante es entrenador del dueño
     const owner = await User.findById(block.ownerId);
     if (owner && owner.coachId && owner.coachId.toString() === userId) {
       await TrainingBlock.deleteOne({ _id: id });
@@ -271,25 +271,25 @@ app.delete('/api/blocks/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Update specific Day (Deep nested update for simplicity in MVP)
+// Actualizar día específico (Actualización anidada profunda simplificada para MVP)
 app.put('/api/days/:dayId', authMiddleware, async (req, res) => {
   try {
     const { dayId } = req.params;
-    const dayData = req.body; // Expects the full Day object
+    const dayData = req.body; // Espera el objeto Day completo
     const userId = req.user._id.toString();
 
-    // Find blocks owned by this user
+    // Buscar bloques de este usuario
     const blocks = await TrainingBlock.find({ ownerId: userId });
 
     let found = false;
     let targetBlock = null;
 
-    // Search through all blocks to find the day
+    // Buscar en todos los bloques para encontrar el día
     for (const block of blocks) {
       for (const week of block.weeks) {
         for (let i = 0; i < week.days.length; i++) {
           const day = week.days[i];
-          // Check both MongoDB _id and custom id field
+          // Verificar tanto _id de MongoDB como campo id personalizado
           if (day._id.toString() === dayId || day.id === dayId) {
             week.days[i].exercises = dayData.exercises;
             week.days[i].isCompleted = true;
@@ -307,16 +307,16 @@ app.put('/api/days/:dayId', authMiddleware, async (req, res) => {
       targetBlock.markModified('weeks');
       await targetBlock.save();
 
-      // Generate progress data from completed exercises (only competition lifts)
+      // Generar datos de progreso de ejercicios completados (solo levantamientos de competición)
       const today = new Date().toISOString().split('T')[0];
       const COMPETITION_LIFTS = ['Comp SQ', 'Comp BP', 'Comp DL'];
 
       for (const exercise of dayData.exercises) {
-        // Only track competition lifts
+        // Solo rastrear levantamientos de competición
         if (!COMPETITION_LIFTS.includes(exercise.name)) continue;
         if (!exercise.sets || exercise.sets.length === 0) continue;
 
-        // Find the best e1RM and actual max from this exercise's sets
+        // Encontrar el mejor e1RM y máx real de las series de este ejercicio
         let bestE1RM = 0;
         let actualMax = 0;
 
@@ -326,12 +326,12 @@ app.put('/api/days/:dayId', authMiddleware, async (req, res) => {
             const reps = Number(set.reps);
 
             if (!isNaN(weight) && !isNaN(reps) && reps > 0 && weight > 0) {
-              // Track actual max (highest weight lifted)
+              // Rastrear máximo real (mayor peso levantado)
               if (weight > actualMax) {
                 actualMax = weight;
               }
 
-              // New Formula: 1RM = Weight * (1 + (Reps + (10 - RPE)) / 30)
+              // Nueva fórmula: 1RM = Peso * (1 + (Reps + (10 - RPE)) / 30)
               const rpe = Number(set.rpe) || 10;
               const e1rm = Math.round(weight * (1 + (reps + (10 - rpe)) / 30));
               if (e1rm > bestE1RM) {
@@ -341,7 +341,7 @@ app.put('/api/days/:dayId', authMiddleware, async (req, res) => {
           }
         }
 
-        // Save progress if we have valid data
+        // Guardar progreso si tenemos datos válidos
         if (bestE1RM > 0 || actualMax > 0) {
           let progress = await Progress.findOne({ userId, exerciseName: exercise.name });
 
@@ -353,7 +353,7 @@ app.put('/api/days/:dayId', authMiddleware, async (req, res) => {
             });
           }
 
-          // Check if we already have an entry for today
+          // Verificar si ya tenemos una entrada para hoy
           const existingEntryIndex = progress.history.findIndex(h => h.date === today);
           if (existingEntryIndex >= 0) {
             const entry = progress.history[existingEntryIndex];
@@ -387,7 +387,7 @@ app.put('/api/days/:dayId', authMiddleware, async (req, res) => {
   }
 });
 
-// Get Progress (Protected)
+// Obtener Progreso (Protegido)
 app.get('/api/progress', authMiddleware, async (req, res) => {
   try {
     const progress = await Progress.find({ userId: req.user._id.toString() });
@@ -397,7 +397,7 @@ app.get('/api/progress', authMiddleware, async (req, res) => {
   }
 });
 
-// Get user invites
+// Obtener invitaciones del usuario
 app.get('/api/user/invites', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -407,7 +407,7 @@ app.get('/api/user/invites', authMiddleware, async (req, res) => {
   }
 });
 
-// Accept invite
+// Aceptar invitación
 app.post('/api/user/invites/:coachId/accept', authMiddleware, async (req, res) => {
   try {
     const { coachId } = req.params;
@@ -416,18 +416,18 @@ app.post('/api/user/invites/:coachId/accept', authMiddleware, async (req, res) =
 
     if (!coach) return res.status(404).json({ error: 'Coach not found' });
 
-    // Verify request exists
+    // Verificar que existe la solicitud
     const requestIndex = user.coachRequests.findIndex(req => req.coachId.toString() === coachId);
     if (requestIndex === -1) {
       return res.status(404).json({ error: 'Invitation not found' });
     }
 
-    // Link users
+    // Vincular usuarios
     user.coachId = coachId;
-    user.coachRequests = []; // Clear all requests (1 coach limit)
+    user.coachRequests = []; // Limpiar todas las solicitudes (límite de 1 entrenador)
     await user.save();
 
-    // Add to coach list if not present
+    // Añadir a lista del entrenador si no está presente
     if (!coach.athletes.includes(user._id)) {
       coach.athletes.push(user._id);
       await coach.save();
@@ -439,7 +439,7 @@ app.post('/api/user/invites/:coachId/accept', authMiddleware, async (req, res) =
   }
 });
 
-// Reject invite
+// Rechazar invitación
 app.post('/api/user/invites/:coachId/reject', authMiddleware, async (req, res) => {
   try {
     const { coachId } = req.params;
@@ -454,9 +454,9 @@ app.post('/api/user/invites/:coachId/reject', authMiddleware, async (req, res) =
   }
 });
 
-// ============== COACH ENDPOINTS ==============
+// ============== ENDPOINTS DE ENTRENADOR ==============
 
-// Change user role to coach
+// Cambiar rol de usuario a entrenador
 app.put('/api/users/role', authMiddleware, async (req, res) => {
   try {
     const { role } = req.body;
@@ -477,7 +477,7 @@ app.put('/api/users/role', authMiddleware, async (req, res) => {
   }
 });
 
-// Get coach's athletes
+// Obtener atletas del entrenador
 app.get('/api/coach/athletes', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate('athletes', 'name email');
@@ -490,7 +490,7 @@ app.get('/api/coach/athletes', authMiddleware, async (req, res) => {
   }
 });
 
-// Add athlete by email
+// Añadir atleta por email
 app.post('/api/coach/athletes', authMiddleware, async (req, res) => {
   try {
     const { athleteEmail } = req.body;
@@ -509,13 +509,13 @@ app.post('/api/coach/athletes', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Cannot add yourself as athlete' });
     }
 
-    // Check if already invited
+    // Verificar si ya fue invitado
     const existingRequest = athlete.coachRequests.find(req => req.coachId.toString() === coach._id.toString());
     if (existingRequest) {
       return res.status(400).json({ error: 'Invitation already sent' });
     }
 
-    // Add invitation to athlete
+    // Añadir invitación al atleta
     athlete.coachRequests.push({
       coachId: coach._id,
       coachName: coach.name
@@ -528,7 +528,7 @@ app.post('/api/coach/athletes', authMiddleware, async (req, res) => {
   }
 });
 
-// Remove athlete
+// Eliminar atleta
 app.delete('/api/coach/athletes/:athleteId', authMiddleware, async (req, res) => {
   try {
     const { athleteId } = req.params;
@@ -538,11 +538,11 @@ app.delete('/api/coach/athletes/:athleteId', authMiddleware, async (req, res) =>
       return res.status(403).json({ error: 'Only coaches can remove athletes' });
     }
 
-    // Remove from coach's list
+    // Eliminar de la lista del entrenador
     coach.athletes = coach.athletes.filter(id => id.toString() !== athleteId);
     await coach.save();
 
-    // Remove coach from athlete
+    // Eliminar entrenador del atleta
     const athlete = await User.findById(athleteId);
     if (athlete && athlete.coachId?.toString() === coach._id.toString()) {
       athlete.coachId = null;
@@ -555,7 +555,7 @@ app.delete('/api/coach/athletes/:athleteId', authMiddleware, async (req, res) =>
   }
 });
 
-// Get athlete's progress (for coach)
+// Obtener progreso del atleta (para entrenador)
 app.get('/api/coach/athletes/:athleteId/progress', authMiddleware, async (req, res) => {
   try {
     const { athleteId } = req.params;
@@ -572,7 +572,7 @@ app.get('/api/coach/athletes/:athleteId/progress', authMiddleware, async (req, r
   }
 });
 
-// Get athlete's blocks (for coach)
+// Obtener bloques del atleta (para entrenador)
 app.get('/api/coach/athletes/:athleteId/blocks', authMiddleware, async (req, res) => {
   try {
     const { athleteId } = req.params;
@@ -589,7 +589,7 @@ app.get('/api/coach/athletes/:athleteId/blocks', authMiddleware, async (req, res
   }
 });
 
-// Create/Assign block to athlete
+// Crear/Asignar bloque a atleta
 app.post('/api/coach/athletes/:athleteId/blocks', authMiddleware, async (req, res) => {
   try {
     const { athleteId } = req.params;
@@ -615,12 +615,12 @@ app.post('/api/coach/athletes/:athleteId/blocks', authMiddleware, async (req, re
 });
 
 
-// --- INIT ---
+// --- INICIALIZACIÓN ---
 mongoose.connect(MONGO_URI)
   .then(async () => {
     console.log('Connected to MongoDB');
 
-    // Auto-seed if empty
+    // Auto-sembrar si está vacío
     const blockCount = await TrainingBlock.countDocuments();
     if (blockCount === 0) {
       console.log('Seeding Database...');

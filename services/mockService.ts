@@ -2,7 +2,7 @@ import { TrainingBlock, ProgressData, TrainingDay, TrainingWeek } from '../types
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
-// Helper to transform Mongo _id to frontend id recursively
+// Función auxiliar para transformar _id de Mongo a id recursivamente
 const transformId = (data: any): any => {
   if (Array.isArray(data)) {
     return data.map(transformId);
@@ -12,7 +12,7 @@ const transformId = (data: any): any => {
     const newObj = { ...rest };
     if (_id) newObj.id = _id;
 
-    // Recursively process keys
+    // Procesar claves recursivamente
     for (const key in newObj) {
       if (typeof newObj[key] === 'object') {
         newObj[key] = transformId(newObj[key]);
@@ -23,7 +23,7 @@ const transformId = (data: any): any => {
   return data;
 };
 
-// Helper to get auth headers
+// Función auxiliar para obtener cabeceras de autenticación
 const getAuthHeaders = (token: string) => ({
   'Content-Type': 'application/json',
   'Authorization': `Bearer ${token}`
@@ -101,7 +101,7 @@ export const TrainingService = {
     }
   },
 
-  // Update a specific day (used when saving a session)
+  // Actualizar un día específico (usado al guardar una sesión de entrenamiento)
   updateDay: async (token: string, dayId: string, dayData: TrainingDay) => {
     try {
       const res = await fetch(`${API_URL}/days/${dayId}`, {
@@ -115,7 +115,7 @@ export const TrainingService = {
       return false;
     }
   },
-  // ============== INVITES ==============
+  // ============== INVITACIONES ==============
   getInvites: async (token: string): Promise<any[]> => {
     try {
       const res = await fetch(`${API_URL}/user/invites`, {
@@ -154,9 +154,9 @@ export const TrainingService = {
       return false;
     }
   },
-  // ============== COACH METHODS ==============
+  // ============== MÉTODOS DE ENTRENADOR ==============
 
-  // Change user role
+  // Cambiar rol del usuario
   changeRole: async (token: string, role: 'athlete' | 'coach'): Promise<boolean> => {
     try {
       const res = await fetch(`${API_URL}/users/role`, {
@@ -180,7 +180,7 @@ export const TrainingService = {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
-          // Content-Type is set automatically with boundary by fetch for FormData
+          // Content-Type se establece automáticamente con boundary por fetch para FormData
         },
         body: formData
       });
@@ -225,7 +225,7 @@ export const TrainingService = {
     }
   },
 
-  // Get coach's athletes
+  // Obtener atletas del entrenador
   getAthletes: async (token: string): Promise<any[]> => {
     try {
       const res = await fetch(`${API_URL}/coach/athletes`, {
@@ -239,7 +239,7 @@ export const TrainingService = {
     }
   },
 
-  // Add athlete by email
+  // Añadir atleta por email
   addAthlete: async (token: string, athleteEmail: string): Promise<{ success: boolean; message: string }> => {
     try {
       const res = await fetch(`${API_URL}/coach/athletes`, {
@@ -258,7 +258,7 @@ export const TrainingService = {
     }
   },
 
-  // Remove athlete
+  // Eliminar atleta
   removeAthlete: async (token: string, athleteId: string): Promise<boolean> => {
     try {
       const res = await fetch(`${API_URL}/coach/athletes/${athleteId}`, {
@@ -272,7 +272,7 @@ export const TrainingService = {
     }
   },
 
-  // Get athlete's progress
+  // Obtener progreso de un atleta
   getAthleteProgress: async (token: string, athleteId: string): Promise<ProgressData[]> => {
     try {
       const res = await fetch(`${API_URL}/coach/athletes/${athleteId}/progress`, {
@@ -287,7 +287,7 @@ export const TrainingService = {
     }
   },
 
-  // Get athlete's blocks
+  // Obtener bloques de un atleta
   getAthleteBlocks: async (token: string, athleteId: string): Promise<TrainingBlock[]> => {
     try {
       const res = await fetch(`${API_URL}/coach/athletes/${athleteId}/blocks`, {
@@ -302,7 +302,7 @@ export const TrainingService = {
     }
   },
 
-  // Create block for athlete
+  // Crear bloque para un atleta
   createBlockForAthlete: async (token: string, athleteId: string, blockData: any): Promise<TrainingBlock | null> => {
     try {
       const res = await fetch(`${API_URL}/coach/athletes/${athleteId}/blocks`, {
@@ -322,6 +322,6 @@ export const TrainingService = {
 
 export const calculate1RM = (weight: number, reps: number, rpe: number = 10): number => {
   if (reps === 1 && rpe === 10) return weight;
-  // New Formula: 1RM = Weight * (1 + (Reps + (10 - RPE)) / 30)
+  // Nueva fórmula: 1RM = Peso * (1 + (Reps + (10 - RPE)) / 30)
   return Math.round(weight * (1 + (reps + (10 - rpe)) / 30));
 };

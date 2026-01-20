@@ -15,7 +15,7 @@ import { ConfirmDialog } from './components/ConfirmDialog';
 import { TrainingBlock, ProgressData, User } from './types';
 import { Loader2 } from 'lucide-react';
 
-// Protected Route wrapper
+// Componente envoltorio para rutas protegidas (requiere autenticación)
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -34,7 +34,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
-// Auth pages wrapper (redirect if already logged in)
+// Componente envoltorio para páginas de autenticación (redirige al inicio si ya está logueado)
 const AuthRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -60,7 +60,7 @@ function AppContent() {
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
-  // Load data when authenticated
+  // Cargar datos (bloques y progreso) cuando el usuario está autenticado
   useEffect(() => {
     const loadData = async () => {
       if (token) {
@@ -73,7 +73,7 @@ function AppContent() {
     loadData();
   }, [token]);
 
-  // Refresh blocks and progress after changes
+  // Refrescar bloques y datos de progreso después de realizar cambios
   const refreshBlocks = async () => {
     if (token) {
       const b = await TrainingService.getBlocks(token);
@@ -83,7 +83,7 @@ function AppContent() {
     }
   };
 
-  // Convert auth user to app User type
+  // Convertir el usuario del contexto de autenticación al tipo User de la aplicación
   const appUser: User | null = user ? {
     id: user.id,
     email: user.email,
@@ -93,7 +93,7 @@ function AppContent() {
     profilePicture: user.profilePicture
   } : null;
 
-  // Training View Wrapper
+  // Envoltorio para la vista de entrenamiento
   const TrainingView = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [editingBlock, setEditingBlock] = useState<TrainingBlock | null>(null);
@@ -118,7 +118,7 @@ function AppContent() {
             block={block}
             onBack={() => {
               setSelectedBlockId(null);
-              window.location.hash = '/training'; // Clear URL param
+              window.location.hash = '/training'; // Limpiar parámetro de URL
             }}
             onEdit={(b) => setEditingBlock(b)}
             onRefresh={refreshBlocks}
@@ -193,7 +193,7 @@ function AppContent() {
   return (
     <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
-        {/* Auth routes */}
+        {/* Rutas de autenticación */}
         <Route
           path="/login"
           element={
@@ -214,7 +214,7 @@ function AppContent() {
           }
         />
 
-        {/* Protected routes */}
+        {/* Rutas protegidas (requiere inicio de sesión) */}
         <Route
           path="/"
           element={

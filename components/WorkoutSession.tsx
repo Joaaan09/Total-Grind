@@ -5,6 +5,7 @@ import { Button, Input, Card, CardHeader, CardTitle, CardContent } from './ui';
 import { CheckCircle2, Circle, Save, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
+// Props para el componente de sesión de entrenamiento
 interface WorkoutSessionProps {
   day: TrainingDay;
   onComplete: () => void;
@@ -27,7 +28,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete }) => {
 
           const updatedSet = { ...set, [field]: value };
 
-          // Auto calculate 1RM if weight and reps are present
+          // Calcular automáticamente el 1RM si hay peso y repeticiones
           if ((field === 'weight' || field === 'reps' || field === 'rpe') && (updatedSet.weight || field === 'weight')) {
             const w = field === 'weight' ? Number(value) : Number(updatedSet.weight);
             const r = field === 'reps' ? Number(value) : Number(updatedSet.reps);
@@ -64,7 +65,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete }) => {
     }
 
     setIsSaving(true);
-    // Prepare the updated day object
+    // Preparar el objeto del día actualizado con los ejercicios completados
     const updatedDay: TrainingDay = {
       ...day,
       exercises: exercises,
@@ -189,7 +190,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete }) => {
         </Card>
       ))}
 
-      {/* Sticky Mobile Save Action */}
+      {/* Botón flotante de guardar para móviles */}
       <div className="lg:hidden fixed bottom-4 right-4 z-50">
         <Button size="icon" className="h-14 w-14 rounded-full shadow-lg bg-blue-600 hover:bg-blue-500" onClick={handleSave} disabled={isSaving}>
           {isSaving ? <Loader2 className="animate-spin" size={24} /> : <Save size={24} />}

@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// --- Button ---
+// --- Botón ---
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg' | 'icon';
@@ -45,7 +45,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = 'Button';
 
-// --- Card ---
+// --- Tarjeta ---
 export const Card = ({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("rounded-lg border border-slate-800 bg-slate-900/50 text-slate-100 shadow-sm", className)} {...props}>
     {children}
@@ -70,7 +70,7 @@ export const CardContent = ({ className, children, ...props }: React.HTMLAttribu
   </div>
 );
 
-// --- Input ---
+// --- Campo de entrada ---
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   ({ className, type, ...props }, ref) => {
     return (
@@ -88,7 +88,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
 );
 Input.displayName = "Input";
 
-// --- Badge ---
+// --- Insignia/Etiqueta ---
 export const Badge = ({ className, variant = "default", ...props }: React.HTMLAttributes<HTMLDivElement> & { variant?: "default" | "secondary" | "outline" | "success" }) => {
   const variants = {
     default: "border-transparent bg-blue-600 text-white hover:bg-blue-700",
@@ -101,7 +101,7 @@ export const Badge = ({ className, variant = "default", ...props }: React.HTMLAt
   );
 }
 
-// --- Tabs ---
+// --- Pestañas ---
 export const Tabs = ({ className, children, value, onValueChange }: any) => {
   return <div className={cn("w-full", className)}>{children}</div>
 }
@@ -130,7 +130,7 @@ export const TabsTrigger = ({ className, value, activeValue, onClick, children }
   )
 }
 
-// --- Label ---
+// --- Etiqueta de formulario ---
 export const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
   ({ className, ...props }, ref) => (
     <label
@@ -145,16 +145,16 @@ export const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttribute
 )
 Label.displayName = "Label"
 
-// --- Dialog (Simplified) ---
-// Note: In a real app we'd use Radix UI for accessibility. This is a visual-only implementation for MVP.
+// --- Diálogo (Simplificado) ---
+// Nota: En una app real usaríamos Radix UI para accesibilidad. Esta es una implementación solo visual para MVP.
 export const Dialog = ({ children, open, onOpenChange }: any) => {
   if (!open) return null;
   return <div className="fixed inset-0 z-50 flex items-center justify-center">{children}</div>;
 };
 
 export const DialogContent = ({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  // We don't render this directly in our simplified modal usage (CreateBlockModal renders its own overlay),
-  // but keeping it structural.
+  // No renderizamos esto directamente en nuestro uso simplificado del modal
+  // pero lo mantenemos por estructura.
   <div className={cn("bg-slate-900 border border-slate-800 rounded-lg shadow-xl", className)} {...props}>
     {children}
   </div>

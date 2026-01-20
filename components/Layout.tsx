@@ -24,7 +24,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Progreso', path: '/progress', icon: <LineChart size={20} /> },
   ];
 
-  // Add coach item if user is a coach
+  // Añadir opción "Mis Atletas" si el usuario es entrenador
   const coachNavItem = user?.role === 'coach'
     ? [{ name: 'Mis Atletas', path: '/coach', icon: <Users size={20} /> }]
     : [];
@@ -37,7 +37,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 font-sans">
-      {/* Top Navbar Mobile */}
+      {/* Barra de navegación superior para móvil */}
       <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md lg:hidden">
         <div className="flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2 font-bold text-xl text-blue-500">
@@ -50,7 +50,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Menú desplegable para móvil */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-30 top-16 bg-slate-950 p-4 lg:hidden animate-in fade-in slide-in-from-top-5">
           <nav className="flex flex-col gap-4">
@@ -81,7 +81,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       )}
 
       <div className="flex">
-        {/* Desktop Sidebar */}
+        {/* Barra lateral para escritorio (fija) */}
         <aside className="hidden h-screen w-64 flex-col border-r border-slate-800 bg-slate-900 lg:flex fixed left-0 top-0">
           <div className="flex h-16 items-center border-b border-slate-800 px-6">
             <div className="flex items-center gap-2 font-bold text-xl text-blue-500">
@@ -90,7 +90,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
 
-          {/* User info */}
+          {/* Información del usuario */}
           {user && (
             <div className="px-4 py-3 border-b border-slate-800">
               <p className="text-sm font-medium text-white truncate">{user.name}</p>
@@ -125,7 +125,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </aside>
 
-        {/* Main Content */}
+        {/* Contenido principal de la página */}
         <main className="flex-1 lg:pl-64">
           <div className="container mx-auto max-w-5xl p-4 lg:p-8">
             {children}

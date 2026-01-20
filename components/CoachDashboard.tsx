@@ -9,6 +9,7 @@ import { CreateBlockModal } from './CreateBlockModal';
 import { EditBlockModal } from './EditBlockModal';
 import { ConfirmDialog } from './ConfirmDialog';
 
+// Interfaz para representar un atleta en la lista del entrenador
 interface Athlete {
     _id: string;
     name: string;
@@ -30,7 +31,7 @@ export const CoachDashboard: React.FC = () => {
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    // Edit Block State
+    // Estado para editar un bloque existente
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingBlock, setEditingBlock] = useState<TrainingBlock | null>(null);
 
@@ -41,7 +42,7 @@ export const CoachDashboard: React.FC = () => {
         onConfirm: () => { }
     });
 
-    // Load athletes
+    // Cargar la lista de atletas del entrenador al montar el componente
     useEffect(() => {
         const loadAthletes = async () => {
             if (token) {
@@ -53,7 +54,7 @@ export const CoachDashboard: React.FC = () => {
         loadAthletes();
     }, [token]);
 
-    // Load athlete data when selected
+    // Cargar datos del atleta seleccionado (progreso y bloques)
     useEffect(() => {
         const loadAthleteData = async () => {
             if (token && selectedAthlete) {
@@ -125,7 +126,7 @@ export const CoachDashboard: React.FC = () => {
         try {
             const success = await TrainingService.updateBlock(token, blockId, data);
             if (success) {
-                // Refresh blocks
+                // Refrescar la lista de bloques después de actualizar
                 const blocks = await TrainingService.getAthleteBlocks(token, selectedAthlete._id);
                 setAthleteBlocks(blocks);
             }
@@ -154,11 +155,11 @@ export const CoachDashboard: React.FC = () => {
         );
     }
 
-    // Athlete detail view
+    // Vista de detalle del atleta (progreso o bloques)
     if (selectedAthlete && view !== 'list') {
         return (
             <div className="space-y-6">
-                {/* Header */}
+                {/* Cabecera con botón de volver y nombre del atleta */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Button variant="ghost" onClick={() => { setSelectedAthlete(null); setView('list'); }}>
@@ -171,7 +172,7 @@ export const CoachDashboard: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Create Block Modal */}
+                {/* Modal para crear un nuevo bloque */}
                 <CreateBlockModal
                     isOpen={isCreateModalOpen}
                     onClose={() => setIsCreateModalOpen(false)}
@@ -179,7 +180,7 @@ export const CoachDashboard: React.FC = () => {
                     targetAthleteName={selectedAthlete.name}
                 />
 
-                {/* Edit Block Modal */}
+                {/* Modal para editar un bloque existente */}
                 {editingBlock && (
                     <EditBlockModal
                         isOpen={isEditModalOpen}
@@ -198,7 +199,7 @@ export const CoachDashboard: React.FC = () => {
                     message={confirmDialog.message}
                 />
 
-                {/* View Tabs */}
+                {/* Pestañas para cambiar entre vista de progreso y bloques */}
                 <div className="flex gap-2">
                     <Button
                         variant={view === 'progress' ? 'primary' : 'outline'}
@@ -222,7 +223,7 @@ export const CoachDashboard: React.FC = () => {
                     )}
                 </div>
 
-                {/* Content */}
+                {/* Contenido según la pestaña seleccionada */}
                 {view === 'progress' && (
                     <ProgressCharts data={athleteProgress} />
                 )}
@@ -266,7 +267,7 @@ export const CoachDashboard: React.FC = () => {
         );
     }
 
-    // Athletes list view
+    // Vista de lista de atletas (pantalla principal del panel de entrenador)
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -275,7 +276,7 @@ export const CoachDashboard: React.FC = () => {
                 <p className="text-slate-400">Gestiona a tus atletas y su progreso</p>
             </div>
 
-            {/* Add Athlete Form */}
+            {/* Formulario para invitar atletas por email */}
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -301,7 +302,7 @@ export const CoachDashboard: React.FC = () => {
                 </CardContent>
             </Card>
 
-            {/* Athletes Grid */}
+            {/* Grid de atletas con tarjetas clickeables */}
             <div>
                 <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
                     <Users size={20} /> Mis Atletas ({athletes.length})

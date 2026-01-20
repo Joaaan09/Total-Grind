@@ -6,7 +6,7 @@ export interface User {
   email: string;
   name: string;
   role: Role;
-  coachId?: string | { _id: string; name: string; email: string }; // If athlete
+  coachId?: string | { _id: string; name: string; email: string }; // Si es un atleta, ID o objeto del entrenador
   profilePicture?: string;
 }
 
@@ -17,7 +17,7 @@ export interface TrainingBlock {
   weeks: TrainingWeek[];
   ownerId: string;
   source: 'personal' | 'assigned';
-  assignedBy?: string; // Coach Name
+  assignedBy?: string; // Nombre del entrenador que asignó el bloque
   startDate?: string;
 }
 
@@ -31,7 +31,7 @@ export interface TrainingWeek {
 export interface TrainingDay {
   id: string;
   weekId: string;
-  dayName: string; // e.g., "Día 1 - Squat"
+  dayName: string; // Ej: "Día 1 - Squat"
   exercises: Exercise[];
   isCompleted: boolean;
 }
@@ -47,19 +47,19 @@ export interface Exercise {
 export interface ExerciseSet {
   id: string;
   exerciseId: string;
-  reps?: number | string; // Can be a range string "3-5" for prescription, number for actual
-  rpe?: number; // Rated Perceived Exertion
+  reps?: number | string; // Puede ser un rango "3-5" para prescripción, o número para real
+  rpe?: number; // Esfuerzo Percibido (RPE) real
   weight?: number;
-  targetRpe?: number; // Prescribed RPE
-  targetReps?: string; // Prescribed Reps
+  targetRpe?: number; // RPE prescrito
+  targetReps?: string; // Repeticiones prescritas
   estimated1rm?: number;
   isCompleted: boolean;
 }
 
 export interface OneRMHistory {
   date: string;
-  estimatedMax: number; // e1RM calculated from reps
-  actualMax: number;    // Real max weight lifted
+  estimatedMax: number; // 1RM estimado calculado a partir de reps y peso
+  actualMax: number;    // Peso máximo real levantado
 }
 
 export interface ProgressData {

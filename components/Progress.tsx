@@ -8,7 +8,7 @@ interface ProgressChartsProps {
   data: ProgressData[];
 }
 
-// Only show competition lifts
+// Solo mostrar levantamientos de competición (SQ, BP, DL)
 const COMPETITION_LIFTS = ['Comp SQ', 'Comp BP', 'Comp DL'];
 const LIFT_LABELS: Record<string, string> = {
   'Comp SQ': 'Sentadilla',
@@ -33,7 +33,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-// Helper to get best lift for an exercise
+// Función auxiliar para obtener el mejor 1RM estimado de un ejercicio
 const getBestEstimated = (data: ProgressData[], exerciseName: string): number => {
   const exercise = data.find(p => p.exerciseName === exerciseName);
   if (!exercise || !exercise.history.length) return 0;
@@ -47,19 +47,19 @@ const getBestActual = (data: ProgressData[], exerciseName: string): number => {
 };
 
 export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
-  // Filter only competition lifts
+  // Filtrar solo levantamientos de competición
   const competitionData = data.filter(d => COMPETITION_LIFTS.includes(d.exerciseName));
 
   const [selectedExercise, setSelectedExercise] = React.useState<string>('Comp SQ');
 
-  // Update selected if data changes and current selection is invalid
+  // Actualizar selección si los datos cambian y la selección actual no es válida
   React.useEffect(() => {
     if (competitionData.length > 0 && selectedExercise !== 'Total' && !competitionData.some(d => d.exerciseName === selectedExercise)) {
       setSelectedExercise(competitionData[0].exerciseName);
     }
   }, [competitionData, selectedExercise]);
 
-  // Calculate totals for each competition lift
+  // Calcular totales para cada levantamiento de competición
   const sqBest = getBestEstimated(data, 'Comp SQ');
   const bpBest = getBestEstimated(data, 'Comp BP');
   const dlBest = getBestEstimated(data, 'Comp DL');
@@ -70,7 +70,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
   const dlActual = getBestActual(data, 'Comp DL');
   const totalActual = sqActual + bpActual + dlActual;
 
-  // Get current data for chart
+  // Obtener datos actuales para el gráfico
   const currentData = selectedExercise === 'Total'
     ? [] // No chart for total (could implement later with combined data)
     : competitionData.find(d => d.exerciseName === selectedExercise)?.history || [];
@@ -95,7 +95,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
     );
   }
 
-  // Get best estimated and actual max for selected exercise
+  // Obtener mejor 1RM estimado y real para el ejercicio seleccionado
   const bestEstimated = selectedExercise === 'Total'
     ? totalSBD
     : (currentData.length > 0 ? Math.max(...currentData.map(d => d.estimatedMax || 0)) : 0);
@@ -127,7 +127,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
                   {LIFT_LABELS[d.exerciseName] || d.exerciseName}
                 </button>
               ))}
-              {/* Total SBD Tab */}
+              {/* Pestaña de Total SBD */}
               <button
                 onClick={() => setSelectedExercise('Total')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedExercise === 'Total'
@@ -142,7 +142,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
         </CardHeader>
         <CardContent className="h-[400px] w-full pt-4">
           {selectedExercise === 'Total' ? (
-            // Total SBD view - show breakdown
+            // Vista de Total SBD - mostrar desglose
             <div className="h-full flex flex-col items-center justify-center">
               <div className="text-6xl font-bold text-purple-400 mb-4">
                 {totalSBD > 0 ? totalSBD : '-'} <span className="text-2xl text-slate-500">kg</span>
@@ -172,7 +172,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
               </div>
             </div>
           ) : (
-            // Individual lift chart
+            // Gráfico de levantamiento individual
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={currentData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ExerciseSetSchema = new mongoose.Schema({
-  reps: { type: mongoose.Schema.Types.Mixed }, // String or Number
+  reps: { type: mongoose.Schema.Types.Mixed }, // String o Number
   rpe: Number,
   weight: Number,
   targetRpe: Number,
@@ -12,7 +12,7 @@ const ExerciseSetSchema = new mongoose.Schema({
 
 const ExerciseSchema = new mongoose.Schema({
   name: String,
-  dayId: String, // Keeping string IDs for correlation, though Mongo generates _id
+  dayId: String, // Manteniendo IDs string para correlación, aunque Mongo genera _id
   notes: String,
   sets: [ExerciseSetSchema]
 });
