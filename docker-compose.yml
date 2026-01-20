@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Frontend - React/Vite con Nginx
   frontend:
@@ -25,11 +23,10 @@ services:
     expose:
       - "5000"
     environment:
-      - DB_HOST=mongodb_server
-      - DB_USER=mernuser
-      - DB_PASSWORD=secret123
-      - DB_NAME=mernapp
-      - DB_PORT=27017
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGO_URI=mongodb://mernuser:secret123@mongodb:27017/totalgrind?authSource=admin
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
     depends_on:
       - mongodb
     volumes:
@@ -37,25 +34,23 @@ services:
     networks:
       - reverse_proxy_network
 
-  # Base de datos MongoDB (sin auth - solo red interna)
+  # Base de datos MongoDB
   mongodb:
-    image: mongo:latest
+    image: mongo:7
     container_name: totalgrind-mongodb
+    restart: unless-stopped
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mernuser
       - MONGO_INITDB_ROOT_PASSWORD=secret123
-      - MONGO_INITDB_DATABASE=mernapp
     volumes:
-      - mydata:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongodb_data:/data/db
     networks:
       - reverse_proxy_network
 
 networks:
-  # Red externa para Nginx Proxy Manager
   reverse_proxy_network:
     external: true
 
 volumes:
-  mydata:
+  mongodb_data:
   uploads:
