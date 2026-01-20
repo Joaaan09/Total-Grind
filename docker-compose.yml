@@ -56,5 +56,5 @@ networks:
     external: true
 
 volumes:
-  mongodb_data:
+  mydata:
   uploads:
