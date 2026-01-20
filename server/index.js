@@ -662,33 +662,19 @@ app.post('/api/coach/athletes/:athleteId/blocks', authMiddleware, async (req, re
 
 
 // --- INICIALIZACIÓN ---
-const connectOptions = {
-  // Opciones recomendadas
-  authSource: 'admin',
-  // directConnection: true, // Desactivado por posibles conflictos de autenticación en algunas versiones
-};
 
-// Si hay usuario y contraseña explícitos, usarlos
-if (process.env.MONGO_USER && process.env.MONGO_PASSWORD) {
-  connectOptions.user = process.env.MONGO_USER;
-  connectOptions.pass = process.env.MONGO_PASSWORD;
-  console.log('Using explicit MongoDB credentials from env vars');
-}
-
-mongoose.connect(MONGO_URI, connectOptions)
-  .then(async () => {
-    console.log('Connected to MongoDB');
-
+console.log('Connecting to MongoDB...');
+// Mongoose 6+ manage connections buffers automatically. 
+// Just pass the URI. Options like authSource are already in the URI.
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   })
   .catch(err => {
-    console.error('MongoDB connection error:', err);
-    console.log('Retrying in 5 seconds...');
-    setTimeout(() => {
-      // Retry connection logic could go here, but for now we just keep the process alive
-      // to allow debugging via 'docker compose exec'.
-      console.log('Waiting for manual fix or restart...');
-    }, 5000);
+    console.error('❌ MongoDB Connection Error:', err);
+    // Exit to let Docker restart the container if connection fails
+    process.exit(1);
   });
