@@ -50,7 +50,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
       # Mantenemos el mismo volumen v5 que ya sabemos que funciona con admin/password123
-      - mongodb_data_v5:/data/db
+      - mongodb_data_v6:/data/db
     networks:
       - internal
 
@@ -61,5 +61,5 @@ networks:
     driver: bridge
 
 volumes:
-  mongodb_data_v5:
+  mongodb_data_v6:
   uploads:
