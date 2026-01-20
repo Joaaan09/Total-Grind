@@ -41,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md lg:hidden">
         <div className="flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2 font-bold text-xl text-blue-500">
-            <Dumbbell className="h-6 w-6" />
+            <img src="/logo.png" alt="Total Grind Logo" className="h-8 w-8 object-contain" />
             <span>TotalGrind</span>
           </div>
           <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
@@ -85,7 +85,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <aside className="hidden h-screen w-64 flex-col border-r border-slate-800 bg-slate-900 lg:flex fixed left-0 top-0">
           <div className="flex h-16 items-center border-b border-slate-800 px-6">
             <div className="flex items-center gap-2 font-bold text-xl text-blue-500">
-              <Dumbbell className="h-6 w-6" />
+              <img src="/logo.png" alt="Total Grind Logo" className="h-8 w-8 object-contain" />
               <span>TotalGrind</span>
             </div>
           </div>
