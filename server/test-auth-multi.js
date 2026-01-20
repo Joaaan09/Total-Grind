@@ -1,55 +1,44 @@
-const mongoose = require('mongoose');
+const { MongoClient } = require('mongodb');
 
-// Testing the NEW dedicated user
-const PASSWORD = 'app_password';
-const USER = 'app_user';
-const HOST = 'mongodb';
-const TARGET_DB = 'totalgrind';
+// Configuration
+const URI = 'mongodb://app_user:app_password@mongodb:27017/totalgrind';
 
-// Strategies to test
-const strategies = [
-    {
-        name: 'Dedicated User Strategy',
-        // No authSource needed because user is created IN the target DB
-        uri: `mongodb://${USER}:${PASSWORD}@${HOST}:27017/${TARGET_DB}`,
-        options: { serverSelectionTimeoutMS: 5000 }
-    }
-];
-
-async function testStrategy(strategy) {
-    console.log(`\n--- ${strategy.name} ---`);
-    console.log(`URI: ${strategy.uri.replace(PASSWORD, '****')}`);
-    console.log(`Options:`, strategy.options);
-
-    try {
-        await mongoose.connect(strategy.uri, strategy.options);
-        console.log('✅ SUCCESS');
-        await mongoose.disconnect();
-        return true;
-    } catch (err) {
-        console.log('❌ FAILED');
-        console.log('Error:', err.message);
-        return false;
-    }
-}
+console.log('--- NATIVE DRIVER TEST ---');
+console.log('Target:', URI.replace('app_password', '****'));
 
 async function run() {
-    console.log('Starting Multi-Strategy Connectivity Test...');
+    // Mongoose builds on top of this driver. 
+    // If this works, Mongoose options are wrong.
+    // If this fails, Docker networking or Auth setup is wrong.
 
-    let success = false;
-    for (const s of strategies) {
-        if (await testStrategy(s)) {
-            success = true;
-            console.log('\n!!! FOUND WORKING STRATEGY !!!');
-            console.log('Use this configuration in your code.');
-            break;
+    const client = new MongoClient(URI, {
+        serverSelectionTimeoutMS: 5000,
+        appName: 'DiagnosticScript',
+        // Force IPv4 to avoid localhost ::1 issues
+        family: 4
+    });
+
+    try {
+        console.log('Connecting...');
+        await client.connect();
+        console.log('✅ SUCCESS: Native MongoDB Driver connected!');
+
+        const db = client.db();
+        const res = await db.command({ ping: 1 });
+        console.log('Ping Result:', res);
+
+        await client.close();
+        process.exit(0);
+    } catch (err) {
+        console.error('❌ FAILED');
+        console.error('Error Name:', err.name);
+        console.error('Message:', err.message);
+        console.error('Code:', err.code);
+        if (err.errorResponse) {
+            console.error('Server Response:', JSON.stringify(err.errorResponse, null, 2));
         }
+        process.exit(1);
     }
-
-    if (!success) {
-        console.log('\n❌ ALL STRATEGIES FAILED. Network or Server issue likely.');
-    }
-    process.exit(success ? 0 : 1);
 }
 
 run();
