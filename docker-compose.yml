@@ -1,0 +1,62 @@
+services:
+  # Frontend - React/Vite con Nginx
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: totalgrind-frontend
+    restart: unless-stopped
+    expose:
+      - "80"
+    depends_on:
+      - backend
+    networks:
+      - reverse_proxy_network
+      - internal
+
+  # Backend - Node.js/Express
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: totalgrind-backend
+    restart: unless-stopped
+    expose:
+      - "5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGO_URI=mongodb://mernuser:secret123@mongodb:27017/totalgrind?authSource=admin
+      - JWT_SECRET=${JWT_SECRET:-cambia-esto-en-produccion-123456}
+    depends_on:
+      mongodb:
+        condition: service_started
+    volumes:
+      - uploads:/app/uploads
+    networks:
+      - reverse_proxy_network
+      - internal
+
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:7
+    container_name: totalgrind-mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mernuser
+      - MONGO_INITDB_ROOT_PASSWORD=secret123
+      - MONGO_INITDB_DATABASE=totalgrind
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - internal
+
+networks:
+  reverse_proxy_network:
+    external: true
+  internal:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  uploads:
