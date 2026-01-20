@@ -1,0 +1,5 @@
+{
+  "name": "PowerLift Pro",
+  "description": "Aplicación de programación de powerlifting para atletas y entrenadores con seguimiento de RPE y cálculo de 1RM.",
+  "requestFramePermissions": []
+}
