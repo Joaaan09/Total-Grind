@@ -1,47 +1,34 @@
 const mongoose = require('mongoose');
 
-const MONGO_URI = process.env.MONGO_URI;
+// 1. Inspect Env Var deeply
+const envURI = process.env.MONGO_URI || '';
+console.log('--- DEEP INSPECTION ---');
+console.log('Env Var URI-Length:', envURI.length);
+// Print first 50 chars as hex to see if there are weird invisible chars
+const hex = envURI.split('').slice(0, 50).map(c => c.charCodeAt(0).toString(16)).join(' ');
+console.log('Hex Trace:', hex);
 
-console.log('--- DIAGNOSTIC START ---');
-console.log('Node Version:', process.version);
-try {
-    console.log('Mongoose Version:', require('mongoose/package.json').version);
-} catch (e) {
-    console.log('Mongoose Version: unknown');
-}
-console.log('URI Defined:', !!MONGO_URI);
-
-if (MONGO_URI) {
-    // Mask password carefully
-    const masked = MONGO_URI.replace(/:([^:@]+)@/, ':****@');
-    console.log('Target URI:', masked);
-} else {
-    console.error('CRITICAL: MONGO_URI is missing!');
-}
+// 2. Try HARDCODED credentials directly to rule out ENV issues
+const HARDCODED_URI = 'mongodb://admin:password123@mongodb:27017/totalgrind?authSource=admin';
+console.log('\n--- TESTING HARDCODED CREDENTIALS ---');
+console.log('Target URI:', HARDCODED_URI);
 
 async function run() {
-    if (!MONGO_URI) process.exit(1);
-
     try {
-        console.log('Attempting connection...');
-        await mongoose.connect(MONGO_URI, {
+        console.log('Attempting connection with HARDCODED string...');
+        await mongoose.connect(HARDCODED_URI, {
             authSource: 'admin',
-            serverSelectionTimeoutMS: 5000
+            serverSelectionTimeoutMS: 5000,
+            family: 4 // Force IPv4
         });
-        console.log('✅ Connected successfully!');
-
-        const admin = new mongoose.mongo.Admin(mongoose.connection.db);
-        const info = await admin.buildInfo();
-        console.log('Remote MongoDB Version:', info.version);
-
+        console.log('✅ Connected successfully with HARDCODED credentials!');
+        console.log('CONCLUSION: usage of process.env is corrupted/incorrect.');
         process.exit(0);
     } catch (err) {
-        console.error('❌ Connection Failed');
-        console.error('Error Name:', err.name);
-        console.error('Error Message:', err.message);
+        console.error('❌ Connection Failed even with HARDCODED credentials');
+        console.error('Message:', err.message);
         console.error('Code:', err.code);
-        console.error('CodeName:', err.codeName);
-        if (err.cause) console.error('Cause:', err.cause);
+        console.error('CONCLUSION: Network or Database Server issue.');
         process.exit(1);
     }
 }
