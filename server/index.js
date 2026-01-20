@@ -662,7 +662,13 @@ app.post('/api/coach/athletes/:athleteId/blocks', authMiddleware, async (req, re
 
 
 // --- INICIALIZACIÓN ---
-mongoose.connect(MONGO_URI)
+const connectOptions = {
+  // Opciones recomendadas para entornos Docker/K8s con problemas de resolución/auth
+  authSource: 'admin',
+  directConnection: true,
+};
+
+mongoose.connect(MONGO_URI, connectOptions)
   .then(async () => {
     console.log('Connected to MongoDB');
 
