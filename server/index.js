@@ -53,7 +53,12 @@ app.use(helmet({
 
 // CORS - restringido en producción
 const allowedOrigins = process.env.NODE_ENV === 'production'
-  ? ['https://total-grind.duckdns.org', 'http://total-grind.duckdns.org']
+  ? [
+    'https://total-grind.duckdns.org',
+    'http://total-grind.duckdns.org',
+    'https://totalgrind.joan-coll.com',
+    'http://totalgrind.joan-coll.com'
+  ]
   : ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
 app.use(cors({

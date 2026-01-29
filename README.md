@@ -112,8 +112,32 @@ La aplicación estará disponible en `http://localhost:5173`.
 4. **Perfil**: Sube una foto de perfil, cambia tu nombre o cambia de rol.
 5. **Modo Entrenador**: Ve a Perfil -> Convertirse en Entrenador para empezar a gestionar atletas.
 
+## ⚠️ Configuración de Dominios (CORS)
+
+Si despliegas la aplicación en un dominio diferente al configurado por defecto (`total-grind.duckdns.org`), debes añadirlo a la lista de orígenes permitidos en `server/index.js`:
+
+```javascript
+// Línea 55-57 en server/index.js
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? [
+      'https://total-grind.duckdns.org',
+      'http://total-grind.duckdns.org',
+      'https://tu-nuevo-dominio.com',  // ← Añadir aquí
+      'http://tu-nuevo-dominio.com'
+    ]
+  : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+```
+
+Después de modificar, reconstruye el contenedor del backend:
+```bash
+docker compose up -d --build backend
+```
+
+---
+
 ## Solución de Problemas
 
 - **¿No cargan las imágenes?** Asegúrate de que el backend se está ejecutando.
 - **¿Conexión rechazada?** Comprueba si MongoDB se está ejecutando.
 - **¿Error 502 en producción?** Revisa los logs: `docker compose logs backend`
+- **¿Error de CORS o no conecta la base de datos?** Verifica que tu dominio esté en la lista de `allowedOrigins` (ver sección anterior).
