@@ -6,6 +6,7 @@ import { TrainingBlockList, BlockDetail } from './components/TrainingBlock';
 import { ProgressCharts } from './components/Progress';
 import { Profile } from './components/Profile';
 import { CoachDashboard } from './components/CoachDashboard';
+import { AdminDashboard } from './components/AdminDashboard';
 import { Login, Register } from './components/Auth';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { TrainingService } from './services/mockService';
@@ -47,6 +48,29 @@ const AuthRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+// Componente envoltorio para rutas de admin (requiere rol admin)
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="animate-spin text-blue-500" size={48} />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user?.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
 
@@ -98,19 +122,33 @@ function AppContent() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [editingBlock, setEditingBlock] = useState<TrainingBlock | null>(null);
     const [isRestrictionDialogOpen, setIsRestrictionDialogOpen] = useState(false);
+    const [adminLoadedBlock, setAdminLoadedBlock] = useState<TrainingBlock | null>(null);
     const { blockId } = useParams();
 
     useEffect(() => {
       if (blockId) {
         setSelectedBlockId(blockId);
+        // Si es admin y el bloque no está en la lista local, cargarlo
+        if (user?.role === 'admin' && token) {
+          const localBlock = blocks.find(b => b.id === blockId);
+          if (!localBlock) {
+            TrainingService.getBlockById(token, blockId).then(remoteBlock => {
+              if (remoteBlock) {
+                setAdminLoadedBlock(remoteBlock);
+              }
+            });
+          }
+        }
       } else {
         setSelectedBlockId(null);
+        setAdminLoadedBlock(null);
       }
-    }, [blockId]);
+    }, [blockId, user?.role, token, blocks]);
 
     if (selectedBlockId) {
-      const block = blocks.find(b => b.id === selectedBlockId);
-      if (!block) return <div>Error loading block</div>;
+      // Primero buscar en bloques locales, luego en el bloque cargado por admin
+      const block = blocks.find(b => b.id === selectedBlockId) || adminLoadedBlock;
+      if (!block) return <div className="flex items-center justify-center h-64 text-slate-400">Cargando bloque...</div>;
 
       return (
         <>
@@ -118,7 +156,9 @@ function AppContent() {
             block={block}
             onBack={() => {
               setSelectedBlockId(null);
-              window.location.hash = '/training'; // Limpiar parámetro de URL
+              setAdminLoadedBlock(null);
+              // Admin vuelve a /admin, otros usuarios a /training
+              window.location.hash = user?.role === 'admin' ? '/admin' : '/training';
             }}
             onEdit={(b) => setEditingBlock(b)}
             onRefresh={refreshBlocks}
@@ -268,6 +308,16 @@ function AppContent() {
                 <CoachDashboard />
               </Layout>
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <Layout>
+                <AdminDashboard token={token || ''} />
+              </Layout>
+            </AdminRoute>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />

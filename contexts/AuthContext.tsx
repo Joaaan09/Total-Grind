@@ -4,7 +4,7 @@ interface User {
     id: string;
     email: string;
     name: string;
-    role: 'athlete' | 'coach';
+    role: 'athlete' | 'coach' | 'admin';
     coachId?: string;
     profilePicture?: string;
 }

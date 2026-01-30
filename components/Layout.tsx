@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Dumbbell, LayoutDashboard, LineChart, User as UserIcon, LogOut, Menu, X, Users } from 'lucide-react';
+import { Dumbbell, LayoutDashboard, LineChart, User as UserIcon, LogOut, Menu, X, Users, Shield } from 'lucide-react';
 import { Button } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -18,6 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     navigate('/login');
   };
 
+  // Items de navegación base (para atletas y coaches)
   const baseNavItems = [
     { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
     { name: 'Entrenamientos', path: '/training', icon: <Dumbbell size={20} /> },
@@ -29,11 +30,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     ? [{ name: 'Mis Atletas', path: '/coach', icon: <Users size={20} /> }]
     : [];
 
-  const navItems = [
+  // Navegación específica para admin (solo Admin y Perfil)
+  const adminNavItems = [
+    { name: 'Admin', path: '/admin', icon: <Shield size={20} /> },
+    { name: 'Perfil', path: '/profile', icon: <UserIcon size={20} /> },
+  ];
+
+  // Navegación normal para atletas/coaches
+  const regularNavItems = [
     ...baseNavItems,
     ...coachNavItem,
     { name: 'Perfil', path: '/profile', icon: <UserIcon size={20} /> },
   ];
+
+  // Usar navegación según rol
+  const navItems = user?.role === 'admin' ? adminNavItems : regularNavItems;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 font-sans">

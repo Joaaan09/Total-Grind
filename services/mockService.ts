@@ -319,6 +319,175 @@ export const TrainingService = {
       console.error("Error creating block for athlete", error);
       return null;
     }
+  },
+
+  // ============== MÉTODOS DE ADMINISTRADOR ==============
+
+  // Obtener estadísticas del sistema
+  getAdminStats: async (token: string): Promise<{ totalUsers: number; totalAthletes: number; totalCoaches: number; totalBlocks: number } | null> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/stats`, {
+        headers: getAuthHeaders(token)
+      });
+      if (!res.ok) throw new Error('Failed to fetch admin stats');
+      return await res.json();
+    } catch (error) {
+      console.error("Error fetching admin stats", error);
+      return null;
+    }
+  },
+
+  // Obtener todos los usuarios
+  getAllUsers: async (token: string): Promise<any[]> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users`, {
+        headers: getAuthHeaders(token)
+      });
+      if (!res.ok) throw new Error('Failed to fetch users');
+      return await res.json();
+    } catch (error) {
+      console.error("Error fetching users", error);
+      return [];
+    }
+  },
+
+  // Obtener detalle de un usuario
+  getUserDetail: async (token: string, userId: string): Promise<any | null> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+        headers: getAuthHeaders(token)
+      });
+      if (!res.ok) throw new Error('Failed to fetch user detail');
+      const data = await res.json();
+      return {
+        ...data,
+        blocks: transformId(data.blocks),
+        progress: transformId(data.progress)
+      };
+    } catch (error) {
+      console.error("Error fetching user detail", error);
+      return null;
+    }
+  },
+
+  // Modificar usuario
+  updateUser: async (token: string, userId: string, userData: { name?: string; email?: string; role?: string }): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(token),
+        body: JSON.stringify(userData)
+      });
+      return res.ok;
+    } catch (error) {
+      console.error("Error updating user", error);
+      return false;
+    }
+  },
+
+  // Eliminar usuario
+  deleteUser: async (token: string, userId: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(token)
+      });
+      return res.ok;
+    } catch (error) {
+      console.error("Error deleting user", error);
+      return false;
+    }
+  },
+
+  // Obtener un bloque específico (Admin)
+  getBlockById: async (token: string, blockId: string): Promise<TrainingBlock | null> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/blocks/${blockId}`, {
+        headers: getAuthHeaders(token)
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return transformId([data])[0];
+    } catch (error) {
+      console.error("Error fetching block by id", error);
+      return null;
+    }
+  },
+
+  // Obtener atletas de un entrenador
+  getCoachAthletes: async (token: string, coachId: string): Promise<any[]> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${coachId}/athletes`, {
+        headers: getAuthHeaders(token)
+      });
+      if (!res.ok) return [];
+      return await res.json();
+    } catch (error) {
+      console.error("Error fetching coach athletes", error);
+      return [];
+    }
+  },
+
+  // Asignar atleta a un entrenador
+  assignAthleteToCoach: async (token: string, coachId: string, athleteId: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${coachId}/athletes`, {
+        method: 'POST',
+        headers: getAuthHeaders(token),
+        body: JSON.stringify({ athleteId })
+      });
+      return res.ok;
+    } catch (error) {
+      console.error("Error assigning athlete to coach", error);
+      return false;
+    }
+  },
+
+  // Quitar atleta de un entrenador
+  removeAthleteFromCoach: async (token: string, coachId: string, athleteId: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${coachId}/athletes/${athleteId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(token)
+      });
+      return res.ok;
+    } catch (error) {
+      console.error("Error removing athlete from coach", error);
+      return false;
+    }
+  },
+
+  // Obtener atletas sin entrenador (para asignar)
+  getAvailableAthletes: async (token: string): Promise<any[]> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users`, {
+        headers: getAuthHeaders(token)
+      });
+      if (!res.ok) return [];
+      const users = await res.json();
+      // Filtrar solo atletas sin coach
+      return users.filter((u: any) => u.role === 'athlete' && !u.coachId);
+    } catch (error) {
+      console.error("Error fetching available athletes", error);
+      return [];
+    }
+  },
+
+  // Crear bloque para un usuario (Admin)
+  createBlockForUser: async (token: string, ownerId: string, title: string): Promise<TrainingBlock | null> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/blocks`, {
+        method: 'POST',
+        headers: getAuthHeaders(token),
+        body: JSON.stringify({ ownerId, title })
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return transformId([data])[0];
+    } catch (error) {
+      console.error("Error creating block for user", error);
+      return null;
+    }
   }
 };
 

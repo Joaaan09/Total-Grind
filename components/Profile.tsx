@@ -246,89 +246,91 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                             <p className="text-slate-500">{user.email}</p>
                         </div>
                         <div className="ml-auto">
-                            <Badge variant={user.role === 'coach' ? 'default' : 'outline'}>
-                                {user.role === 'athlete' ? '🏋️ Atleta' : '👨‍🏫 Entrenador'}
+                            <Badge variant={user.role === 'coach' ? 'default' : user.role === 'admin' ? 'secondary' : 'outline'}>
+                                {user.role === 'athlete' ? '🏋️ Atleta' : user.role === 'coach' ? '👨‍🏫 Entrenador' : '🛡️ Admin'}
                             </Badge>
                         </div>
                     </CardHeader>
                 </Card>
 
-                {/* Sección de Rol (Entrenador/Atleta) */}
-                <Card className={user.role === 'coach' ? 'border-purple-500/30 bg-purple-950/10' : ''}>
-                    <CardHeader>
-                        <CardTitle className="text-xl flex items-center gap-2">
+                {/* Sección de Rol (Entrenador/Atleta) - Solo para atletas y coaches */}
+                {user.role !== 'admin' && (
+                    <Card className={user.role === 'coach' ? 'border-purple-500/30 bg-purple-950/10' : ''}>
+                        <CardHeader>
+                            <CardTitle className="text-xl flex items-center gap-2">
+                                {user.role === 'coach' ? (
+                                    <>
+                                        <Users size={20} className="text-purple-500" /> Panel de Entrenador
+                                    </>
+                                ) : (
+                                    <>
+                                        <Shield size={20} className="text-blue-500" /> Convertirse en Entrenador
+                                    </>
+                                )}
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
                             {user.role === 'coach' ? (
-                                <>
-                                    <Users size={20} className="text-purple-500" /> Panel de Entrenador
-                                </>
-                            ) : (
-                                <>
-                                    <Shield size={20} className="text-blue-500" /> Convertirse en Entrenador
-                                </>
-                            )}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {user.role === 'coach' ? (
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-3 p-4 bg-purple-900/20 rounded-lg border border-purple-800/30">
-                                    <Check className="text-purple-400" size={20} />
-                                    <div>
-                                        <p className="font-medium text-white">Eres Entrenador</p>
-                                        <p className="text-sm text-slate-400">
-                                            Puedes añadir atletas, crear planificaciones para ellos y ver su progreso.
-                                        </p>
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3 p-4 bg-purple-900/20 rounded-lg border border-purple-800/30">
+                                        <Check className="text-purple-400" size={20} />
+                                        <div>
+                                            <p className="font-medium text-white">Eres Entrenador</p>
+                                            <p className="text-sm text-slate-400">
+                                                Puedes añadir atletas, crear planificaciones para ellos y ver su progreso.
+                                            </p>
+                                        </div>
                                     </div>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={() => window.location.hash = '/coach'}
+                                    >
+                                        <Users size={18} className="mr-2" /> Ir a Mis Atletas
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full text-slate-400 hover:text-white"
+                                        onClick={handleBecomeAthlete}
+                                        disabled={isChangingRole}
+                                    >
+                                        {isChangingRole ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
+                                        Volver a ser solo Atleta
+                                    </Button>
                                 </div>
-                                <Button
-                                    variant="outline"
-                                    className="w-full"
-                                    onClick={() => window.location.hash = '/coach'}
-                                >
-                                    <Users size={18} className="mr-2" /> Ir a Mis Atletas
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    className="w-full text-slate-400 hover:text-white"
-                                    onClick={handleBecomeAthlete}
-                                    disabled={isChangingRole}
-                                >
-                                    {isChangingRole ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
-                                    Volver a ser solo Atleta
-                                </Button>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                <p className="text-sm text-slate-400">
-                                    Como entrenador podrás:
-                                </p>
-                                <ul className="text-sm text-slate-400 space-y-2 list-disc list-inside">
-                                    <li>Añadir atletas a tu lista</li>
-                                    <li>Crear y asignar bloques de entrenamiento</li>
-                                    <li>Ver el progreso de cada atleta</li>
-                                    <li>Seguir entrenando tú mismo normalmente</li>
-                                </ul>
-                                <Button
-                                    className="w-full"
-                                    onClick={handleBecomeCoach}
-                                    disabled={isChangingRole}
-                                >
-                                    {isChangingRole ? (
-                                        <>
-                                            <Loader2 className="animate-spin mr-2" size={16} />
-                                            Cambiando...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Users size={18} className="mr-2" />
-                                            Convertirme en Entrenador
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                            ) : (
+                                <div className="space-y-4">
+                                    <p className="text-sm text-slate-400">
+                                        Como entrenador podrás:
+                                    </p>
+                                    <ul className="text-sm text-slate-400 space-y-2 list-disc list-inside">
+                                        <li>Añadir atletas a tu lista</li>
+                                        <li>Crear y asignar bloques de entrenamiento</li>
+                                        <li>Ver el progreso de cada atleta</li>
+                                        <li>Seguir entrenando tú mismo normalmente</li>
+                                    </ul>
+                                    <Button
+                                        className="w-full"
+                                        onClick={handleBecomeCoach}
+                                        disabled={isChangingRole}
+                                    >
+                                        {isChangingRole ? (
+                                            <>
+                                                <Loader2 className="animate-spin mr-2" size={16} />
+                                                Cambiando...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Users size={18} className="mr-2" />
+                                                Convertirme en Entrenador
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Información del entrenador o invitaciones pendientes para atletas */}
                 {user.role === 'athlete' && (
