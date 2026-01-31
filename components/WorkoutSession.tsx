@@ -2,20 +2,23 @@ import React, { useState } from 'react';
 import { TrainingDay, Exercise, ExerciseSet } from '../types';
 import { calculate1RM, TrainingService } from '../services/mockService';
 import { Button, Input, Card, CardHeader, CardTitle, CardContent } from './ui';
-import { CheckCircle2, Circle, Save, Loader2 } from 'lucide-react';
+import { CheckCircle2, Circle, Save, Loader2, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 // Props para el componente de sesión de entrenamiento
 interface WorkoutSessionProps {
   day: TrainingDay;
   onComplete: () => void;
+  onCancel?: () => void;
 }
 
-const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete }) => {
+const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCancel }) => {
   const { token } = useAuth();
   const [exercises, setExercises] = useState<Exercise[]>(day.exercises);
+  const [athleteNotes, setAthleteNotes] = useState(day.athleteNotes || '');
   const [sessionComplete, setSessionComplete] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const handleSetUpdate = (exerciseId: string, setId: string, field: keyof ExerciseSet, value: string | number) => {
     setExercises(prevExercises => prevExercises.map(ex => {
@@ -65,10 +68,11 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete }) => {
     }
 
     setIsSaving(true);
-    // Preparar el objeto del día actualizado con los ejercicios completados
+    // Preparar el objeto del día actualizado con los ejercicios completados y notas
     const updatedDay: TrainingDay = {
       ...day,
       exercises: exercises,
+      athleteNotes: athleteNotes || undefined,
       isCompleted: true
     };
 
@@ -99,6 +103,17 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete }) => {
 
   return (
     <div className="space-y-8 pb-20">
+      {/* Botón volver */}
+      {onCancel && (
+        <button
+          onClick={() => setShowExitConfirm(true)}
+          className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm"
+        >
+          <ChevronLeft size={18} />
+          <span>Volver al bloque</span>
+        </button>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">{day.dayName}</h1>
@@ -109,6 +124,49 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete }) => {
           <span className="hidden sm:inline">{isSaving ? 'Guardando...' : 'Guardar Sesión'}</span>
         </Button>
       </div>
+
+      {/* Modal de confirmación de salida */}
+      {showExitConfirm && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full space-y-4">
+            <div className="flex items-center gap-3 text-yellow-400">
+              <AlertTriangle size={24} />
+              <h3 className="text-xl font-bold text-white">¿Salir sin guardar?</h3>
+            </div>
+            <p className="text-slate-300">
+              Los datos que hayas introducido en esta sesión se perderán si no los guardas primero.
+            </p>
+            <div className="flex gap-3 pt-2">
+              <Button
+                variant="ghost"
+                className="flex-1"
+                onClick={() => setShowExitConfirm(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="danger"
+                className="flex-1"
+                onClick={() => {
+                  setShowExitConfirm(false);
+                  onCancel?.();
+                }}
+              >
+                Salir sin guardar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Descripción de la sesión (si el entrenador la puso) */}
+      {day.description && (
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+          <p className="text-sm text-blue-300">
+            <span className="font-semibold">Notas del entrenador:</span> {day.description}
+          </p>
+        </div>
+      )}
 
       {exercises.map((exercise) => (
         <Card key={exercise.id} className="overflow-hidden border-slate-800 bg-slate-900/40">
@@ -189,6 +247,18 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete }) => {
           </CardContent>
         </Card>
       ))}
+
+      {/* Notas del atleta */}
+      <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-4 space-y-2">
+        <label className="text-sm font-medium text-slate-300">Mis notas de la sesión</label>
+        <textarea
+          placeholder="Sensaciones, observaciones, fatiga, dolor art..."
+          value={athleteNotes}
+          onChange={(e) => setAthleteNotes(e.target.value)}
+          rows={3}
+          className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-white text-sm focus:border-blue-500 outline-none resize-none"
+        />
+      </div>
 
       {/* Botón flotante de guardar para móviles */}
       <div className="lg:hidden fixed bottom-4 right-4 z-50">

@@ -14,6 +14,7 @@ export interface TrainingBlock {
   _id?: string;
   id: string;
   title: string;
+  description?: string; // Descripción opcional del bloque
   weeks: TrainingWeek[];
   ownerId: string;
   source: 'personal' | 'assigned';
@@ -32,6 +33,8 @@ export interface TrainingDay {
   id: string;
   weekId: string;
   dayName: string; // Ej: "Día 1 - Squat"
+  description?: string; // Descripción opcional de la sesión
+  athleteNotes?: string; // Notas del atleta al rellenar
   exercises: Exercise[];
   isCompleted: boolean;
 }

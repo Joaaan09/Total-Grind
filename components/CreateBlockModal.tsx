@@ -37,6 +37,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     targetAthleteName
 }) => {
     const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [weeks, setWeeks] = useState<TrainingWeek[]>([createDefaultWeek(1)]);
     const [loading, setLoading] = useState(false);
@@ -50,6 +51,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
     const resetForm = () => {
         setTitle('');
+        setDescription('');
         setStartDate(new Date().toISOString().split('T')[0]);
         setWeeks([createDefaultWeek(1)]);
         setSelectedWeekIndex(0);
@@ -63,6 +65,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
         try {
             await onCreate({
                 title,
+                description: description || undefined,
                 startDate,
                 source: targetAthleteName ? 'assigned' : 'personal',
                 weeks
@@ -105,6 +108,12 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     const updateDayName = (name: string) => {
         const updatedWeeks = [...weeks];
         updatedWeeks[selectedWeekIndex].days[selectedDayIndex].dayName = name;
+        setWeeks(updatedWeeks);
+    };
+
+    const updateDayDescription = (description: string) => {
+        const updatedWeeks = [...weeks];
+        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].description = description || undefined;
         setWeeks(updatedWeeks);
     };
 
@@ -196,23 +205,35 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
                 <form onSubmit={handleSubmit} className="flex flex-col max-h-[80vh]">
                     {/* Información básica del bloque */}
-                    <div className="p-4 border-b border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Nombre del Bloque</label>
-                            <Input
-                                placeholder="Ej: Mesociclo de Fuerza"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                required
-                            />
+                    <div className="p-4 border-b border-slate-800 space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-300">Nombre del Bloque</label>
+                                <Input
+                                    placeholder="Ej: Mesociclo de Fuerza"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-300">Fecha Inicio</label>
+                                <Input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    required
+                                />
+                            </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Fecha Inicio</label>
-                            <Input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                required
+                            <label className="text-sm font-medium text-slate-300">Descripción (opcional)</label>
+                            <textarea
+                                placeholder="Describe el objetivo del bloque, la fase de entrenamiento, etc."
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                rows={2}
+                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-white text-sm focus:border-blue-500 outline-none resize-none"
                             />
                         </div>
                     </div>
@@ -293,6 +314,18 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                             <Trash2 size={16} />
                                         </Button>
                                     )}
+                                </div>
+
+                                {/* Descripción del día */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-slate-400">Descripción de la sesión (opcional)</label>
+                                    <textarea
+                                        placeholder="Ej: Sesión de volumen, trabajo de técnica..."
+                                        value={currentDay.description || ''}
+                                        onChange={(e) => updateDayDescription(e.target.value)}
+                                        rows={2}
+                                        className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-white text-sm focus:border-blue-500 outline-none resize-none"
+                                    />
                                 </div>
 
                                 {/* Lista de ejercicios del día */}

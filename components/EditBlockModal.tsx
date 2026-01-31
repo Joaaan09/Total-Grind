@@ -17,6 +17,7 @@ const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9
 
 export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose, onUpdate, onDelete, block }) => {
     const [title, setTitle] = useState(block.title);
+    const [description, setDescription] = useState(block.description || '');
     const [startDate, setStartDate] = useState(block.startDate || '');
     const [weeks, setWeeks] = useState<TrainingWeek[]>(block.weeks);
     const [loading, setLoading] = useState(false);
@@ -27,6 +28,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
     // Reiniciar el formulario cuando cambia el bloque (clonar datos)
     useEffect(() => {
         setTitle(block.title);
+        setDescription(block.description || '');
         setStartDate(block.startDate || '');
         setWeeks(JSON.parse(JSON.stringify(block.weeks))); // Clonar profundamente
         setSelectedWeekIndex(0);
@@ -42,7 +44,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
         e.preventDefault();
         setLoading(true);
         try {
-            await onUpdate(block.id, { title, startDate, weeks });
+            await onUpdate(block.id, { title, description: description || undefined, startDate, weeks });
             onClose();
         } catch (error) {
             console.error("Error updating", error);
@@ -115,6 +117,12 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
     const updateDayName = (name: string) => {
         const updatedWeeks = [...weeks];
         updatedWeeks[selectedWeekIndex].days[selectedDayIndex].dayName = name;
+        setWeeks(updatedWeeks);
+    };
+
+    const updateDayDescription = (desc: string) => {
+        const updatedWeeks = [...weeks];
+        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].description = desc || undefined;
         setWeeks(updatedWeeks);
     };
 
@@ -201,22 +209,34 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
 
                 <form onSubmit={handleSubmit} className="flex flex-col max-h-[80vh]">
                     {/* Información básica del bloque */}
-                    <div className="p-4 border-b border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Nombre del Bloque</label>
-                            <Input
-                                placeholder="Ej: Mesociclo de Fuerza"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                required
-                            />
+                    <div className="p-4 border-b border-slate-800 space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-300">Nombre del Bloque</label>
+                                <Input
+                                    placeholder="Ej: Mesociclo de Fuerza"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-300">Fecha Inicio</label>
+                                <Input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                />
+                            </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Fecha Inicio</label>
-                            <Input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                            <label className="text-sm font-medium text-slate-300">Descripción (opcional)</label>
+                            <textarea
+                                placeholder="Describe el objetivo del bloque, la fase de entrenamiento, etc."
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                rows={2}
+                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-white text-sm focus:border-blue-500 outline-none resize-none"
                             />
                         </div>
                     </div>
@@ -297,6 +317,18 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                             <Trash2 size={16} />
                                         </Button>
                                     )}
+                                </div>
+
+                                {/* Descripción del día */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-slate-400">Descripción de la sesión (opcional)</label>
+                                    <textarea
+                                        placeholder="Ej: Sesión de volumen, trabajo de técnica..."
+                                        value={currentDay.description || ''}
+                                        onChange={(e) => updateDayDescription(e.target.value)}
+                                        rows={2}
+                                        className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-white text-sm focus:border-blue-500 outline-none resize-none"
+                                    />
                                 </div>
 
                                 {/* Lista de ejercicios */}

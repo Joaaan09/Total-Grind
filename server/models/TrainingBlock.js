@@ -20,6 +20,8 @@ const ExerciseSchema = new mongoose.Schema({
 const TrainingDaySchema = new mongoose.Schema({
   dayName: String,
   weekId: String,
+  description: String, // Descripción opcional de la sesión
+  athleteNotes: String, // Notas del atleta al rellenar
   isCompleted: { type: Boolean, default: false },
   exercises: [ExerciseSchema]
 });
@@ -32,6 +34,7 @@ const TrainingWeekSchema = new mongoose.Schema({
 
 const TrainingBlockSchema = new mongoose.Schema({
   title: String,
+  description: String, // Descripción opcional del bloque
   ownerId: String,
   source: { type: String, enum: ['personal', 'assigned'] },
   assignedBy: String,

@@ -97,7 +97,13 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
   const currentWeek = block.weeks.find(w => w.id === selectedWeek);
 
   if (activeSessionDay) {
-    return <WorkoutSession day={activeSessionDay} onComplete={() => { setActiveSessionDay(null); onRefresh?.(); }} />;
+    return (
+      <WorkoutSession
+        day={activeSessionDay}
+        onComplete={() => { setActiveSessionDay(null); onRefresh?.(); }}
+        onCancel={() => setActiveSessionDay(null)}
+      />
+    );
   }
 
   return (
@@ -114,6 +120,12 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
           <p className="text-slate-400 text-sm mt-1">
             {block.source === 'assigned' ? `Asignado por ${block.assignedBy}` : 'Planificación Personal'}
           </p>
+          {block.description && (
+            <div className="mt-3 flex items-start gap-2 bg-slate-800/60 border border-slate-700 px-4 py-3 rounded-lg max-w-xl">
+              <span className="text-blue-400 text-xs font-semibold uppercase tracking-wide shrink-0 mt-0.5">Descripción:</span>
+              <p className="text-slate-300 text-sm">{block.description}</p>
+            </div>
+          )}
         </div>
         {block.source !== 'assigned' && (
           <Button variant="outline" className="gap-2" onClick={() => onEdit(block)}>

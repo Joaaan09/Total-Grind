@@ -215,7 +215,7 @@ app.put('/api/user/password', authMiddleware, async (req, res) => {
 // Crear Bloque (Protegido)
 app.post('/api/blocks', authMiddleware, async (req, res) => {
   try {
-    const { title, source, weeks, startDate } = req.body;
+    const { title, description, source, weeks, startDate } = req.body;
 
     if (!title) {
       return res.status(400).json({ error: 'El título es requerido' });
@@ -223,6 +223,7 @@ app.post('/api/blocks', authMiddleware, async (req, res) => {
 
     const newBlock = new TrainingBlock({
       title,
+      description,
       ownerId: req.user._id.toString(),
       source: source || 'personal',
       startDate: startDate || new Date().toISOString().split('T')[0],
@@ -272,6 +273,7 @@ app.put('/api/blocks/:id', authMiddleware, async (req, res) => {
 
     // Actualizar campos simples
     if (updateData.title !== undefined) block.title = updateData.title;
+    if (updateData.description !== undefined) block.description = updateData.description;
     if (updateData.startDate !== undefined) block.startDate = updateData.startDate;
     if (updateData.source !== undefined) block.source = updateData.source;
     if (updateData.assignedBy !== undefined) block.assignedBy = updateData.assignedBy;
@@ -349,6 +351,10 @@ app.put('/api/days/:dayId', authMiddleware, async (req, res) => {
           if (day._id.toString() === dayId || day.id === dayId) {
             week.days[i].exercises = dayData.exercises;
             week.days[i].isCompleted = true;
+            week.days[i].athleteNotes = dayData.athleteNotes;
+            if (dayData.description !== undefined) {
+              week.days[i].description = dayData.description;
+            }
             found = true;
             targetBlock = block;
             break;
