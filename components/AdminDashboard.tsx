@@ -34,6 +34,7 @@ interface UserListItem {
     role: string;
     createdAt: string;
     profilePicture?: string;
+    coachId?: { _id: string; name: string; email: string } | null;
 }
 
 interface BestLifts {
@@ -427,6 +428,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                     }`}>
                                                     {selectedUser.user.role === 'admin' ? 'Admin' : selectedUser.user.role === 'coach' ? 'Entrenador' : 'Atleta'}
                                                 </span>
+                                                {/* Mostrar entrenador si el usuario tiene uno asignado */}
+                                                {selectedUser.user.coachId && (
+                                                    <div className="mt-2 flex items-center gap-2 text-sm">
+                                                        <Users className="w-4 h-4 text-purple-400" />
+                                                        <span className="text-slate-400">Entrenador:</span>
+                                                        <span className="text-white font-medium">
+                                                            {typeof selectedUser.user.coachId === 'object'
+                                                                ? selectedUser.user.coachId.name
+                                                                : selectedUser.user.coachId}
+                                                        </span>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>

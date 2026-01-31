@@ -755,7 +755,9 @@ app.get('/api/admin/users/:id', authMiddleware, adminMiddleware, async (req, res
   try {
     const { id } = req.params;
 
-    const user = await User.findById(id).select('-password');
+    const user = await User.findById(id)
+      .select('-password')
+      .populate('coachId', 'name email');
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
