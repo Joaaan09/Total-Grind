@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button, Input, Card, CardHeader, CardTitle, CardContent } from './ui';
-import { Dumbbell, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Dumbbell, Mail, Lock, User, Loader2, Copy, Check } from 'lucide-react';
 
 interface AuthPageProps {
     onToggleMode: () => void;
@@ -14,6 +14,14 @@ export const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchTo
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [copied, setCopied] = useState<'email' | 'pass' | null>(null);
+
+    const handleCopy = (text: string, type: 'email' | 'pass') => {
+        navigator.clipboard.writeText(text);
+        setCopied(type);
+        setTimeout(() => setCopied(null), 2000);
+    };
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,6 +46,35 @@ export const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchTo
                     </div>
                     <CardTitle className="text-xl">Iniciar Sesión</CardTitle>
                     <p className="text-slate-400 text-sm">Accede a tu cuenta para continuar</p>
+
+                    <div className="mt-4 p-3 bg-blue-500/5 border border-blue-500/10 rounded-lg space-y-2 text-left">
+                        <div className="flex items-center justify-between group">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Email de prueba</span>
+                                <span className="text-sm font-mono text-slate-300">test@totalgrind.com</span>
+                            </div>
+                            <button
+                                onClick={() => handleCopy('test@totalgrind.com', 'email')}
+                                className="p-2 hover:bg-blue-500/10 rounded-md transition-colors text-slate-500 hover:text-blue-400"
+                                title="Copiar email"
+                            >
+                                {copied === 'email' ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                            </button>
+                        </div>
+                        <div className="flex items-center justify-between group">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Contraseña</span>
+                                <span className="text-sm font-mono text-slate-300">passTest</span>
+                            </div>
+                            <button
+                                onClick={() => handleCopy('passTest', 'pass')}
+                                className="p-2 hover:bg-blue-500/10 rounded-md transition-colors text-slate-500 hover:text-blue-400"
+                                title="Copiar contraseña"
+                            >
+                                {copied === 'pass' ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                            </button>
+                        </div>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
