@@ -13,6 +13,7 @@ import { TrainingService } from './services/mockService';
 import { CreateBlockModal } from './components/CreateBlockModal';
 import { EditBlockModal } from './components/EditBlockModal';
 import { ConfirmDialog } from './components/ConfirmDialog';
+import { LandingPage } from './components/LandingPage';
 import { TrainingBlock, ProgressData, User } from './types';
 import { Loader2 } from 'lucide-react';
 
@@ -234,6 +235,12 @@ function AppContent() {
   return (
     <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
+        {/* Landing Page */}
+        <Route
+          path="/landing"
+          element={<LandingPage />}
+        />
+
         {/* Rutas de autenticación */}
         <Route
           path="/login"
@@ -326,7 +333,7 @@ function AppContent() {
             </AdminRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/landing" replace />} />
       </Routes>
     </HashRouter>
   );
