@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mejoras generales para móvil */
+@layer components {
+  body {
+    @apply text-slate-100;
+  }
+  
+  html {
+    @apply scroll-smooth;
+  }
+}
+
 /* Custom scrollbar styles */
 ::-webkit-scrollbar {
   width: 8px;
@@ -89,4 +100,19 @@
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Mejoras de input en móvil */
+input[type="number"] {
+  @apply font-mono font-semibold;
+  /* Elimina los spinner buttons en todos los navegadores */
+}
+
+/* Mejora para inputs y campos en móvil */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    @apply text-base; /* Previene zoom en iOS */
+  }
 }

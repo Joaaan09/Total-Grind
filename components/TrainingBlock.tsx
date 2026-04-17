@@ -17,53 +17,56 @@ export const TrainingBlockList: React.FC<TrainingBlockListProps> = ({ blocks, on
   const filteredBlocks = blocks.filter(b => b.source === activeTab);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white">Planificación</h1>
-          <p className="text-slate-400">Gestiona tus mesociclos de entrenamiento.</p>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Planificación</h1>
+          <p className="text-slate-400 text-xs sm:text-sm mt-1">Gestiona tus mesociclos de entrenamiento.</p>
         </div>
-        <Button onClick={onCreateBlock} className="gap-2">
-          <Plus size={18} /> Nuevo Bloque
+        <Button onClick={onCreateBlock} className="gap-2 flex-shrink-0 text-xs sm:text-sm">
+          <Plus size={16} className="sm:block hidden" />
+          <Plus size={14} className="sm:hidden" />
+          <span className="hidden sm:inline">Nuevo Bloque</span>
+          <span className="sm:hidden">Nuevo</span>
         </Button>
       </div>
 
       <Tabs value={activeTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
-          <TabsTrigger value="personal" activeValue={activeTab} onClick={() => setActiveTab('personal')}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="personal" activeValue={activeTab} onClick={() => setActiveTab('personal')} className="text-xs sm:text-sm">
             Mis Planes
           </TabsTrigger>
-          <TabsTrigger value="assigned" activeValue={activeTab} onClick={() => setActiveTab('assigned')}>
-            Asignados (Coach)
+          <TabsTrigger value="assigned" activeValue={activeTab} onClick={() => setActiveTab('assigned')} className="text-xs sm:text-sm">
+            Asignados
           </TabsTrigger>
         </TabsList>
       </Tabs>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-2 sm:gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filteredBlocks.map((block) => (
           <Card
             key={block.id}
             className="group cursor-pointer hover:border-blue-500/50 transition-all hover:bg-slate-900"
             onClick={() => onSelectBlock(block.id)}
           >
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <Badge variant={block.source === 'assigned' ? 'secondary' : 'default'} className="mb-2">
+            <CardHeader className="pb-2 sm:pb-3">
+              <div className="flex justify-between items-start gap-2">
+                <Badge variant={block.source === 'assigned' ? 'secondary' : 'default'} className="mb-2 text-xs">
                   {block.source === 'assigned' ? 'Coach' : 'Personal'}
                 </Badge>
-                {block.source === 'assigned' && <User size={16} className="text-slate-500" />}
+                {block.source === 'assigned' && <User size={14} className="text-slate-500 flex-shrink-0" />}
               </div>
-              <CardTitle className="group-hover:text-blue-400 transition-colors">{block.title}</CardTitle>
-              {block.assignedBy && <p className="text-xs text-slate-500">Por: {block.assignedBy}</p>}
+              <CardTitle className="group-hover:text-blue-400 transition-colors text-base sm:text-lg truncate">{block.title}</CardTitle>
+              {block.assignedBy && <p className="text-xs text-slate-500 truncate">Por: {block.assignedBy}</p>}
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center text-sm text-slate-400 gap-2">
-                <Calendar size={16} />
-                <span>{block.startDate || 'Sin fecha'}</span>
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <div className="flex items-center text-xs sm:text-sm text-slate-400 gap-2 mb-3">
+                <Calendar size={14} className="flex-shrink-0" />
+                <span className="truncate">{block.startDate || 'Sin fecha'}</span>
               </div>
-              <div className="mt-4 flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
                 <span className="text-slate-500">{block.weeks.length} semanas</span>
-                <ChevronRight size={16} className="text-slate-600 group-hover:text-blue-500" />
+                <ChevronRight size={14} className="text-slate-600 group-hover:text-blue-500 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
@@ -114,21 +117,24 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
         </Button>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white">{block.title}</h1>
-          <p className="text-slate-400 text-sm mt-1">
-            {block.source === 'assigned' ? `Asignado por ${block.assignedBy}` : 'Planificación Personal'}
-          </p>
+      <div className="flex flex-col gap-6 border-b border-slate-800 pb-6">
+        <div className="space-y-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">{block.title}</h1>
+            <p className="text-slate-400 text-xs sm:text-sm mt-1">
+              {block.source === 'assigned' ? `Asignado por ${block.assignedBy}` : 'Planificación Personal'}
+            </p>
+          </div>
           {block.description && (
-            <div className="mt-3 flex items-start gap-2 bg-slate-800/60 border border-slate-700 px-4 py-3 rounded-lg max-w-xl">
-              <span className="text-blue-400 text-xs font-semibold uppercase tracking-wide shrink-0 mt-0.5">Descripción:</span>
+            <div className="flex flex-col gap-2 bg-slate-800/60 border border-slate-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg max-w-full sm:max-w-xl">
+              <span className="text-blue-400 text-xs font-semibold uppercase tracking-wide">Descripción:</span>
               <p className="text-slate-300 text-sm">{block.description}</p>
             </div>
           )}
         </div>
+
         {block.source !== 'assigned' && (
-          <Button variant="outline" className="gap-2" onClick={() => onEdit(block)}>
+          <Button variant="outline" className="gap-2 w-full sm:w-auto" onClick={() => onEdit(block)}>
             <Edit2 size={16} /> Editar Bloque
           </Button>
         )}
@@ -151,7 +157,7 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
       </div>
 
       {/* Grid de días de entrenamiento */}
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {currentWeek?.days.map((day) => (
           <Card key={day.id} className="relative overflow-hidden group">
             {day.isCompleted && (
@@ -160,20 +166,20 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
               </div>
             )}
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">{day.dayName}</CardTitle>
-              <p className="text-sm text-slate-500">{day.exercises.length} Ejercicios</p>
+              <CardTitle className="text-base sm:text-lg">{day.dayName}</CardTitle>
+              <p className="text-xs sm:text-sm text-slate-500">{day.exercises.length} Ejercicios</p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pb-4">
               <ul className="space-y-2 mb-6">
                 {day.exercises.slice(0, 3).map((ex) => (
-                  <li key={ex.id} className="text-sm text-slate-400 truncate border-l-2 border-slate-800 pl-2">
+                  <li key={ex.id} className="text-xs sm:text-sm text-slate-400 truncate border-l-2 border-slate-800 pl-2">
                     {ex.name}
                   </li>
                 ))}
                 {day.exercises.length > 3 && <li className="text-xs text-slate-600 italic">+ {day.exercises.length - 3} más</li>}
               </ul>
               <Button
-                className="w-full gap-2"
+                className="w-full gap-2 text-sm sm:text-base h-10 sm:h-11"
                 variant={day.isCompleted ? "secondary" : "primary"}
                 onClick={() => setActiveSessionDay(day)}
               >

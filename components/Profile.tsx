@@ -172,13 +172,13 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
 
     return (
         <>
-            <div className="max-w-2xl mx-auto space-y-8">
-                <h1 className="text-3xl font-bold text-white">Perfil de Usuario</h1>
+            <div className="max-w-2xl mx-auto space-y-6 sm:space-y-8">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Perfil de Usuario</h1>
 
                 <Card>
-                    <CardHeader className="flex flex-row items-center gap-4">
+                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                         <div className="relative group">
-                            <div className="h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 overflow-hidden border-2 border-slate-700">
+                            <div className="h-12 sm:h-16 w-12 sm:w-16 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 overflow-hidden border-2 border-slate-700 flex-shrink-0">
                                 {user.profilePicture ? (
                                     <img
                                         key={`${user.profilePicture}-${user.profilePicture}`}
@@ -187,15 +187,28 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                                         className="h-full w-full object-cover"
                                     />
                                 ) : (
-                                    <UserIcon size={32} />
+                                    <>
+                                        <UserIcon size={24} className="hidden sm:block" />
+                                        <UserIcon size={20} className="sm:hidden" />
+                                    </>
                                 )}
                             </div>
                             <button
-                                className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-1 text-white shadow-lg hover:bg-blue-500 transition-colors"
+                                className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-0.5 sm:p-1 text-white shadow-lg hover:bg-blue-500 transition-colors"
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={isUploadingImage}
                             >
-                                {isUploadingImage ? <Loader2 size={12} className="animate-spin" /> : <Camera size={12} />}
+                                {isUploadingImage ? (
+                                    <>
+                                        <Loader2 size={10} className="hidden sm:block animate-spin" />
+                                        <Loader2 size={8} className="sm:hidden animate-spin" />
+                                    </>
+                                ) : (
+                                    <>
+                                        <Camera size={10} className="hidden sm:block" />
+                                        <Camera size={8} className="sm:hidden" />
+                                    </>
+                                )}
                             </button>
                             <input
                                 type="file"

@@ -37,70 +37,74 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
     const sbdTotal = squat + bench + deadlift;
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500">
             {/* Sección de bienvenida con nombre del usuario */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Hola, {user.name.split(' ')[0]} 👋</h1>
-                    <p className="text-slate-400">Listo para romper tus PRs hoy?</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+                <div className="min-w-0 flex-1">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white truncate">Hola, {user.name.split(' ')[0]} 👋</h1>
+                    <p className="text-slate-400 text-xs sm:text-sm mt-1">Listo para romper tus PRs hoy?</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-shrink-0">
                     <Button variant="outline" onClick={() => onNavigate('/profile')}>
-                        <Users size={18} className="mr-2" /> Mi perfil
+                        <Users size={16} className="sm:mr-2" /> <span className="hidden sm:inline">Mi perfil</span>
                     </Button>
                 </div>
             </div>
 
             {/* Grid de estadísticas rápidas */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                 <Card className="bg-blue-900/20 border-blue-900/50">
-                    <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-blue-600/20 text-blue-500 rounded-lg">
-                                <Activity size={24} />
+                    <CardContent className="p-2.5 sm:p-3 md:p-6 sm:pt-3 md:pt-0">
+                        <div className="flex sm:flex-col items-center gap-2 sm:gap-3 md:flex-row md:gap-4">
+                            <div className="p-2 sm:p-2.5 md:p-3 bg-blue-600/20 text-blue-500 rounded-lg flex-shrink-0">
+                                <Activity size={16} className="sm:block hidden" />
+                                <Activity size={14} className="sm:hidden" />
                             </div>
-                            <div>
-                                <p className="text-sm text-slate-400">Sesiones</p>
-                                <p className="text-2xl font-bold text-white">{totalSessions}</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-green-600/20 text-green-500 rounded-lg">
-                                <TrendingUp size={24} />
-                            </div>
-                            <div>
-                                <p className="text-sm text-slate-400">SBD Total</p>
-                                <p className="text-2xl font-bold text-white">{sbdTotal > 0 ? sbdTotal : '-'} <span className="text-sm font-normal text-slate-500">kg</span></p>
+                            <div className="min-w-0">
+                                <p className="text-xs sm:text-sm text-slate-400">Sesiones</p>
+                                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{totalSessions}</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-purple-600/20 text-purple-500 rounded-lg">
-                                <Calendar size={24} />
+                    <CardContent className="p-2.5 sm:p-3 md:p-6 sm:pt-3 md:pt-0">
+                        <div className="flex sm:flex-col items-center gap-2 sm:gap-3 md:flex-row md:gap-4">
+                            <div className="p-2 sm:p-2.5 md:p-3 bg-green-600/20 text-green-500 rounded-lg flex-shrink-0">
+                                <TrendingUp size={16} className="sm:block hidden" />
+                                <TrendingUp size={14} className="sm:hidden" />
                             </div>
-                            <div>
-                                <p className="text-sm text-slate-400">Racha</p>
-                                <p className="text-2xl font-bold text-white">{streak} días</p>
+                            <div className="min-w-0">
+                                <p className="text-xs sm:text-sm text-slate-400">SBD Total</p>
+                                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{sbdTotal > 0 ? sbdTotal : '-'} <span className="text-xs sm:text-sm font-normal text-slate-500">kg</span></p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-orange-600/20 text-orange-500 rounded-lg">
-                                <Users size={24} />
+                <Card className="hidden sm:block">
+                    <CardContent className="p-2.5 sm:p-3 md:p-6 sm:pt-3 md:pt-0">
+                        <div className="flex sm:flex-col items-center gap-2 sm:gap-3 md:flex-row md:gap-4">
+                            <div className="p-2 sm:p-2.5 md:p-3 bg-purple-600/20 text-purple-500 rounded-lg flex-shrink-0">
+                                <Calendar size={16} className="sm:block hidden" />
+                                <Calendar size={14} className="sm:hidden" />
                             </div>
-                            <div>
-                                <p className="text-sm text-slate-400">Coach</p>
-                                <p className="text-xl font-bold text-white truncate max-w-[100px]">
+                            <div className="min-w-0">
+                                <p className="text-xs sm:text-sm text-slate-400">Racha</p>
+                                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{streak} días</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="hidden sm:block">
+                    <CardContent className="p-2.5 sm:p-3 md:p-6 sm:pt-3 md:pt-0">
+                        <div className="flex sm:flex-col items-center gap-2 sm:gap-3 md:flex-row md:gap-4">
+                            <div className="p-2 sm:p-2.5 md:p-3 bg-orange-600/20 text-orange-500 rounded-lg flex-shrink-0">
+                                <Users size={16} className="sm:block hidden" />
+                                <Users size={14} className="sm:hidden" />
+                            </div>
+                            <div className="min-w-0">
+                                <p className="text-xs sm:text-sm text-slate-400">Coach</p>
+                                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white truncate">
                                     {user.coachId && typeof user.coachId === 'object' ? user.coachId.name : (user.coachId ? 'Entrenador' : '-')}
                                 </p>
                             </div>

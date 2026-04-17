@@ -23,10 +23,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes = {
-      sm: 'h-8 px-3 text-xs',
-      md: 'h-10 px-4 py-2',
-      lg: 'h-12 px-6 text-lg',
-      icon: 'h-10 w-10 p-2 flex items-center justify-center',
+      sm: 'h-7 sm:h-8 px-2 sm:px-3 text-xs',
+      md: 'h-9 sm:h-10 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base',
+      lg: 'h-11 sm:h-12 px-4 sm:px-6 text-base sm:text-lg',
+      icon: 'h-8 sm:h-10 w-8 sm:w-10 p-1.5 sm:p-2 flex items-center justify-center',
     };
 
     return (
@@ -53,19 +53,19 @@ export const Card = ({ className, children, ...props }: React.HTMLAttributes<HTM
 );
 
 export const CardHeader = ({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props}>
+  <div className={cn("flex flex-col space-y-1.5 p-3 sm:p-4 md:p-6", className)} {...props}>
     {children}
   </div>
 );
 
 export const CardTitle = ({ className, children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props}>
+  <h3 className={cn("text-lg sm:text-xl md:text-2xl font-semibold leading-none tracking-tight", className)} {...props}>
     {children}
   </h3>
 );
 
 export const CardContent = ({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("p-6 pt-0", className)} {...props}>
+  <div className={cn("p-3 sm:p-4 md:p-6 pt-0", className)} {...props}>
     {children}
   </div>
 );
@@ -77,7 +77,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
       <input
         type={type}
         className={cn(
-          "flex h-10 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 ring-offset-slate-950 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-8 sm:h-10 w-full rounded-md border border-slate-700 bg-slate-950 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-100 ring-offset-slate-950 file:border-0 file:bg-transparent file:text-xs sm:file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}
@@ -136,7 +136,7 @@ export const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttribute
     <label
       ref={ref}
       className={cn(
-        "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-200",
+        "text-xs sm:text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-200",
         className
       )}
       {...props}
