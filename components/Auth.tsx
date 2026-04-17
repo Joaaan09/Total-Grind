@@ -45,7 +45,6 @@ export const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchTo
                         <Dumbbell size={20} className="sm:hidden" />
                         <span className="text-xl sm:text-2xl font-bold">TotalGrind</span>
                     </div>
-<<<<<<< HEAD
                     <CardTitle className="text-base sm:text-lg md:text-xl">Iniciar Sesión</CardTitle>
                     <p className="text-slate-400 text-xs sm:text-sm">Accede a tu cuenta para continuar</p>
 
@@ -77,10 +76,6 @@ export const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchTo
                             </button>
                         </div>
                     </div>
-=======
-                    <CardTitle className="text-base sm:text-lg md:text-xl">Iniciar Sesión</CardTitle>
-                    <p className="text-slate-400 text-xs sm:text-sm">Accede a tu cuenta para continuar</p>
->>>>>>> feature/roles-plans
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
