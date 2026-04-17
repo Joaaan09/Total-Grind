@@ -237,15 +237,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
     }
 
     return (
-        <div className="p-4 md:p-6 max-w-7xl mx-auto">
+        <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
             {/* Header con estadísticas */}
-            <div className="mb-8">
-                <h1 className="text-2xl md:text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                    <BarChart3 className="w-8 h-8 text-blue-400" />
-                    Panel de Administración
+            <div className="mb-6 sm:mb-8">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                    <BarChart3 className="w-6 sm:w-8 h-6 sm:h-8 text-blue-400 flex-shrink-0" />
+                    <span className="truncate">Panel de Administración</span>
                 </h1>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                     <StatCard
                         title="Total Usuarios"
                         value={stats?.totalUsers || 0}

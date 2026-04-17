@@ -156,7 +156,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
   }
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-6 pb-24">
       {/* Botón volver */}
       {onCancel && (
         <button
@@ -168,14 +168,14 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
         </button>
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">{day.dayName}</h1>
-          <p className="text-slate-400 text-sm">Registra tus series reales</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">{day.dayName}</h1>
+          <p className="text-slate-400 text-sm mt-1">Registra tus series reales</p>
         </div>
-        <Button onClick={handleSave} className="gap-2" variant="primary" disabled={isSaving}>
+        <Button onClick={handleSave} className="gap-2 hidden md:flex w-full sm:w-auto" variant="primary" disabled={isSaving}>
           {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span className="hidden sm:inline">{isSaving ? 'Guardando...' : 'Guardar Sesión'}</span>
+          <span>{isSaving ? 'Guardando...' : 'Guardar Sesión'}</span>
         </Button>
       </div>
 
@@ -289,7 +289,8 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
             {exercise.notes && <p className="text-xs text-slate-500 mt-1">{exercise.notes}</p>}
           </CardHeader>
           <CardContent className="p-0">
-            <div className="w-full overflow-x-auto">
+            {/* Vista de escritorio: tabla */}
+            <div className="hidden md:block w-full overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="bg-slate-950/50 text-slate-400 uppercase text-sm">
                   <tr>
@@ -356,6 +357,99 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                 </tbody>
               </table>
             </div>
+
+            {/* Vista móvil: cards apiladas */}
+            <div className="md:hidden space-y-4 p-4">
+              {exercise.sets.map((set, index) => (
+                <div
+                  key={set.id}
+                  className={`rounded-lg p-4 border-2 transition-all ${
+                    set.isCompleted
+                      ? 'bg-green-900/20 border-green-500/50'
+                      : 'bg-slate-950/50 border-slate-700 hover:border-slate-600'
+                  }`}
+                >
+                  {/* Encabezado de la serie */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl font-bold text-blue-400 bg-slate-800/50 px-3 py-1 rounded-lg">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <p className="text-sm text-slate-400">Objetivo</p>
+                        <p className="text-lg font-semibold text-white">
+                          {set.targetReps} <span className="text-slate-400 text-base">reps @ {set.targetRpe}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => toggleSetComplete(exercise.id, set.id)}
+                      className={`p-2 rounded-full transition-colors flex-shrink-0 ${
+                        set.isCompleted ? 'text-green-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-300 hover:bg-slate-700/50'
+                      }`}
+                    >
+                      {set.isCompleted ? <CheckCircle2 size={28} /> : <Circle size={28} />}
+                    </button>
+                  </div>
+
+                  {/* Grid de inputs */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {/* Peso (Kg) */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                        Kg
+                      </label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-blue-500 text-center text-2xl font-bold text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        value={set.weight || ''}
+                        onChange={(e) => handleSetUpdate(exercise.id, set.id, 'weight', e.target.value)}
+                      />
+                    </div>
+
+                    {/* Repeticiones */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                        Reps
+                      </label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-blue-500 text-center text-2xl font-bold text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        value={set.reps || ''}
+                        onChange={(e) => handleSetUpdate(exercise.id, set.id, 'reps', e.target.value)}
+                      />
+                    </div>
+
+                    {/* RPE */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                        RPE
+                      </label>
+                      <Input
+                        type="number"
+                        placeholder="-"
+                        max={10}
+                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-blue-500 text-center text-2xl font-bold text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        value={set.rpe || ''}
+                        onChange={(e) => handleSetUpdate(exercise.id, set.id, 'rpe', e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* e1RM calculado */}
+                  {set.estimated1rm && (
+                    <div className="mt-3 pt-3 border-t border-slate-700/50">
+                      <p className="text-xs text-slate-500 mb-1">E1RM Estimado</p>
+                      <p className="text-lg font-bold text-blue-400">
+                        {Math.round(set.estimated1rm)} kg
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       ))}
@@ -373,9 +467,23 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       </div>
 
       {/* Botón flotante de guardar para móviles */}
-      <div className="lg:hidden fixed bottom-4 right-4 z-50">
-        <Button size="icon" className="h-14 w-14 rounded-full shadow-lg bg-blue-600 hover:bg-blue-500" onClick={handleSave} disabled={isSaving}>
-          {isSaving ? <Loader2 className="animate-spin" size={24} /> : <Save size={24} />}
+      <div className="md:hidden fixed bottom-6 right-6 left-6 z-50 flex gap-2">
+        <Button
+          variant="ghost"
+          className="flex-1"
+          onClick={() => setShowExitConfirm(true)}
+          disabled={isSaving}
+        >
+          Cancelar
+        </Button>
+        <Button
+          size="md"
+          className="flex-1 gap-2 h-14 text-base"
+          onClick={handleSave}
+          disabled={isSaving}
+        >
+          {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+          {isSaving ? 'Guardando...' : 'Guardar'}
         </Button>
       </div>
     </div>

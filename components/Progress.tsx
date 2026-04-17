@@ -105,21 +105,21 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
   const lastEntry = currentData[currentData.length - 1];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white">Progreso de Competición</h1>
-        <p className="text-slate-400">Historial de tus levantamientos principales (SQ, BP, DL).</p>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Progreso de Competición</h1>
+        <p className="text-slate-400 text-xs sm:text-sm mt-1">Historial de tus levantamientos principales (SQ, BP, DL).</p>
       </div>
 
-      <Card className="p-1">
-        <CardHeader>
+      <Card className="p-0 sm:p-1">
+        <CardHeader className="pb-2 sm:pb-3 md:pb-4">
           <Tabs value={selectedExercise} className="w-full">
-            <TabsList className="w-full justify-start overflow-x-auto bg-transparent p-0 space-x-2">
+            <TabsList className="w-full justify-start overflow-x-auto bg-transparent p-0 space-x-1 sm:space-x-2">
               {competitionData.map((d) => (
                 <button
                   key={d.exerciseName}
                   onClick={() => setSelectedExercise(d.exerciseName)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedExercise === d.exerciseName
+                  className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${selectedExercise === d.exerciseName
                     ? 'bg-blue-600 text-white'
                     : 'bg-slate-800 text-slate-400 hover:text-white'
                     }`}
@@ -130,7 +130,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
               {/* Pestaña de Total SBD */}
               <button
                 onClick={() => setSelectedExercise('Total')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedExercise === 'Total'
+                className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${selectedExercise === 'Total'
                   ? 'bg-purple-600 text-white'
                   : 'bg-slate-800 text-slate-400 hover:text-white'
                   }`}

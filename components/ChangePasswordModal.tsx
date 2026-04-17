@@ -54,35 +54,37 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
             <Card className="w-full max-w-md bg-slate-950 border-slate-800 shadow-xl relative animate-in zoom-in-95">
                 <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 text-slate-400 hover:text-white"
+                    className="absolute right-2 sm:right-4 top-2 sm:top-4 text-slate-400 hover:text-white"
                 >
-                    <X size={20} />
+                    <X size={18} className="sm:block hidden" />
+                    <X size={16} className="sm:hidden" />
                 </button>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Lock className="text-blue-500" size={20} />
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                        <Lock className="text-blue-500 flex-shrink-0 hidden sm:block" size={18} />
+                        <Lock className="text-blue-500 flex-shrink-0 sm:hidden" size={16} />
                         Cambiar Contraseña
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     {success ? (
-                        <div className="text-center py-8 text-green-500">
-                            <p className="font-bold text-lg">¡Contraseña actualizada!</p>
+                        <div className="text-center py-6 sm:py-8 text-green-500">
+                            <p className="font-bold text-base sm:text-lg">¡Contraseña actualizada!</p>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                             {error && (
-                                <div className="p-3 bg-red-900/20 border border-red-900 text-red-400 text-sm rounded">
+                                <div className="p-2 sm:p-3 bg-red-900/20 border border-red-900 text-red-400 text-xs sm:text-sm rounded">
                                     {error}
                                 </div>
                             )}
 
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400">Contraseña Actual</label>
+                            <div className="space-y-1.5 sm:space-y-2">
+                                <label className="text-xs sm:text-sm text-slate-400">Contraseña Actual</label>
                                 <Input
                                     type="password"
                                     value={currentPassword}
@@ -92,8 +94,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400">Nueva Contraseña</label>
+                            <div className="space-y-1.5 sm:space-y-2">
+                                <label className="text-xs sm:text-sm text-slate-400">Nueva Contraseña</label>
                                 <Input
                                     type="password"
                                     value={newPassword}
@@ -104,8 +106,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400">Confirmar Nueva Contraseña</label>
+                            <div className="space-y-1.5 sm:space-y-2">
+                                <label className="text-xs sm:text-sm text-slate-400">Confirmar Nueva Contraseña</label>
                                 <Input
                                     type="password"
                                     value={confirmPassword}
@@ -115,12 +117,17 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-2 mt-6">
-                                <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading}>
+                            <div className="flex justify-end gap-2 mt-4 sm:mt-6">
+                                <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading} className="text-xs sm:text-sm">
                                     Cancelar
                                 </Button>
-                                <Button type="submit" disabled={isLoading || !currentPassword || !newPassword}>
-                                    {isLoading ? <Loader2 className="animate-spin mr-2" size={18} /> : null}
+                                <Button type="submit" disabled={isLoading || !currentPassword || !newPassword} className="text-xs sm:text-sm">
+                                    {isLoading ? (
+                                        <>
+                                            <Loader2 className="animate-spin mr-1 sm:mr-2 hidden sm:inline" size={14} />
+                                            <Loader2 className="animate-spin mr-1 sm:mr-2 sm:hidden" size={12} />
+                                        </>
+                                    ) : null}
                                     Actualizar
                                 </Button>
                             </div>

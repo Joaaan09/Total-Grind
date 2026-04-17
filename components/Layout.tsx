@@ -50,42 +50,42 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-slate-950 text-slate-50 font-sans">
       {/* Barra de navegación superior para móvil */}
       <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md lg:hidden">
-        <div className="flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-2 font-bold text-xl text-blue-500">
-            <img src="/logo.png" alt="Total Grind Logo" className="h-8 w-8 object-contain" />
-            <span>TotalGrind</span>
+        <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
+          <div className="flex items-center gap-2 font-bold text-base sm:text-lg md:text-xl text-blue-500 min-w-0">
+            <img src="/logo.png" alt="Total Grind Logo" className="h-6 sm:h-8 w-6 sm:w-8 object-contain flex-shrink-0" />
+            <span className="truncate">TotalGrind</span>
           </div>
           <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X /> : <Menu />}
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
         </div>
       </header>
 
       {/* Menú desplegable para móvil */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-30 top-16 bg-slate-950 p-4 lg:hidden animate-in fade-in slide-in-from-top-5">
-          <nav className="flex flex-col gap-4">
+        <div className="fixed inset-0 z-30 top-14 sm:top-16 bg-slate-950 p-3 sm:p-4 lg:hidden animate-in fade-in slide-in-from-top-5 overflow-y-auto">
+          <nav className="flex flex-col gap-2 sm:gap-3">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-md px-4 py-3 text-sm font-medium transition-colors ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  `flex items-center gap-2 sm:gap-3 rounded-md px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                   }`
                 }
               >
-                {item.icon}
-                {item.name}
+                <span className="flex-shrink-0">{React.cloneElement(item.icon as React.ReactElement, { size: 18 })}</span>
+                <span className="truncate">{item.name}</span>
               </NavLink>
             ))}
             <Button
               variant="outline"
-              className="mt-4 w-full justify-start gap-3 border-red-900/50 text-red-400 hover:bg-red-950 hover:text-red-300"
+              className="mt-3 sm:mt-4 w-full justify-start gap-2 sm:gap-3 border-red-900/50 text-red-400 hover:bg-red-950 hover:text-red-300 text-xs sm:text-sm"
               onClick={handleLogout}
             >
-              <LogOut size={20} />
-              Cerrar Sesión
+              <LogOut size={18} className="flex-shrink-0" />
+              <span className="truncate">Cerrar Sesión</span>
             </Button>
           </nav>
         </div>
@@ -138,7 +138,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Contenido principal de la página */}
         <main className="flex-1 lg:pl-64">
-          <div className="container mx-auto max-w-5xl p-4 lg:p-8">
+          <div className="container mx-auto max-w-5xl p-3 sm:p-4 md:p-6 lg:p-8">
             {children}
           </div>
         </main>
