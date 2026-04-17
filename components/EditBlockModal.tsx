@@ -12,7 +12,6 @@ interface EditBlockModalProps {
     block: TrainingBlock;
 }
 
-// Genera IDs únicos para los elementos del bloque
 const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose, onUpdate, onDelete, block }) => {
@@ -25,12 +24,11 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
     const [selectedDayIndex, setSelectedDayIndex] = useState(0);
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    // Reiniciar el formulario cuando cambia el bloque (clonar datos)
     useEffect(() => {
         setTitle(block.title);
         setDescription(block.description || '');
         setStartDate(block.startDate || '');
-        setWeeks(JSON.parse(JSON.stringify(block.weeks))); // Clonar profundamente
+        setWeeks(JSON.parse(JSON.stringify(block.weeks)));
         setSelectedWeekIndex(0);
         setSelectedDayIndex(0);
     }, [block]);
@@ -70,7 +68,6 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
         }
     };
 
-    // Gestión de semanas: añadir y eliminar
     const addWeek = () => {
         const newWeek: TrainingWeek = {
             id: generateId(),
@@ -92,14 +89,12 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
     const removeWeek = (weekIndex: number) => {
         if (weeks.length <= 1) return;
         const updatedWeeks = weeks.filter((_, i) => i !== weekIndex);
-        // Renumerar semanas después de eliminar
         updatedWeeks.forEach((w, i) => w.weekNumber = i + 1);
         setWeeks(updatedWeeks);
         setSelectedWeekIndex(Math.max(0, selectedWeekIndex - 1));
         setSelectedDayIndex(0);
     };
 
-    // Gestión de días: añadir, actualizar nombre y eliminar
     const addDay = () => {
         const newDay: TrainingDay = {
             id: generateId(),
@@ -134,7 +129,6 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
         setSelectedDayIndex(Math.max(0, selectedDayIndex - 1));
     };
 
-    // Gestión de ejercicios: añadir, actualizar y eliminar
     const addExercise = () => {
         const newExercise: Exercise = {
             id: generateId(),
@@ -166,7 +160,6 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
         setWeeks(updatedWeeks);
     };
 
-    // Gestión de series: añadir, actualizar y eliminar
     const addSet = (exerciseIndex: number) => {
         const exercise = currentDay.exercises[exerciseIndex];
         const lastSet = exercise.sets[exercise.sets.length - 1];
@@ -197,90 +190,113 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in overflow-y-auto">
-            <div className="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden my-4">
-                {/* Cabecera del modal */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-800">
-                    <h2 className="text-xl font-bold text-white">Editar Bloque</h2>
-                    <button onClick={onClose} className="text-slate-400 hover:text-white p-1">
-                        <X size={24} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in overflow-y-auto">
+            <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden my-2 sm:my-4">
+                <div className="flex items-start justify-between p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50">
+                    <h2 className="text-lg sm:text-xl font-bold text-white truncate">Editar Bloque</h2>
+                    <button onClick={onClose} className="text-slate-400 hover:text-white p-1 shrink-0 ml-2">
+                        <X size={20} />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col max-h-[80vh]">
+                <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh] sm:max-h-[80vh]">
                     {/* Información básica del bloque */}
-                    <div className="p-4 border-b border-slate-800 space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-300">Nombre del Bloque</label>
+                    <div className="p-3 sm:p-4 border-b border-slate-800 space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-1.5">
+                                <label className="text-xs sm:text-sm font-medium text-slate-300">Nombre</label>
                                 <Input
-                                    placeholder="Ej: Mesociclo de Fuerza"
+                                    placeholder="Ej: Fuerza"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     required
+                                    className="text-sm"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-300">Fecha Inicio</label>
+                            <div className="space-y-1.5">
+                                <label className="text-xs sm:text-sm font-medium text-slate-300">Fecha Inicio</label>
                                 <Input
                                     type="date"
                                     value={startDate}
                                     onChange={(e) => setStartDate(e.target.value)}
+                                    className="text-sm"
                                 />
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Descripción (opcional)</label>
+                        {/* Descripción solo en desktop */}
+                        <div className="hidden sm:block space-y-1.5">
+                            <label className="text-xs sm:text-sm font-medium text-slate-300">Descripción (opcional)</label>
                             <textarea
-                                placeholder="Describe el objetivo del bloque, la fase de entrenamiento, etc."
+                                placeholder="Objetivo, fase, notas..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={2}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-white text-sm focus:border-blue-500 outline-none resize-none"
+                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-slate-100 text-xs sm:text-sm focus:border-blue-500 outline-none resize-none"
                             />
                         </div>
                     </div>
 
-                    {/* Navegación por semanas y días */}
-                    <div className="p-4 border-b border-slate-800 bg-slate-950/50">
+                    {/* Navegación por semanas y días - Super compacto en móvil */}
+                    <div className="p-2 sm:p-4 border-b border-slate-800 bg-slate-950/50 space-y-2 sm:space-y-3">
                         {/* Selector de semanas */}
-                        <div className="flex items-center gap-2 mb-3">
-                            <span className="text-sm text-slate-400 mr-2">Semana:</span>
-                            <div className="flex gap-1 overflow-x-auto flex-1">
+                        <div className="space-y-1 sm:space-y-2">
+                            <div className="hidden sm:flex items-center justify-between">
+                                <span className="text-xs sm:text-sm font-medium text-slate-400">Semana {selectedWeekIndex + 1} de {weeks.length}</span>
+                                <div className="flex gap-1">
+                                    <Button type="button" variant="ghost" size="sm" onClick={addWeek} className="h-8 px-2 text-xs">
+                                        <Plus size={14} />
+                                    </Button>
+                                    {weeks.length > 1 && (
+                                        <Button type="button" variant="danger" size="sm" onClick={() => removeWeek(selectedWeekIndex)} className="h-8 px-2 text-xs">
+                                            <Trash2 size={14} />
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                            {/* Móvil: botones más pequeños */}
+                            <div className="flex gap-0.5 overflow-x-auto pb-1 sm:gap-1">
                                 {weeks.map((week, i) => (
                                     <button
                                         key={week.id}
                                         type="button"
                                         onClick={() => { setSelectedWeekIndex(i); setSelectedDayIndex(0); }}
-                                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${selectedWeekIndex === i
+                                        className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${selectedWeekIndex === i
                                             ? 'bg-blue-600 text-white'
                                             : 'bg-slate-800 text-slate-400 hover:text-white'
                                             }`}
                                     >
-                                        {week.weekNumber}
+                                        S{week.weekNumber}
                                     </button>
                                 ))}
+                                {/* Botones add/remove en móvil */}
+                                <div className="sm:hidden flex gap-0.5 ml-auto flex-shrink-0">
+                                    <Button type="button" variant="ghost" size="sm" onClick={addWeek} className="h-7 px-1.5 text-xs">
+                                        <Plus size={12} />
+                                    </Button>
+                                    {weeks.length > 1 && (
+                                        <Button type="button" variant="danger" size="sm" onClick={() => removeWeek(selectedWeekIndex)} className="h-7 px-1.5 text-xs">
+                                            <Trash2 size={12} />
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
-                            <Button type="button" variant="ghost" size="sm" onClick={addWeek} className="shrink-0">
-                                <Plus size={16} />
-                            </Button>
-                            {weeks.length > 1 && (
-                                <Button type="button" variant="danger" size="sm" onClick={() => removeWeek(selectedWeekIndex)} className="shrink-0">
-                                    <Trash2 size={14} />
-                                </Button>
-                            )}
                         </div>
 
                         {/* Selector de días */}
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm text-slate-400 mr-2">Día:</span>
-                            <div className="flex gap-1 overflow-x-auto flex-1">
+                        <div className="space-y-1 sm:space-y-2">
+                            <div className="hidden sm:flex items-center justify-between">
+                                <span className="text-xs sm:text-sm font-medium text-slate-400">Día {selectedDayIndex + 1} de {currentWeek?.days.length || 0}</span>
+                                <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-8 px-2 text-xs">
+                                    <Plus size={14} />
+                                </Button>
+                            </div>
+                            <div className="flex gap-0.5 overflow-x-auto pb-1 sm:gap-1">
                                 {currentWeek?.days.map((day, i) => (
                                     <button
                                         key={day.id}
                                         type="button"
                                         onClick={() => setSelectedDayIndex(i)}
-                                        className={`px-3 py-1 rounded text-sm font-medium transition-colors truncate max-w-[120px] ${selectedDayIndex === i
+                                        className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors truncate max-w-[80px] sm:max-w-none ${selectedDayIndex === i
                                             ? 'bg-green-600 text-white'
                                             : 'bg-slate-800 text-slate-400 hover:text-white'
                                             }`}
@@ -288,56 +304,57 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                         {day.dayName}
                                     </button>
                                 ))}
+                                {/* Botón add/remove en móvil */}
+                                <Button type="button" variant="ghost" size="sm" onClick={addDay} className="sm:hidden h-7 px-1.5 text-xs flex-shrink-0">
+                                    <Plus size={12} />
+                                </Button>
                             </div>
-                            <Button type="button" variant="ghost" size="sm" onClick={addDay} className="shrink-0">
-                                <Plus size={16} />
-                            </Button>
                         </div>
                     </div>
 
                     {/* Editor del día seleccionado */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
                         {currentDay && (
                             <>
-                                {/* Nombre del día editable */}
-                                <div className="flex items-center gap-2">
-                                    <Input
-                                        placeholder="Nombre del día"
-                                        value={currentDay.dayName}
-                                        onChange={(e) => updateDayName(e.target.value)}
-                                        className="flex-1"
-                                    />
+                                <div className="flex items-end gap-2">
+                                    <div className="flex-1">
+                                        <label className="text-xs text-slate-400 block mb-1">Nombre del día</label>
+                                        <Input
+                                            placeholder="Ej: Día 1"
+                                            value={currentDay.dayName}
+                                            onChange={(e) => updateDayName(e.target.value)}
+                                            className="text-sm"
+                                        />
+                                    </div>
                                     {currentWeek.days.length > 1 && (
                                         <Button
                                             type="button"
                                             variant="danger"
                                             size="sm"
                                             onClick={() => removeDay(selectedDayIndex)}
+                                            className="h-9 px-2"
                                         >
                                             <Trash2 size={16} />
                                         </Button>
                                     )}
                                 </div>
 
-                                {/* Descripción del día */}
                                 <div className="space-y-1">
-                                    <label className="text-xs text-slate-400">Descripción de la sesión (opcional)</label>
+                                    <label className="text-xs text-slate-400">Descripción (opcional)</label>
                                     <textarea
-                                        placeholder="Ej: Sesión de volumen, trabajo de técnica..."
+                                        placeholder="Ej: Volumen, técnica..."
                                         value={currentDay.description || ''}
                                         onChange={(e) => updateDayDescription(e.target.value)}
                                         rows={2}
-                                        className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-white text-sm focus:border-blue-500 outline-none resize-none"
+                                        className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-slate-100 text-xs sm:text-sm focus:border-blue-500 outline-none resize-none"
                                     />
                                 </div>
 
-                                {/* Lista de ejercicios */}
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     {currentDay.exercises.map((exercise, exIndex) => (
                                         <Card key={exercise.id} className="border-slate-700 bg-slate-800/50">
-                                            <CardContent className="p-4 space-y-3">
-                                                {/* Cabecera del ejercicio */}
-                                                <div className="flex items-center gap-2">
+                                            <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                                     <select
                                                         value={['Comp SQ', 'Comp BP', 'Comp DL'].includes(exercise.name) ? exercise.name : 'custom'}
                                                         onChange={(e) => {
@@ -347,20 +364,20 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                                                 updateExercise(exIndex, 'name', e.target.value);
                                                             }
                                                         }}
-                                                        className="h-10 px-3 rounded-md bg-slate-950 border border-slate-700 text-white text-sm focus:border-blue-500 outline-none"
+                                                        className="h-9 px-2 sm:px-3 rounded-md bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-500 outline-none flex-1 sm:flex-none"
                                                     >
                                                         <option value="">Seleccionar...</option>
-                                                        <option value="Comp SQ">Comp SQ (Sentadilla)</option>
-                                                        <option value="Comp BP">Comp BP (Banca)</option>
-                                                        <option value="Comp DL">Comp DL (Peso Muerto)</option>
-                                                        <option value="custom">Variante/Accesorio</option>
+                                                        <option value="Comp SQ">Sentadilla</option>
+                                                        <option value="Comp BP">Banca</option>
+                                                        <option value="Comp DL">Peso Muerto</option>
+                                                        <option value="custom">Accesorio</option>
                                                     </select>
                                                     {!['Comp SQ', 'Comp BP', 'Comp DL'].includes(exercise.name) && (
                                                         <Input
-                                                            placeholder="Nombre del accesorio"
+                                                            placeholder="Nombre"
                                                             value={exercise.name}
                                                             onChange={(e) => updateExercise(exIndex, 'name', e.target.value)}
-                                                            className="flex-1"
+                                                            className="flex-1 text-xs sm:text-sm"
                                                         />
                                                     )}
                                                     <Button
@@ -368,55 +385,111 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                                         variant="danger"
                                                         size="sm"
                                                         onClick={() => removeExercise(exIndex)}
+                                                        className="h-9 px-2 shrink-0"
                                                     >
-                                                        <Trash2 size={16} />
+                                                        <Trash2 size={14} />
                                                     </Button>
                                                 </div>
 
-                                                {/* Series del ejercicio */}
-                                                <div className="space-y-2">
-                                                    <div className="grid grid-cols-[40px_1fr_1fr_40px] gap-2 text-xs text-slate-500 uppercase px-1">
+                                                <div className="space-y-3">
+                                                    <div className="hidden sm:grid grid-cols-[40px_1fr_1fr_40px] gap-2 text-xs text-slate-500 uppercase px-2 mb-2 font-medium">
                                                         <span>#</span>
                                                         <span>Reps</span>
                                                         <span>RPE</span>
                                                         <span></span>
                                                     </div>
-                                                    {exercise.sets.map((set, setIndex) => (
-                                                        <div key={set.id} className="grid grid-cols-[40px_1fr_1fr_40px] gap-2 items-center">
-                                                            <span className="text-slate-500 text-sm text-center">{setIndex + 1}</span>
-                                                            <Input
-                                                                placeholder="8"
-                                                                value={set.targetReps || ''}
-                                                                onChange={(e) => updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
-                                                                className="h-10 text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                            />
-                                                            <Input
-                                                                type="number"
-                                                                placeholder="7"
-                                                                min={1}
-                                                                max={10}
-                                                                value={set.targetRpe || ''}
-                                                                onChange={(e) => updateSet(exIndex, setIndex, 'targetRpe', parseInt(e.target.value) || undefined)}
-                                                                className="h-10 text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                            />
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => removeSet(exIndex, setIndex)}
-                                                                disabled={exercise.sets.length <= 1}
-                                                                className="text-slate-500 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed"
-                                                            >
-                                                                <X size={16} />
-                                                            </button>
-                                                        </div>
-                                                    ))}
+                                                    
+                                                    {/* Desktop: Grid compacto */}
+                                                    <div className="hidden sm:space-y-2">
+                                                        {exercise.sets.map((set, setIndex) => (
+                                                            <div key={set.id} className="grid grid-cols-[40px_1fr_1fr_40px] gap-2 items-center bg-slate-950/50 p-2 rounded-md">
+                                                                <div className="flex items-center justify-center text-slate-500 text-xs font-mono">{setIndex + 1}</div>
+                                                                <Input
+                                                                    placeholder="8"
+                                                                    value={set.targetReps || ''}
+                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
+                                                                    className="h-10 text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                />
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="7"
+                                                                    min={1}
+                                                                    max={10}
+                                                                    value={set.targetRpe || ''}
+                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'targetRpe', parseInt(e.target.value) || undefined)}
+                                                                    className="h-10 text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => removeSet(exIndex, setIndex)}
+                                                                    disabled={exercise.sets.length <= 1}
+                                                                    className="text-slate-500 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
+                                                                >
+                                                                    <X size={16} />
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    {/* Móvil: Cards grandes y visuales */}
+                                                    <div className="sm:hidden space-y-2.5">
+                                                        {exercise.sets.map((set, setIndex) => (
+                                                            <div key={set.id} className="bg-slate-800/60 border border-slate-700 rounded-lg p-3 space-y-2.5 transform transition-all hover:border-blue-500/50">
+                                                                {/* Header de la serie */}
+                                                                <div className="flex items-center justify-between">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="w-8 h-8 bg-blue-600/20 text-blue-400 rounded-full flex items-center justify-center text-sm font-bold border border-blue-500/30">
+                                                                            {setIndex + 1}
+                                                                        </div>
+                                                                        <span className="text-slate-300 font-medium">Serie {setIndex + 1}</span>
+                                                                    </div>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => removeSet(exIndex, setIndex)}
+                                                                        disabled={exercise.sets.length <= 1}
+                                                                        className="text-slate-500 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed p-1.5 hover:bg-red-900/20 rounded transition-colors"
+                                                                    >
+                                                                        <X size={18} />
+                                                                    </button>
+                                                                </div>
+
+                                                                {/* Grid de inputs - 2 columnas en móvil */}
+                                                                <div className="grid grid-cols-2 gap-2.5">
+                                                                    <div className="space-y-1.5">
+                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Repeticiones</label>
+                                                                        <Input
+                                                                            placeholder="8"
+                                                                            value={set.targetReps || ''}
+                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-1.5">
+                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">RPE</label>
+                                                                        <Input
+                                                                            type="number"
+                                                                            placeholder="7"
+                                                                            min={1}
+                                                                            max={10}
+                                                                            value={set.targetRpe || ''}
+                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'targetRpe', parseInt(e.target.value) || undefined)}
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    {/* Botón añadir serie */}
                                                     <Button
                                                         type="button"
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() => addSet(exIndex)}
-                                                        className="w-full text-slate-400"
+                                                        className="w-full text-xs sm:text-sm h-9 sm:h-8 text-slate-400 hover:text-slate-300 bg-slate-950/30 hover:bg-slate-900/50"
                                                     >
-                                                        <Plus size={14} className="mr-1" /> Añadir Serie
+                                                        <Plus size={16} className="mr-1.5" /> Añadir Serie
                                                     </Button>
                                                 </div>
                                             </CardContent>
@@ -427,26 +500,26 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                         type="button"
                                         variant="outline"
                                         onClick={addExercise}
-                                        className="w-full"
+                                        className="w-full text-xs sm:text-sm h-9"
                                     >
-                                        <Plus size={18} className="mr-2" /> Añadir Ejercicio
+                                        <Plus size={16} className="mr-1.5" /> Ejercicio
                                     </Button>
                                 </div>
                             </>
                         )}
                     </div>
 
-                    {/* Pie del modal con botones de acción */}
-                    <div className="p-4 border-t border-slate-800 flex justify-between items-center bg-slate-950/50">
-                        <Button type="button" variant="danger" onClick={handleDeleteClick} disabled={loading} className="gap-2">
-                            <Trash2 size={16} /> Eliminar Bloque
+                    {/* Pie del modal */}
+                    <div className="p-3 sm:p-4 border-t border-slate-800 flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-2 bg-slate-950/50">
+                        <Button type="button" variant="danger" onClick={handleDeleteClick} disabled={loading} className="gap-2 text-xs sm:text-sm h-9 sm:h-10">
+                            <Trash2 size={16} /> Eliminar
                         </Button>
                         <div className="flex gap-2">
-                            <Button type="button" variant="ghost" onClick={onClose} disabled={loading}>
+                            <Button type="button" variant="ghost" onClick={onClose} disabled={loading} className="text-xs sm:text-sm h-9 sm:h-10 flex-1 sm:flex-none">
                                 Cancelar
                             </Button>
-                            <Button type="submit" disabled={loading || !title}>
-                                {loading ? <Loader2 className="animate-spin mr-2" size={18} /> : <Save className="mr-2" size={18} />}
+                            <Button type="submit" disabled={loading || !title} className="text-xs sm:text-sm h-9 sm:h-10 gap-1.5 flex-1 sm:flex-none">
+                                {loading ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                                 Guardar
                             </Button>
                         </div>
@@ -462,6 +535,6 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                 confirmText="Eliminar"
                 cancelText="Cancelar"
             />
-        </div >
+        </div>
     );
 };

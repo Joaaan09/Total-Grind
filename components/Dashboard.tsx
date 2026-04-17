@@ -52,59 +52,55 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
             </div>
 
             {/* Grid de estadísticas rápidas */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                 <Card className="bg-blue-900/20 border-blue-900/50">
-                    <CardContent className="p-2.5 sm:p-3 md:p-6 sm:pt-3 md:pt-0">
-                        <div className="flex sm:flex-col items-center gap-2 sm:gap-3 md:flex-row md:gap-4">
-                            <div className="p-2 sm:p-2.5 md:p-3 bg-blue-600/20 text-blue-500 rounded-lg flex-shrink-0">
-                                <Activity size={16} className="sm:block hidden" />
-                                <Activity size={14} className="sm:hidden" />
+                    <CardContent className="p-3 sm:p-4">
+                        <div className="flex flex-col items-start gap-2">
+                            <div className="p-2 bg-blue-600/20 text-blue-500 rounded-lg">
+                                <Activity size={16} />
                             </div>
-                            <div className="min-w-0">
+                            <div className="w-full">
                                 <p className="text-xs sm:text-sm text-slate-400">Sesiones</p>
-                                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{totalSessions}</p>
+                                <p className="text-xl sm:text-2xl font-bold text-white">{totalSessions}</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardContent className="p-2.5 sm:p-3 md:p-6 sm:pt-3 md:pt-0">
-                        <div className="flex sm:flex-col items-center gap-2 sm:gap-3 md:flex-row md:gap-4">
-                            <div className="p-2 sm:p-2.5 md:p-3 bg-green-600/20 text-green-500 rounded-lg flex-shrink-0">
-                                <TrendingUp size={16} className="sm:block hidden" />
-                                <TrendingUp size={14} className="sm:hidden" />
+                    <CardContent className="p-3 sm:p-4">
+                        <div className="flex flex-col items-start gap-2">
+                            <div className="p-2 bg-green-600/20 text-green-500 rounded-lg">
+                                <TrendingUp size={16} />
                             </div>
-                            <div className="min-w-0">
+                            <div className="w-full">
                                 <p className="text-xs sm:text-sm text-slate-400">SBD Total</p>
-                                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{sbdTotal > 0 ? sbdTotal : '-'} <span className="text-xs sm:text-sm font-normal text-slate-500">kg</span></p>
+                                <p className="text-xl sm:text-2xl font-bold text-white">{sbdTotal > 0 ? sbdTotal : '-'} <span className="text-xs sm:text-sm font-normal text-slate-500">kg</span></p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="hidden sm:block">
-                    <CardContent className="p-2.5 sm:p-3 md:p-6 sm:pt-3 md:pt-0">
-                        <div className="flex sm:flex-col items-center gap-2 sm:gap-3 md:flex-row md:gap-4">
-                            <div className="p-2 sm:p-2.5 md:p-3 bg-purple-600/20 text-purple-500 rounded-lg flex-shrink-0">
-                                <Calendar size={16} className="sm:block hidden" />
-                                <Calendar size={14} className="sm:hidden" />
+                <Card>
+                    <CardContent className="p-3 sm:p-4">
+                        <div className="flex flex-col items-start gap-2">
+                            <div className="p-2 bg-purple-600/20 text-purple-500 rounded-lg">
+                                <Calendar size={16} />
                             </div>
-                            <div className="min-w-0">
+                            <div className="w-full">
                                 <p className="text-xs sm:text-sm text-slate-400">Racha</p>
-                                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{streak} días</p>
+                                <p className="text-xl sm:text-2xl font-bold text-white">{streak} días</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="hidden sm:block">
-                    <CardContent className="p-2.5 sm:p-3 md:p-6 sm:pt-3 md:pt-0">
-                        <div className="flex sm:flex-col items-center gap-2 sm:gap-3 md:flex-row md:gap-4">
-                            <div className="p-2 sm:p-2.5 md:p-3 bg-orange-600/20 text-orange-500 rounded-lg flex-shrink-0">
-                                <Users size={16} className="sm:block hidden" />
-                                <Users size={14} className="sm:hidden" />
+                <Card>
+                    <CardContent className="p-3 sm:p-4">
+                        <div className="flex flex-col items-start gap-2">
+                            <div className="p-2 bg-orange-600/20 text-orange-500 rounded-lg">
+                                <Users size={16} />
                             </div>
-                            <div className="min-w-0">
+                            <div className="w-full min-w-0">
                                 <p className="text-xs sm:text-sm text-slate-400">Coach</p>
-                                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white truncate">
+                                <p className="text-xl sm:text-2xl font-bold text-white truncate">
                                     {user.coachId && typeof user.coachId === 'object' ? user.coachId.name : (user.coachId ? 'Entrenador' : '-')}
                                 </p>
                             </div>
