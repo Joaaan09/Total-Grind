@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User } from '../types';
 import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge } from './ui';
-import { User as UserIcon, Mail, Shield, Users, Check, Loader2, Edit2, Save, X, Camera } from 'lucide-react';
+import { User as UserIcon, Mail, Shield, Loader2, Save, X, Camera, UserMinus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { TrainingService } from '../services/mockService';
 import { ChangePasswordModal } from './ChangePasswordModal';
@@ -12,7 +12,6 @@ interface ProfileProps {
 
 export const Profile: React.FC<ProfileProps> = ({ user }) => {
     const { token, refreshUser } = useAuth();
-    const [isChangingRole, setIsChangingRole] = useState(false);
     const [invites, setInvites] = useState<any[]>([]);
 
     // Estados para editar el nombre del usuario
@@ -25,10 +24,15 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
 
     // Estados para subir imagen de perfil
     const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [isDeletingImage, setIsDeletingImage] = useState(false);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     // Estado para mostrar mensajes de éxito o error en la subida
     const [uploadStatus, setUploadStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+    // Estado para eliminar entrenador
+    const [isRemovingCoach, setIsRemovingCoach] = useState(false);
+    const [showRemoveCoachConfirm, setShowRemoveCoachConfirm] = useState(false);
 
     React.useEffect(() => {
         const loadInvites = async () => {
@@ -57,39 +61,6 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
         }
     };
 
-    const handleBecomeCoach = async () => {
-        if (!token) return;
-        setIsChangingRole(true);
-        try {
-            const success = await TrainingService.changeRole(token, 'coach');
-            if (success) {
-                // Refrescar los datos del usuario para actualizar el rol
-                if (refreshUser) await refreshUser();
-                window.location.reload(); // Force reload to update nav
-            }
-        } catch (error) {
-            console.error('Error changing role:', error);
-        } finally {
-            setIsChangingRole(false);
-        }
-    };
-
-    const handleBecomeAthlete = async () => {
-        if (!token) return;
-        setIsChangingRole(true);
-        try {
-            const success = await TrainingService.changeRole(token, 'athlete');
-            if (success) {
-                if (refreshUser) await refreshUser();
-                window.location.reload();
-            }
-        } catch (error) {
-            console.error('Error changing role:', error);
-        } finally {
-            setIsChangingRole(false);
-        }
-    };
-
     const handleSaveName = async () => {
         if (!token || !editName.trim()) return;
         setIsSavingName(true);
@@ -103,6 +74,23 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
             console.error('Error updating name', error);
         } finally {
             setIsSavingName(false);
+        }
+    };
+
+    const handleRemoveCoach = async () => {
+        if (!token) return;
+        setIsRemovingCoach(true);
+        try {
+            const success = await TrainingService.removeCoach(token);
+            if (success) {
+                if (refreshUser) await refreshUser();
+                setShowRemoveCoachConfirm(false);
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Error removing coach', error);
+        } finally {
+            setIsRemovingCoach(false);
         }
     };
 
@@ -170,15 +158,39 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
         };
     };
 
+    const handleDeleteAvatar = async () => {
+        if (!token) return;
+        setIsDeletingImage(true);
+        setUploadStatus(null);
+
+        try {
+            const success = await TrainingService.deleteAvatar(token);
+            if (success) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                if (refreshUser) await refreshUser();
+                setUploadStatus({ type: 'success', message: "Foto eliminada." });
+                setTimeout(() => setUploadStatus(null), 3000);
+            } else {
+                setUploadStatus({ type: 'error', message: "Error al eliminar foto." });
+            }
+        } catch (error) {
+            setUploadStatus({ type: 'error', message: "Error de conexión." });
+        } finally {
+            setIsDeletingImage(false);
+        }
+    };
+
     return (
         <>
-            <div className="max-w-2xl mx-auto space-y-6 sm:space-y-8">
+            <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
                 <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Perfil de Usuario</h1>
 
+                {/* Tarjeta de perfil principal */}
                 <Card>
-                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-                        <div className="relative group">
-                            <div className="h-12 sm:h-16 w-12 sm:w-16 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 overflow-hidden border-2 border-slate-700 flex-shrink-0">
+                    <CardHeader>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                            <div className="relative group flex-shrink-0">
+                                <div className="h-12 sm:h-16 w-12 sm:w-16 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 overflow-hidden border-2 border-slate-700">
                                 {user.profilePicture ? (
                                     <img
                                         key={`${user.profilePicture}-${user.profilePicture}`}
@@ -192,158 +204,61 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                                         <UserIcon size={20} className="sm:hidden" />
                                     </>
                                 )}
-                            </div>
-                            <button
-                                className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-0.5 sm:p-1 text-white shadow-lg hover:bg-blue-500 transition-colors"
-                                onClick={() => fileInputRef.current?.click()}
-                                disabled={isUploadingImage}
-                            >
-                                {isUploadingImage ? (
-                                    <>
-                                        <Loader2 size={10} className="hidden sm:block animate-spin" />
-                                        <Loader2 size={8} className="sm:hidden animate-spin" />
-                                    </>
-                                ) : (
-                                    <>
-                                        <Camera size={10} className="hidden sm:block" />
-                                        <Camera size={8} className="sm:hidden" />
-                                    </>
-                                )}
-                            </button>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className="hidden"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                            />
-                        </div>
-
-                        {/* Información del estado de subida */}
-                        <div className="absolute -bottom-8 left-0 w-48">
-                            {uploadStatus && (
-                                <p className={`text-xs font-bold ${uploadStatus.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
-                                    {uploadStatus.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex-1">
-                            {isEditingName ? (
-                                <div className="flex items-center gap-2">
-                                    <Input
-                                        value={editName}
-                                        onChange={(e) => setEditName(e.target.value)}
-                                        className="h-8 w-full max-w-[200px]"
-                                    />
-                                    <Button size="sm" variant="ghost" onClick={handleSaveName} disabled={isSavingName} className="h-8 w-8 p-0 text-green-500">
-                                        {isSavingName ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
-                                    </Button>
-                                    <Button size="sm" variant="ghost" onClick={() => { setIsEditingName(false); setEditName(user.name); }} disabled={isSavingName} className="h-8 w-8 p-0 text-red-400">
-                                        <X size={16} />
-                                    </Button>
                                 </div>
-                            ) : (
-                                <div className="flex items-center gap-2 group">
-                                    <CardTitle>{user.name}</CardTitle>
-                                    <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() => { setEditName(user.name); setIsEditingName(true); }}
-                                        className="h-6 w-6 p-0 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity hover:text-white"
+                                <button
+                                    className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-0.5 sm:p-1 text-white shadow-lg hover:bg-blue-500 transition-colors"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={isUploadingImage || isDeletingImage}
+                                >
+                                    {isUploadingImage ? (
+                                        <>
+                                            <Loader2 size={10} className="hidden sm:block animate-spin" />
+                                            <Loader2 size={8} className="sm:hidden animate-spin" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Camera size={10} className="hidden sm:block" />
+                                            <Camera size={8} className="sm:hidden" />
+                                        </>
+                                    )}
+                                </button>
+                                {user.profilePicture && (
+                                    <button
+                                        className="absolute bottom-0 -left-1 bg-red-600 rounded-full p-0.5 sm:p-1 text-white shadow-lg hover:bg-red-500 transition-colors"
+                                        onClick={handleDeleteAvatar}
+                                        disabled={isDeletingImage || isUploadingImage}
+                                        title="Eliminar foto"
                                     >
-                                        <Edit2 size={12} />
-                                    </Button>
-                                </div>
-                            )}
-                            <p className="text-slate-500">{user.email}</p>
-                        </div>
-                        <div className="ml-auto">
+                                        {isDeletingImage ? (
+                                            <Loader2 size={12} className="animate-spin" />
+                                        ) : (
+                                            <X size={12} />
+                                        )}
+                                    </button>
+                                )}
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <CardTitle>{user.name}</CardTitle>
+                                <p className="text-slate-500 text-sm sm:text-base truncate">{user.email}</p>
+                                {uploadStatus && (
+                                    <p className={`text-xs font-bold mt-1 ${uploadStatus.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                                        {uploadStatus.message}
+                                    </p>
+                                )}
+                            </div>
                             <Badge variant={user.role === 'coach' ? 'default' : user.role === 'admin' ? 'secondary' : 'outline'}>
                                 {user.role === 'athlete' ? '🏋️ Atleta' : user.role === 'coach' ? '👨‍🏫 Entrenador' : '🛡️ Admin'}
                             </Badge>
                         </div>
                     </CardHeader>
                 </Card>
-
-                {/* Sección de Rol (Entrenador/Atleta) - Solo para atletas y coaches */}
-                {user.role !== 'admin' && (
-                    <Card className={user.role === 'coach' ? 'border-purple-500/30 bg-purple-950/10' : ''}>
-                        <CardHeader>
-                            <CardTitle className="text-xl flex items-center gap-2">
-                                {user.role === 'coach' ? (
-                                    <>
-                                        <Users size={20} className="text-purple-500" /> Panel de Entrenador
-                                    </>
-                                ) : (
-                                    <>
-                                        <Shield size={20} className="text-blue-500" /> Convertirse en Entrenador
-                                    </>
-                                )}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {user.role === 'coach' ? (
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-3 p-4 bg-purple-900/20 rounded-lg border border-purple-800/30">
-                                        <Check className="text-purple-400" size={20} />
-                                        <div>
-                                            <p className="font-medium text-white">Eres Entrenador</p>
-                                            <p className="text-sm text-slate-400">
-                                                Puedes añadir atletas, crear planificaciones para ellos y ver su progreso.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full"
-                                        onClick={() => window.location.hash = '/coach'}
-                                    >
-                                        <Users size={18} className="mr-2" /> Ir a Mis Atletas
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        className="w-full text-slate-400 hover:text-white"
-                                        onClick={handleBecomeAthlete}
-                                        disabled={isChangingRole}
-                                    >
-                                        {isChangingRole ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
-                                        Volver a ser solo Atleta
-                                    </Button>
-                                </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    <p className="text-sm text-slate-400">
-                                        Como entrenador podrás:
-                                    </p>
-                                    <ul className="text-sm text-slate-400 space-y-2 list-disc list-inside">
-                                        <li>Añadir atletas a tu lista</li>
-                                        <li>Crear y asignar bloques de entrenamiento</li>
-                                        <li>Ver el progreso de cada atleta</li>
-                                        <li>Seguir entrenando tú mismo normalmente</li>
-                                    </ul>
-                                    <Button
-                                        className="w-full"
-                                        onClick={handleBecomeCoach}
-                                        disabled={isChangingRole}
-                                    >
-                                        {isChangingRole ? (
-                                            <>
-                                                <Loader2 className="animate-spin mr-2" size={16} />
-                                                Cambiando...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Users size={18} className="mr-2" />
-                                                Convertirme en Entrenador
-                                            </>
-                                        )}
-                                    </Button>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                )}
 
                 {/* Información del entrenador o invitaciones pendientes para atletas */}
                 {user.role === 'athlete' && (
@@ -352,25 +267,40 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                         {user.coachId && (
                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="text-xl flex items-center gap-2">
+                                    <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
                                         <Shield size={20} className="text-blue-500" /> Mi Entrenador
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="flex items-center justify-between p-4 bg-slate-900 rounded-lg border border-slate-800">
+                                    <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-900 rounded-lg border border-slate-800">
                                         <div className="flex items-center gap-3">
-                                            <div className="h-10 w-10 rounded-full bg-blue-900/30 text-blue-500 flex items-center justify-center font-bold">
-                                                {typeof user.coachId === 'object' ? user.coachId.name.substring(0, 2).toUpperCase() : 'EC'}
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-white">
+                                            {typeof user.coachId === 'object' && user.coachId.profilePicture ? (
+                                                <img
+                                                    src={user.coachId.profilePicture}
+                                                    alt={user.coachId.name}
+                                                    className="h-10 w-10 rounded-full object-cover flex-shrink-0"
+                                                />
+                                            ) : (
+                                                <div className="h-10 w-10 rounded-full bg-blue-900/30 text-blue-500 flex items-center justify-center font-bold flex-shrink-0">
+                                                    {typeof user.coachId === 'object' ? user.coachId.name.substring(0, 2).toUpperCase() : 'EC'}
+                                                </div>
+                                            )}
+                                            <div className="min-w-0">
+                                                <p className="font-medium text-white truncate">
                                                     {typeof user.coachId === 'object' ? user.coachId.name : 'Tu Entrenador'}
                                                 </p>
-                                                <p className="text-xs text-slate-500">
+                                                <p className="text-xs text-slate-500 truncate">
                                                     {typeof user.coachId === 'object' ? user.coachId.email : 'Conectado'}
                                                 </p>
                                             </div>
                                         </div>
+                                        <button
+                                            onClick={() => setShowRemoveCoachConfirm(true)}
+                                            className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors flex-shrink-0"
+                                            title="Eliminar entrenador"
+                                        >
+                                            <UserMinus className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -380,7 +310,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                         {!user.coachId && invites.length > 0 && (
                             <Card className="border-blue-500/30 bg-blue-950/10">
                                 <CardHeader>
-                                    <CardTitle className="text-xl flex items-center gap-2">
+                                    <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
                                         <Mail size={20} className="text-blue-400" /> Invitaciones Pendientes
                                     </CardTitle>
                                 </CardHeader>
@@ -416,22 +346,83 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                     </>
                 )}
 
+                {/* Configuración */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-xl">Configuración</CardTitle>
+                        <CardTitle className="text-lg sm:text-xl">Configuración</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
+                        {isEditingName ? (
+                            <div className="flex items-center gap-2 p-3 bg-slate-900 rounded-lg border border-slate-800">
+                                <Input
+                                    value={editName}
+                                    onChange={(e) => setEditName(e.target.value)}
+                                    className="h-9 flex-1"
+                                    placeholder="Nuevo nombre"
+                                />
+                                <Button size="sm" onClick={handleSaveName} disabled={isSavingName} className="h-9 px-3">
+                                    {isSavingName ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
+                                </Button>
+                                <Button size="sm" variant="ghost" onClick={() => { setIsEditingName(false); setEditName(user.name); }} disabled={isSavingName} className="h-9 px-3 text-red-400">
+                                    <X size={16} />
+                                </Button>
+                            </div>
+                        ) : (
+                            <Button variant="outline" className="w-full justify-between" onClick={() => { setEditName(user.name); setIsEditingName(true); }}>
+                                Cambiar Nombre de Usuario
+                                <ArrowRightIcon />
+                            </Button>
+                        )}
                         <Button variant="outline" className="w-full justify-between" onClick={() => setIsPasswordModalOpen(true)}>
                             Cambiar Contraseña
                             <ArrowRightIcon />
                         </Button>
-                        <Button variant="outline" className="w-full justify-between">
-                            Unidades (kg/lbs)
-                            <span className="text-slate-500">Metrico (kg)</span>
-                        </Button>
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Modal de confirmación para eliminar entrenador */}
+            {showRemoveCoachConfirm && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-md w-full">
+                        <div className="flex items-center gap-3 text-red-400 mb-4">
+                            <UserMinus className="w-6 h-6" />
+                            <h3 className="text-xl font-bold">Eliminar Entrenador</h3>
+                        </div>
+                        <p className="text-slate-300 mb-6">
+                            ¿Estás seguro de que quieres dejar de entrenar con{' '}
+                            <strong className="text-white">
+                                {typeof user.coachId === 'object' ? user.coachId.name : 'tu entrenador'}
+                            </strong>
+                            ? Ya no tendrá acceso a tu progreso y dejará de poder asignarte bloques.
+                        </p>
+                        <div className="flex gap-3 justify-end">
+                            <Button
+                                variant="ghost"
+                                onClick={() => setShowRemoveCoachConfirm(false)}
+                                disabled={isRemovingCoach}
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                variant="danger"
+                                onClick={handleRemoveCoach}
+                                disabled={isRemovingCoach}
+                            >
+                                {isRemovingCoach ? (
+                                    <>
+                                        <Loader2 className="animate-spin mr-2" size={16} />
+                                        Eliminando...
+                                    </>
+                                ) : (
+                                    'Eliminar Entrenador'
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <ChangePasswordModal isOpen={isPasswordModalOpen} onClose={() => setIsPasswordModalOpen(false)} />
         </>
     );
