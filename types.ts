@@ -6,7 +6,7 @@ export interface User {
   email: string;
   name: string;
   role: Role;
-  coachId?: string | { _id: string; name: string; email: string }; // Si es un atleta, ID o objeto del entrenador
+  coachId?: string | { _id: string; name: string; email: string; profilePicture?: string }; // Si es un atleta, ID o objeto del entrenador
   profilePicture?: string;
 }
 
@@ -55,6 +55,7 @@ export interface ExerciseSet {
   weight?: number;
   targetRpe?: number; // RPE prescrito
   targetReps?: string; // Repeticiones prescritas
+  suggestedWeight?: number; // Peso sugerido para esta serie (opcional)
   estimated1rm?: number;
   isCompleted: boolean;
 }

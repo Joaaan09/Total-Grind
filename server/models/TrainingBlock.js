@@ -6,6 +6,7 @@ const ExerciseSetSchema = new mongoose.Schema({
   weight: Number,
   targetRpe: Number,
   targetReps: String,
+  suggestedWeight: Number, // Peso sugerido para esta serie
   estimated1rm: Number,
   isCompleted: { type: Boolean, default: false }
 });

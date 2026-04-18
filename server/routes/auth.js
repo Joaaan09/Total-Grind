@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
 
         // Buscar usuario
         // Buscar usuario y popular entrenador
-        const user = await User.findOne({ email: email.toLowerCase() }).populate('coachId', 'name email');
+        const user = await User.findOne({ email: email.toLowerCase() }).populate('coachId', 'name email profilePicture');
         if (!user) {
             return res.status(400).json({ error: 'Credenciales inválidas' });
         }
@@ -120,7 +120,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 
         // Popular detalles del entrenador si está presente
         if (req.user.coachId) {
-            await req.user.populate('coachId', 'name email');
+            await req.user.populate('coachId', 'name email profilePicture');
         }
 
         res.json({

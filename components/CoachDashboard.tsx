@@ -14,6 +14,7 @@ interface Athlete {
     _id: string;
     name: string;
     email: string;
+    profilePicture?: string;
 }
 
 export const CoachDashboard: React.FC = () => {
@@ -327,8 +328,12 @@ export const CoachDashboard: React.FC = () => {
                                 <CardContent className="p-4">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                                                <User size={20} className="text-white" />
+                                            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden border-2 border-slate-700 flex-shrink-0">
+                                                {athlete.profilePicture ? (
+                                                    <img src={athlete.profilePicture} alt={athlete.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <User size={20} className="text-white" />
+                                                )}
                                             </div>
                                             <div>
                                                 <h3 className="font-semibold text-white">{athlete.name}</h3>

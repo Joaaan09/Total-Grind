@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Dumbbell, LayoutDashboard, LineChart, User as UserIcon, LogOut, Menu, X, Users, Shield } from 'lucide-react';
 import { Button } from './ui';
 import { useAuth } from '../contexts/AuthContext';
@@ -51,10 +51,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Barra de navegación superior para móvil */}
       <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md lg:hidden">
         <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
-          <div className="flex items-center gap-2 font-bold text-base sm:text-lg md:text-xl text-blue-500 min-w-0">
+          <button 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 font-bold text-base sm:text-lg md:text-xl text-blue-500 min-w-0 hover:opacity-80 transition-opacity"
+          >
             <img src="/logo.png" alt="Total Grind Logo" className="h-6 sm:h-8 w-6 sm:w-8 object-contain flex-shrink-0" />
             <span className="truncate">TotalGrind</span>
-          </div>
+          </button>
           <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
@@ -95,10 +98,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Barra lateral para escritorio (fija) */}
         <aside className="hidden h-screen w-64 flex-col border-r border-slate-800 bg-slate-900 lg:flex fixed left-0 top-0">
           <div className="flex h-16 items-center border-b border-slate-800 px-6">
-            <div className="flex items-center gap-2 font-bold text-xl text-blue-500">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 font-bold text-xl text-blue-500 hover:opacity-80 transition-opacity"
+            >
               <img src="/logo.png" alt="Total Grind Logo" className="h-8 w-8 object-contain" />
               <span>TotalGrind</span>
-            </div>
+            </button>
           </div>
 
           {/* Información del usuario */}

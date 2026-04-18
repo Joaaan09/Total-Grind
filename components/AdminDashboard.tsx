@@ -17,7 +17,8 @@ import {
     ExternalLink,
     UserPlus,
     UserMinus,
-    Plus
+    Plus,
+    Lock
 } from 'lucide-react';
 
 interface AdminStats {
@@ -82,6 +83,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
     const [creatingUser, setCreatingUser] = useState(false);
     const [createUserError, setCreateUserError] = useState<string | null>(null);
 
+    // Estados para cambiar contraseña de usuario
+    const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [changingPassword, setChangingPassword] = useState(false);
+    const [changePasswordError, setChangePasswordError] = useState<string | null>(null);
+    const [changePasswordSuccess, setChangePasswordSuccess] = useState<string | null>(null);
+
     useEffect(() => {
         loadData();
     }, [token]);
@@ -139,6 +148,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
             setShowUserModal(false);
             await loadData();
         }
+    };
+
+    const handleChangePassword = async () => {
+        if (!selectedUser || !newPassword.trim() || !confirmPassword.trim()) {
+            setChangePasswordError('Por favor completa todos los campos');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setChangePasswordError('Las contraseñas no coinciden');
+            return;
+        }
+        if (newPassword.length < 6) {
+            setChangePasswordError('La contraseña debe tener al menos 6 caracteres');
+            return;
+        }
+
+        setChangingPassword(true);
+        setChangePasswordError(null);
+        setChangePasswordSuccess(null);
+
+        const success = await TrainingService.changeUserPassword(token, selectedUser.user._id, newPassword);
+        if (success) {
+            setChangePasswordSuccess('Contraseña actualizada correctamente');
+            setNewPassword('');
+            setConfirmPassword('');
+            setTimeout(() => {
+                setShowChangePasswordModal(false);
+                setChangePasswordSuccess(null);
+            }, 2000);
+        } else {
+            setChangePasswordError('Error al cambiar la contraseña');
+        }
+        setChangingPassword(false);
     };
 
     const toggleBlockExpand = (blockId: string) => {
@@ -237,12 +279,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
     }
 
     return (
-        <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
+        <div className="p-1 sm:p-4 md:p-6 max-w-7xl mx-auto">
             {/* Header con estadísticas */}
             <div className="mb-6 sm:mb-8">
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
-                    <BarChart3 className="w-6 sm:w-8 h-6 sm:h-8 text-blue-400 flex-shrink-0" />
-                    <span className="truncate">Panel de Administración</span>
+                <h1 className="text-lg sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                    <BarChart3 className="w-5 sm:w-8 h-5 sm:h-8 text-blue-400 flex-shrink-0" />
+                    <span className="truncate">Panel de Admin</span>
                 </h1>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
@@ -275,17 +317,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
 
             {/* Lista de usuarios */}
             <div className="bg-slate-800 rounded-xl shadow-lg overflow-hidden">
-                <div className="p-4 border-b border-slate-700 flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                        <Users className="w-5 h-5" />
-                        Usuarios Registrados
+                <div className="p-3 sm:p-4 border-b border-slate-700 flex items-center justify-between">
+                    <h2 className="text-base sm:text-xl font-semibold text-white flex items-center gap-2">
+                        <Users className="w-4 sm:w-5 h-4 sm:h-5" />
+                        Usuarios
                     </h2>
                     <button
                         onClick={() => setShowCreateUserModal(true)}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors text-sm text-white"
+                        className="flex items-center gap-1 px-2 sm:px-3 py-1.5 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors text-xs sm:text-sm text-white"
                     >
-                        <Plus className="w-4 h-4" />
-                        Crear Usuario
+                        <Plus className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                        <span className="hidden sm:inline">Crear Usuario</span>
+                        <span className="sm:hidden">Crear</span>
                     </button>
                 </div>
 
@@ -293,50 +336,50 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                     <table className="w-full">
                         <thead className="bg-slate-700">
                             <tr>
-                                <th className="px-4 py-3 text-left text-sm font-medium text-slate-300">Usuario</th>
-                                <th className="px-4 py-3 text-left text-sm font-medium text-slate-300 hidden md:table-cell">Email</th>
-                                <th className="px-4 py-3 text-left text-sm font-medium text-slate-300">Rol</th>
-                                <th className="px-4 py-3 text-left text-sm font-medium text-slate-300 hidden md:table-cell">Registro</th>
-                                <th className="px-4 py-3 text-right text-sm font-medium text-slate-300">Acciones</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-300">Usuario</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-300 hidden md:table-cell">Email</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-300">Rol</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-300 hidden md:table-cell">Registro</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm font-medium text-slate-300"></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700">
                             {users.map(user => (
                                 <tr key={user._id} className="hover:bg-slate-700/50 transition-colors">
-                                    <td className="px-4 py-3">
-                                        <div className="flex items-center gap-3">
+                                    <td className="px-2 sm:px-4 py-2 sm:py-3">
+                                        <div className="flex items-center gap-2 sm:gap-3">
                                             {user.profilePicture ? (
                                                 <img
                                                     src={user.profilePicture}
                                                     alt={user.name}
-                                                    className="w-8 h-8 rounded-full object-cover"
+                                                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0"
                                                 />
                                             ) : (
-                                                <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-white font-medium">
+                                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-600 flex items-center justify-center text-white text-xs sm:text-sm font-medium flex-shrink-0">
                                                     {user.name.charAt(0).toUpperCase()}
                                                 </div>
                                             )}
-                                            <span className="text-white font-medium">{user.name}</span>
+                                            <span className="text-white font-medium text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none">{user.name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-4 py-3 text-slate-300 hidden md:table-cell">{user.email}</td>
-                                    <td className="px-4 py-3">
-                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.role === 'admin'
+                                    <td className="px-2 sm:px-4 py-2 sm:py-3 text-slate-300 text-sm hidden md:table-cell">{user.email}</td>
+                                    <td className="px-2 sm:px-4 py-2 sm:py-3">
+                                        <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${user.role === 'admin'
                                             ? 'bg-yellow-500/20 text-yellow-400'
                                             : user.role === 'coach'
                                                 ? 'bg-purple-500/20 text-purple-400'
                                                 : 'bg-green-500/20 text-green-400'
                                             }`}>
-                                            {user.role === 'admin' ? 'Admin' : user.role === 'coach' ? 'Entrenador' : 'Atleta'}
+                                            {user.role === 'admin' ? 'Admin' : user.role === 'coach' ? 'Coach' : 'Atleta'}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-3 text-slate-400 text-sm hidden md:table-cell">
+                                    <td className="px-2 sm:px-4 py-2 sm:py-3 text-slate-400 text-sm hidden md:table-cell">
                                         {formatDate(user.createdAt)}
                                     </td>
-                                    <td className="px-4 py-3 text-right">
+                                    <td className="px-2 sm:px-4 py-2 sm:py-3 text-right">
                                         <button
                                             onClick={() => viewUserDetail(user._id)}
-                                            className="p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg transition-colors"
+                                            className="p-1.5 sm:p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg transition-colors"
                                             title="Ver detalle"
                                         >
                                             <Eye className="w-4 h-4" />
@@ -377,22 +420,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
 
                         <div className="p-4 md:p-6 space-y-6">
                             {/* Información del usuario */}
-                            <div className="bg-slate-700/50 rounded-xl p-4">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center gap-4">
+                            <div className="bg-slate-700/50 rounded-xl p-3 sm:p-4">
+                                <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-4">
+                                    <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
                                         {selectedUser.user.profilePicture ? (
                                             <img
                                                 src={selectedUser.user.profilePicture}
                                                 alt={selectedUser.user.name}
-                                                className="w-16 h-16 rounded-full object-cover"
+                                                className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover flex-shrink-0"
                                             />
                                         ) : (
-                                            <div className="w-16 h-16 rounded-full bg-slate-600 flex items-center justify-center text-2xl text-white font-medium">
+                                            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-600 flex items-center justify-center text-xl sm:text-2xl text-white font-medium flex-shrink-0">
                                                 {selectedUser.user.name.charAt(0).toUpperCase()}
                                             </div>
                                         )}
                                         {editMode ? (
-                                            <div className="space-y-2">
+                                            <div className="space-y-2 flex-1">
                                                 <input
                                                     type="text"
                                                     value={editData.name}
@@ -417,9 +460,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                 </select>
                                             </div>
                                         ) : (
-                                            <div>
-                                                <h4 className="text-xl font-bold text-white">{selectedUser.user.name}</h4>
-                                                <p className="text-slate-400">{selectedUser.user.email}</p>
+                                            <div className="min-w-0">
+                                                <h4 className="text-lg sm:text-xl font-bold text-white truncate">{selectedUser.user.name}</h4>
+                                                <p className="text-sm text-slate-400 truncate">{selectedUser.user.email}</p>
                                                 <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${selectedUser.user.role === 'admin'
                                                     ? 'bg-yellow-500/20 text-yellow-400'
                                                     : selectedUser.user.role === 'coach'
@@ -446,7 +489,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
 
                                     {/* Solo mostrar botones de editar/eliminar si NO es admin */}
                                     {selectedUser.user.role !== 'admin' && (
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 sm:self-start w-full sm:w-auto justify-end mt-2 sm:mt-0 border-t sm:border-0 border-slate-600/50 pt-3 sm:pt-0">
                                             {editMode ? (
                                                 <>
                                                     <button
@@ -470,6 +513,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                         title="Editar"
                                                     >
                                                         <Edit2 className="w-4 h-4 text-white" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setNewPassword('');
+                                                            setConfirmPassword('');
+                                                            setChangePasswordError(null);
+                                                            setChangePasswordSuccess(null);
+                                                            setShowChangePasswordModal(true);
+                                                        }}
+                                                        className="p-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors"
+                                                        title="Cambiar contraseña"
+                                                    >
+                                                        <Lock className="w-4 h-4 text-white" />
                                                     </button>
                                                     <button
                                                         onClick={() => setConfirmDelete(selectedUser.user._id)}
@@ -542,11 +598,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
 
                             {/* Mejores marcas */}
                             <div className="bg-slate-700/50 rounded-xl p-4">
-                                <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                                    <Dumbbell className="w-5 h-5 text-blue-400" />
-                                    Mejores Marcas
-                                </h4>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <h4 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                                        <Dumbbell className="w-4 sm:w-5 h-4 sm:h-5 text-blue-400" />
+                                        Mejores Marcas
+                                    </h4>
+                                    <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
                                     <LiftCard title="Squat" data={selectedUser.bestLifts['Comp SQ']} />
                                     <LiftCard title="Bench" data={selectedUser.bestLifts['Comp BP']} />
                                     <LiftCard title="Deadlift" data={selectedUser.bestLifts['Comp DL']} />
@@ -870,6 +926,97 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                         <>
                                             <UserPlus className="w-4 h-4" />
                                             Crear
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de cambiar contraseña */}
+            {showChangePasswordModal && selectedUser && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                <Lock className="w-5 h-5 text-orange-400" />
+                                Cambiar Contraseña
+                            </h3>
+                            <button
+                                onClick={() => {
+                                    setShowChangePasswordModal(false);
+                                    setChangePasswordError(null);
+                                    setChangePasswordSuccess(null);
+                                    setNewPassword('');
+                                    setConfirmPassword('');
+                                }}
+                                className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+                            >
+                                <X className="w-5 h-5 text-slate-400" />
+                            </button>
+                        </div>
+                        <p className="text-sm text-slate-400 mb-4">
+                            Cambiar contraseña de <span className="text-white font-medium">{selectedUser.user.name}</span>
+                        </p>
+                        <div className="space-y-4">
+                            {changePasswordError && (
+                                <div className="flex items-center gap-2 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+                                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                                    {changePasswordError}
+                                </div>
+                            )}
+                            {changePasswordSuccess && (
+                                <div className="flex items-center gap-2 p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                                    <Check className="w-4 h-4 flex-shrink-0" />
+                                    {changePasswordSuccess}
+                                </div>
+                            )}
+                            <div>
+                                <label className="block text-sm text-slate-400 mb-2">Nueva Contraseña</label>
+                                <input
+                                    type="password"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder="Mínimo 6 caracteres"
+                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-orange-500 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm text-slate-400 mb-2">Confirmar Contraseña</label>
+                                <input
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Repite la contraseña"
+                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-orange-500 focus:outline-none"
+                                />
+                            </div>
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    onClick={() => {
+                                        setShowChangePasswordModal(false);
+                                        setChangePasswordError(null);
+                                        setChangePasswordSuccess(null);
+                                        setNewPassword('');
+                                        setConfirmPassword('');
+                                    }}
+                                    className="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-white"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleChangePassword}
+                                    disabled={changingPassword || !newPassword.trim() || !confirmPassword.trim()}
+                                    className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-white flex items-center justify-center gap-2"
+                                >
+                                    {changingPassword ? (
+                                        <RefreshCw className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <>
+                                            <Lock className="w-4 h-4" />
+                                            Cambiar
                                         </>
                                     )}
                                 </button>

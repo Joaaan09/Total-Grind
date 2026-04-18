@@ -409,33 +409,53 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
                                                 {/* Series del ejercicio - Responsive */}
                                                 <div className="space-y-3">
-                                                    {/* Header en desktop, oculto en móvil */}
-                                                    <div className="hidden sm:grid grid-cols-[40px_1fr_1fr_40px] gap-2 text-xs text-slate-500 uppercase px-2 mb-2 font-medium">
-                                                        <span>#</span>
-                                                        <span>Reps</span>
-                                                        <span>RPE</span>
-                                                        <span></span>
-                                                    </div>
-                                                    
                                                     {/* Desktop: Grid compacto */}
-                                                    <div className="hidden sm:space-y-2">
+                                                    <div className="hidden sm:block space-y-2">
+                                                        {/* Header con labels */}
+                                                        <div className="grid grid-cols-[40px_1fr_1fr_1fr_40px] gap-2 items-center px-2 py-1">
+                                                            <div className="text-xs text-slate-500 uppercase font-medium">#</div>
+                                                            <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">Reps</label>
+                                                            <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">RPE</label>
+                                                            <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">Kg (opt)</label>
+                                                            <div></div>
+                                                        </div>
+                                                        {/* Filas de inputs */}
                                                         {exercise.sets.map((set, setIndex) => (
-                                                            <div key={set.id} className="grid grid-cols-[40px_1fr_1fr_40px] gap-2 items-center bg-slate-950/50 p-2 rounded-md">
+                                                            <div key={set.id} className="grid grid-cols-[40px_1fr_1fr_1fr_40px] gap-2 items-center bg-slate-950/50 p-2 rounded-md">
                                                                 <div className="flex items-center justify-center text-slate-500 text-xs font-mono">{setIndex + 1}</div>
                                                                 <Input
+                                                                    type="text"
+                                                                    inputMode="numeric"
                                                                     placeholder="8"
                                                                     value={set.targetReps || ''}
                                                                     onChange={(e) => updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
-                                                                    className="h-10 text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                    className="h-10 text-sm"
+                                                                    autoComplete="off"
+                                                                />
+                                                                <Input
+                                                                    type="text"
+                                                                    inputMode="numeric"
+                                                                    placeholder="7"
+                                                                    value={set.targetRpe || ''}
+                                                                    onChange={(e) => {
+                                                                        const val = parseInt(e.target.value);
+                                                                        if (!isNaN(val) && val >= 1 && val <= 10) {
+                                                                            updateSet(exIndex, setIndex, 'targetRpe', val);
+                                                                        } else if (e.target.value === '') {
+                                                                            updateSet(exIndex, setIndex, 'targetRpe', undefined);
+                                                                        }
+                                                                    }}
+                                                                    className="h-10 text-sm"
+                                                                    autoComplete="off"
                                                                 />
                                                                 <Input
                                                                     type="number"
-                                                                    placeholder="7"
-                                                                    min={1}
-                                                                    max={10}
-                                                                    value={set.targetRpe || ''}
-                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'targetRpe', parseInt(e.target.value) || undefined)}
-                                                                    className="h-10 text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                    placeholder="80"
+                                                                    min="0"
+                                                                    step="0.5"
+                                                                    value={set.suggestedWeight || ''}
+                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                                                    className="h-10 text-sm"
                                                                 />
                                                                 <button
                                                                     type="button"
@@ -471,27 +491,52 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     </button>
                                                                 </div>
 
-                                                                {/* Grid de inputs - 2 columnas en móvil */}
-                                                                <div className="grid grid-cols-2 gap-2.5">
+                                                                {/* Grid de inputs - 3 columnas en móvil */}
+                                                                <div className="grid grid-cols-3 gap-2.5">
                                                                     <div className="space-y-1.5">
                                                                         <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Repeticiones</label>
                                                                         <Input
+                                                                            type="text"
+                                                                            inputMode="numeric"
                                                                             placeholder="8"
                                                                             value={set.targetReps || ''}
                                                                             onChange={(e) => updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
-                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
+                                                                            autoComplete="off"
                                                                         />
                                                                     </div>
                                                                     <div className="space-y-1.5">
                                                                         <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">RPE</label>
                                                                         <Input
-                                                                            type="number"
+                                                                            type="text"
+                                                                            inputMode="numeric"
                                                                             placeholder="7"
-                                                                            min={1}
-                                                                            max={10}
+                                                                            min="1"
+                                                                            max="10"
                                                                             value={set.targetRpe || ''}
-                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'targetRpe', parseInt(e.target.value) || undefined)}
-                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                                            onChange={(e) => {
+                                                                                const val = parseInt(e.target.value);
+                                                                                if (!isNaN(val) && val >= 1 && val <= 10) {
+                                                                                    updateSet(exIndex, setIndex, 'targetRpe', val);
+                                                                                } else if (e.target.value === '') {
+                                                                                    updateSet(exIndex, setIndex, 'targetRpe', undefined);
+                                                                                }
+                                                                            }}
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
+                                                                            autoComplete="off"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-1.5">
+                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Kg</label>
+                                                                        <Input
+                                                                            type="number"
+                                                                            inputMode="decimal"
+                                                                            placeholder="80"
+                                                                            min="0"
+                                                                            step="0.5"
+                                                                            value={set.suggestedWeight || ''}
+                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
                                                                         />
                                                                     </div>
                                                                 </div>

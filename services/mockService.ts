@@ -171,6 +171,21 @@ export const TrainingService = {
     }
   },
 
+  // Eliminar entrenador (para atletas)
+  removeCoach: async (token: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_URL}/user/coach`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(token)
+      });
+      return res.ok;
+    } catch (error) {
+      console.error("Error removing coach", error);
+      return false;
+    }
+  },
+
+
   uploadAvatar: async (token: string, file: Blob): Promise<{ success: boolean; url?: string }> => {
     try {
       const formData = new FormData();
@@ -192,6 +207,23 @@ export const TrainingService = {
       return { success: true, url: data.profilePicture };
     } catch (error) {
       return { success: false };
+    }
+  },
+
+  deleteAvatar: async (token: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_URL}/user/avatar`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      return res.ok;
+    } catch (error) {
+      console.error("Error deleting avatar", error);
+      return false;
     }
   },
 
@@ -400,6 +432,21 @@ export const TrainingService = {
       return res.ok;
     } catch (error) {
       console.error("Error updating user", error);
+      return false;
+    }
+  },
+
+  // Cambiar contraseña de usuario (Admin)
+  changeUserPassword: async (token: string, userId: string, password: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${userId}/change-password`, {
+        method: 'POST',
+        headers: getAuthHeaders(token),
+        body: JSON.stringify({ password })
+      });
+      return res.ok;
+    } catch (error) {
+      console.error("Error changing user password", error);
       return false;
     }
   },

@@ -144,6 +144,32 @@ app.post('/api/user/avatar', authMiddleware, upload.single('avatar'), async (req
   }
 });
 
+// Eliminar avatar del usuario
+app.delete('/api/user/avatar', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    // Eliminar archivo si existe y es local
+    if (user.profilePicture && user.profilePicture.startsWith('/uploads')) {
+      const oldPath = path.join(__dirname, user.profilePicture);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
+    // Limpiar la foto de perfil
+    user.profilePicture = undefined;
+    user.markModified('profilePicture');
+
+    await user.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Avatar delete error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Obtener Bloques (Protegido)
 app.get('/api/blocks', authMiddleware, async (req, res) => {
   try {
@@ -518,6 +544,33 @@ app.post('/api/user/invites/:coachId/reject', authMiddleware, async (req, res) =
 
 // ============== ENDPOINTS DE ENTRENADOR ==============
 
+// Eliminar entrenador (para atletas)
+app.delete('/api/user/coach', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user || !user.coachId) {
+      return res.status(400).json({ error: 'No tienes entrenador asignado' });
+    }
+
+    const coachId = user.coachId;
+
+    // Eliminar entrenador del atleta
+    user.coachId = null;
+    await user.save();
+
+    // Eliminar al atleta de la lista del entrenador
+    const coach = await User.findById(coachId);
+    if (coach && coach.athletes) {
+      coach.athletes = coach.athletes.filter(id => id.toString() !== user._id.toString());
+      await coach.save();
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Cambiar rol de usuario a entrenador
 app.put('/api/users/role', authMiddleware, async (req, res) => {
   try {
@@ -542,7 +595,7 @@ app.put('/api/users/role', authMiddleware, async (req, res) => {
 // Obtener atletas del entrenador
 app.get('/api/coach/athletes', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).populate('athletes', 'name email');
+    const user = await User.findById(req.user._id).populate('athletes', 'name email profilePicture');
     if (user.role !== 'coach') {
       return res.status(403).json({ error: 'Only coaches can access this' });
     }
@@ -896,6 +949,35 @@ app.put('/api/admin/users/:id', authMiddleware, adminMiddleware, async (req, res
 
     await user.save();
     res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Cambiar contraseña de usuario (Admin)
+app.post('/api/admin/users/:id/change-password', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Prevenir cambiar contraseña a admin
+    if (user.role === 'admin') {
+      return res.status(400).json({ error: 'Cannot change admin password' });
+    }
+
+    user.password = password;
+    await user.save();
+
+    res.json({ success: true, message: 'Password updated successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

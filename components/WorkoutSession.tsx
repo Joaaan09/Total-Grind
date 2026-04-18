@@ -283,8 +283,8 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       {exercises.map((exercise) => (
         <Card key={exercise.id} className="overflow-hidden border-slate-800 bg-slate-900/40">
           <CardHeader className="bg-slate-900/60 pb-4 border-b border-slate-800">
-            <CardTitle className="flex justify-between items-center text-lg text-blue-400">
-              {exercise.name}
+            <CardTitle className="text-lg text-blue-400">
+              <span>{exercise.name}</span>
             </CardTitle>
             {exercise.notes && <p className="text-xs text-slate-500 mt-1">{exercise.notes}</p>}
           </CardHeader>
@@ -308,9 +308,12 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                     <tr key={set.id} className={set.isCompleted ? "bg-green-900/10" : ""}>
                       <td className="p-3 text-center text-slate-500 font-mono">{index + 1}</td>
                       <td className="p-3 text-slate-400 text-xs">
-                        <div className="flex flex-col">
+                        <div className="flex flex-col gap-1">
                           <span>{set.targetReps} reps</span>
                           <span className="text-slate-600">@ RPE {set.targetRpe}</span>
+                          {set.suggestedWeight && (
+                            <span className="text-blue-300 font-semibold">Kg: {set.suggestedWeight}</span>
+                          )}
                         </div>
                       </td>
                       <td className="p-3">
@@ -391,6 +394,14 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                       {set.isCompleted ? <CheckCircle2 size={28} /> : <Circle size={28} />}
                     </button>
                   </div>
+
+                  {/* Peso sugerido */}
+                  {set.suggestedWeight && (
+                    <div className="px-3 py-2 bg-blue-600/10 border border-blue-500/30 rounded-md">
+                      <p className="text-xs text-slate-400">Peso sugerido</p>
+                      <p className="text-lg font-bold text-blue-300">{set.suggestedWeight} kg</p>
+                    </div>
+                  )}
 
                   {/* Grid de inputs */}
                   <div className="grid grid-cols-3 gap-3">
