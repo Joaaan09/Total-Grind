@@ -1,0 +1,9 @@
+Primer comando:
+docker exec -it totalgrind-backend node scripts/transfer-block.js "correo_de_tu_amigo@ejemplo.com" "correo_del_atleta@ejemplo.com"
+
+Esto muestra los bloques que tiene creado el primer correo (el del entrenador)
+
+Segundo comando:
+docker exec -it totalgrind-backend node scripts/transfer-block.js "correo_de_tu_amigo@ejemplo.com" "correo_del_atleta@ejemplo.com" "nombre_del_bloque"
+
+Esto transfiere el bloque del entrenador al atleta
