@@ -403,34 +403,45 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                         <Card key={exercise.id} className="border-slate-700 bg-slate-800/50">
                                             <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                                                 {/* Cabecera del ejercicio */}
-                                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 flex-wrap">
-                                                    {/* --- Selector principal --- */}
-                                                    <select
-                                                        value={getPrimarySelectValue(exercise.name)}
-                                                        onChange={(e) => {
-                                                            const val = e.target.value;
-                                                            if (val === 'Comp SQ') updateExercise(exIndex, 'name', 'Comp SQ');
-                                                            else if (val === 'Comp BP') updateExercise(exIndex, 'name', 'Comp BP');
-                                                            else if (val === 'Comp DL') updateExercise(exIndex, 'name', 'Comp DL');
-                                                            else if (val === 'variant') updateExercise(exIndex, 'name', SQUAT_VARIANTS[0]);
-                                                            else if (val === 'accessory') updateExercise(exIndex, 'name', ACCESSORY_LIST[0]);
-                                                            else updateExercise(exIndex, 'name', '');
-                                                        }}
-                                                        className="h-9 px-2 sm:px-3 rounded-md bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-500 outline-none"
-                                                    >
-                                                        <option value="">Seleccionar...</option>
-                                                        <option value="Comp SQ">Sentadilla (Comp)</option>
-                                                        <option value="Comp BP">Banca (Comp)</option>
-                                                        <option value="Comp DL">Peso Muerto (Comp)</option>
-                                                        <option value="variant">Variantes</option>
-                                                        <option value="accessory">Accesorios</option>
-                                                    </select>
+                                                <div className="space-y-2">
+                                                    {/* Fila 1: selector principal + botón borrar */}
+                                                    <div className="flex items-center gap-2">
+                                                        <select
+                                                            value={getPrimarySelectValue(exercise.name)}
+                                                            onChange={(e) => {
+                                                                const val = e.target.value;
+                                                                if (val === 'Comp SQ') updateExercise(exIndex, 'name', 'Comp SQ');
+                                                                else if (val === 'Comp BP') updateExercise(exIndex, 'name', 'Comp BP');
+                                                                else if (val === 'Comp DL') updateExercise(exIndex, 'name', 'Comp DL');
+                                                                else if (val === 'variant') updateExercise(exIndex, 'name', SQUAT_VARIANTS[0]);
+                                                                else if (val === 'accessory') updateExercise(exIndex, 'name', ACCESSORY_LIST[0]);
+                                                                else updateExercise(exIndex, 'name', '');
+                                                            }}
+                                                            className="flex-1 h-9 px-2 sm:px-3 rounded-md bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
+                                                        >
+                                                            <option value="">Seleccionar...</option>
+                                                            <option value="Comp SQ">Sentadilla (Comp)</option>
+                                                            <option value="Comp BP">Banca (Comp)</option>
+                                                            <option value="Comp DL">Peso Muerto (Comp)</option>
+                                                            <option value="variant">Variantes</option>
+                                                            <option value="accessory">Accesorios</option>
+                                                        </select>
+                                                        <Button
+                                                            type="button"
+                                                            variant="danger"
+                                                            size="sm"
+                                                            onClick={() => removeExercise(exIndex)}
+                                                            className="h-9 px-2 shrink-0"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </Button>
+                                                    </div>
 
-                                                    {/* --- Segundo selector: Variantes --- */}
+                                                    {/* Fila 2: segundo selector (Variantes) */}
                                                     {getPrimarySelectValue(exercise.name) === 'variant' && (() => {
                                                         const subgroup = getVariantSubgroup('variant', exercise.name);
                                                         return (
-                                                            <>
+                                                            <div className="flex items-center gap-2">
                                                                 <select
                                                                     value={subgroup}
                                                                     onChange={(e) => {
@@ -439,7 +450,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                         else if (sg === 'bp') updateExercise(exIndex, 'name', BENCH_VARIANTS[0]);
                                                                         else updateExercise(exIndex, 'name', DEADLIFT_VARIANTS[0]);
                                                                     }}
-                                                                    className="h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none"
+                                                                    className="h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none shrink-0"
                                                                 >
                                                                     <option value="sq">Squat</option>
                                                                     <option value="bp">Bench Press</option>
@@ -448,28 +459,28 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                 <select
                                                                     value={exercise.name}
                                                                     onChange={(e) => updateExercise(exIndex, 'name', e.target.value)}
-                                                                    className="h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none flex-1"
+                                                                    className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
                                                                 >
                                                                     {(subgroup === 'sq' ? SQUAT_VARIANTS : subgroup === 'bp' ? BENCH_VARIANTS : DEADLIFT_VARIANTS)
                                                                         .map(v => <option key={v} value={v}>{v}</option>)}
                                                                 </select>
-                                                            </>
+                                                            </div>
                                                         );
                                                     })()}
 
-                                                    {/* --- Segundo selector: Accesorios --- */}
+                                                    {/* Fila 2: segundo selector (Accesorios) */}
                                                     {getPrimarySelectValue(exercise.name) === 'accessory' && (
-                                                        <>
+                                                        <div className="flex items-center gap-2">
                                                             <select
                                                                 value={getExerciseCategory(exercise.name) === 'accessory_other' ? '__other__' : exercise.name}
                                                                 onChange={(e) => {
                                                                     if (e.target.value === '__other__') {
-                                                                        updateExercise(exIndex, 'name', '');
+                                                                        updateExercise(exIndex, 'name', '__otro__');
                                                                     } else {
                                                                         updateExercise(exIndex, 'name', e.target.value);
                                                                     }
                                                                 }}
-                                                                className="h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none flex-1"
+                                                                className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
                                                             >
                                                                 {ACCESSORY_LIST.filter(a => a !== 'Otros').map(a => (
                                                                     <option key={a} value={a}>{a}</option>
@@ -478,25 +489,30 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                             </select>
                                                             {getExerciseCategory(exercise.name) === 'accessory_other' && (
                                                                 <Input
-                                                                    placeholder="Escribe el accesorio"
-                                                                    value={exercise.name}
-                                                                    onChange={(e) => updateExercise(exIndex, 'name', e.target.value)}
-                                                                    className="flex-1 text-xs sm:text-sm"
+                                                                    placeholder="Nombre del accesorio"
+                                                                    value={exercise.name === '__otro__' ? '' : exercise.name}
+                                                                    onChange={(e) => updateExercise(exIndex, 'name', e.target.value || '__otro__')}
+                                                                    className="flex-1 text-xs sm:text-sm min-w-0"
                                                                 />
                                                             )}
-                                                        </>
+                                                        </div>
                                                     )}
-
-                                                    <Button
-                                                        type="button"
-                                                        variant="danger"
-                                                        size="sm"
-                                                        onClick={() => removeExercise(exIndex)}
-                                                        className="h-9 px-2 shrink-0"
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </Button>
                                                 </div>
+
+                                                {/* Input de tempo o pausa si aplica */}
+                                                {(exercise.name.toLowerCase().includes('tempo') || exercise.name.toLowerCase().includes('pausa')) && (
+                                                    <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2">
+                                                        <span className="text-amber-400 text-xs font-semibold uppercase tracking-wide whitespace-nowrap">
+                                                            {exercise.name.toLowerCase().includes('tempo') ? '⏱ Tempo:' : '⏸ Pausa:'}
+                                                        </span>
+                                                        <Input
+                                                            placeholder={exercise.name.toLowerCase().includes('tempo') ? 'Ej: 3-1-3-1' : 'Ej: 2 seg'}
+                                                            value={exercise.notes || ''}
+                                                            onChange={(e) => updateExercise(exIndex, 'notes', e.target.value)}
+                                                            className="flex-1 text-xs h-8 bg-transparent border-amber-500/40 text-amber-100 placeholder:text-amber-600"
+                                                        />
+                                                    </div>
+                                                )}
 
                                                 {/* Series del ejercicio - Responsive */}
                                                 <div className="space-y-3">

@@ -20,7 +20,6 @@ export const SQUAT_VARIANTS: string[] = [
 
 export const BENCH_VARIANTS: string[] = [
   'Bench Press tempo',
-  'Bench Press competición',
   'Bench Press pausa',
   'Spoto Press',
   'Pin Press',
