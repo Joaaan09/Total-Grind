@@ -434,7 +434,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                                                     max="10"
                                                                     value={set.targetRpe || ''}
                                                                     onChange={(e) => {
-                                                                        const val = parseInt(e.target.value);
+                                                                        const val = parseFloat(e.target.value);
                                                                         if (!isNaN(val) && val >= 1 && val <= 10) {
                                                                             updateSet(exIndex, setIndex, 'targetRpe', val);
                                                                         } else if (e.target.value === '') {
@@ -518,7 +518,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                                                             max="10"
                                                                             value={set.targetRpe || ''}
                                                                             onChange={(e) => {
-                                                                                const val = parseInt(e.target.value);
+                                                                                const val = parseFloat(e.target.value);
                                                                                 if (!isNaN(val) && val >= 1 && val <= 10) {
                                                                                     updateSet(exIndex, setIndex, 'targetRpe', val);
                                                                                 } else if (e.target.value === '') {

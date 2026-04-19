@@ -20,7 +20,6 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
   const [isSaving, setIsSaving] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleSetUpdate = (exerciseId: string, setId: string, field: keyof ExerciseSet, value: string | number) => {
     setExercises(prevExercises => prevExercises.map(ex => {
@@ -69,29 +68,24 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       return;
     }
 
-    // Validar que TODAS las series tengan peso y reps
-    const incompleteSets: string[] = [];
+    // Comprobar si TODAS las series tienen peso y reps para marcar como completada
+    let isFullyCompleted = true;
     exercises.forEach(ex => {
-      ex.sets.forEach((set, idx) => {
+      ex.sets.forEach((set) => {
         if (!set.weight || !set.reps) {
-          incompleteSets.push(`${ex.name} - Serie ${idx + 1}`);
+          isFullyCompleted = false;
         }
       });
     });
 
-    if (incompleteSets.length > 0) {
-      setValidationError(`Debes rellenar peso y reps en todas las series: ${incompleteSets.slice(0, 3).join(', ')}${incompleteSets.length > 3 ? ` y ${incompleteSets.length - 3} más...` : ''}`);
-      return;
-    }
-
-    setValidationError(null);
     setIsSaving(true);
-    // Preparar el objeto del día actualizado con los ejercicios completados y notas
+    
+    // Preparar el objeto del día actualizado con los ejercicios y notas
     const updatedDay: TrainingDay = {
       ...day,
       exercises: exercises,
       athleteNotes: athleteNotes || undefined,
-      isCompleted: true
+      isCompleted: isFullyCompleted
     };
 
     const success = await TrainingService.updateDay(token, day.id, updatedDay);
@@ -161,7 +155,8 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       {onCancel && (
         <button
           onClick={() => setShowExitConfirm(true)}
-          className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm"
+          disabled={isSaving}
+          className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm disabled:opacity-50"
         >
           <ChevronLeft size={18} />
           <span>Volver al bloque</span>
@@ -178,14 +173,6 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
           <span>{isSaving ? 'Guardando...' : 'Guardar Sesión'}</span>
         </Button>
       </div>
-
-      {/* Mensaje de error de validación */}
-      {validationError && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-start gap-3">
-          <AlertTriangle size={20} className="text-red-400 shrink-0 mt-0.5" />
-          <p className="text-sm text-red-300">{validationError}</p>
-        </div>
-      )}
 
       {/* Botón borrar sesión (solo si ya está completada) */}
       {day.isCompleted && (
