@@ -414,15 +414,25 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                         {/* Header con labels */}
                                                         <div className="grid grid-cols-[40px_1fr_1fr_1fr_40px] gap-2 items-center px-2 py-1">
                                                             <div className="text-xs text-slate-500 uppercase font-medium">#</div>
+                                                            <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">Kg (sug.)</label>
                                                             <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">Reps</label>
                                                             <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">RPE</label>
-                                                            <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">Kg (opt)</label>
                                                             <div></div>
                                                         </div>
                                                         {/* Filas de inputs */}
                                                         {exercise.sets.map((set, setIndex) => (
                                                             <div key={set.id} className="grid grid-cols-[40px_1fr_1fr_1fr_40px] gap-2 items-center bg-slate-950/50 p-2 rounded-md">
                                                                 <div className="flex items-center justify-center text-slate-500 text-xs font-mono">{setIndex + 1}</div>
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="80"
+                                                                    min="0"
+                                                                    step="0.5"
+                                                                    value={set.suggestedWeight || ''}
+                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                                                    className="h-10 text-sm"
+                                                                />
+
                                                                 <Input
                                                                     type="text"
                                                                     inputMode="numeric"
@@ -433,12 +443,15 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     autoComplete="off"
                                                                 />
                                                                 <Input
-                                                                    type="text"
-                                                                    inputMode="numeric"
+                                                                    type="number"
+                                                                    inputMode="decimal"
                                                                     placeholder="7"
+                                                                    min="1"
+                                                                    step="0.5"
+                                                                    max="10"
                                                                     value={set.targetRpe || ''}
                                                                     onChange={(e) => {
-                                                                        const val = parseInt(e.target.value);
+                                                                        const val = parseFloat(e.target.value);
                                                                         if (!isNaN(val) && val >= 1 && val <= 10) {
                                                                             updateSet(exIndex, setIndex, 'targetRpe', val);
                                                                         } else if (e.target.value === '') {
@@ -448,15 +461,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     className="h-10 text-sm"
                                                                     autoComplete="off"
                                                                 />
-                                                                <Input
-                                                                    type="number"
-                                                                    placeholder="80"
-                                                                    min="0"
-                                                                    step="0.5"
-                                                                    value={set.suggestedWeight || ''}
-                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
-                                                                    className="h-10 text-sm"
-                                                                />
+
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => removeSet(exIndex, setIndex)}
@@ -493,8 +498,22 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
                                                                 {/* Grid de inputs - 3 columnas en móvil */}
                                                                 <div className="grid grid-cols-3 gap-2.5">
+
                                                                     <div className="space-y-1.5">
-                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Repeticiones</label>
+                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Kg (sug.)</label>
+                                                                        <Input
+                                                                            type="number"
+                                                                            inputMode="decimal"
+                                                                            placeholder="80"
+                                                                            min="0"
+                                                                            step="0.5"
+                                                                            value={set.suggestedWeight || ''}
+                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-1.5">
+                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Reps</label>
                                                                         <Input
                                                                             type="text"
                                                                             inputMode="numeric"
@@ -508,14 +527,15 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     <div className="space-y-1.5">
                                                                         <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">RPE</label>
                                                                         <Input
-                                                                            type="text"
-                                                                            inputMode="numeric"
+                                                                            type="number"
+                                                                            inputMode="decimal"
                                                                             placeholder="7"
                                                                             min="1"
+                                                                            step="0.5"
                                                                             max="10"
                                                                             value={set.targetRpe || ''}
                                                                             onChange={(e) => {
-                                                                                const val = parseInt(e.target.value);
+                                                                                const val = parseFloat(e.target.value);
                                                                                 if (!isNaN(val) && val >= 1 && val <= 10) {
                                                                                     updateSet(exIndex, setIndex, 'targetRpe', val);
                                                                                 } else if (e.target.value === '') {
@@ -526,19 +546,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                             autoComplete="off"
                                                                         />
                                                                     </div>
-                                                                    <div className="space-y-1.5">
-                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Kg</label>
-                                                                        <Input
-                                                                            type="number"
-                                                                            inputMode="decimal"
-                                                                            placeholder="80"
-                                                                            min="0"
-                                                                            step="0.5"
-                                                                            value={set.suggestedWeight || ''}
-                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
-                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
-                                                                        />
-                                                                    </div>
+
                                                                 </div>
                                                             </div>
                                                         ))}
