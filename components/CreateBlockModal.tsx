@@ -221,10 +221,10 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in overflow-y-auto">
-            <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden my-2 sm:my-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in">
+            <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
                 {/* Cabecera del modal - Responsiva */}
-                <div className="flex items-start justify-between p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50">
+                <div className="flex-none flex items-start justify-between p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50">
                     <div className="flex flex-col flex-1 min-w-0">
                         <h2 className="text-lg sm:text-xl font-bold text-white truncate">Nuevo Bloque</h2>
                         {targetAthleteName && (
@@ -236,7 +236,9 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh] sm:max-h-[80vh]">
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                    {/* Zona scrollable: todo el contenido del formulario */}
+                    <div className="flex-1 overflow-y-auto">
                     {/* Información básica del bloque */}
                     <div className="p-3 sm:p-4 border-b border-slate-800 space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -351,7 +353,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                     </div>
 
                     {/* Editor del día seleccionado */}
-                    <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
+                    <div className="p-3 sm:p-4 space-y-3">
                         {currentDay && (
                             <>
                                 {/* Nombre del día editable */}
@@ -686,6 +688,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                             </>
                         )}
                     </div>
+                    </div>{/* fin zona scrollable */}
 
                     {/* Pie del modal - Responsive */}
                     <div className="p-3 sm:p-4 border-t border-slate-800 flex flex-col-reverse sm:flex-row justify-end gap-2 bg-slate-950/50">

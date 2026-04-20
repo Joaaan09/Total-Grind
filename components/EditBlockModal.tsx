@@ -213,16 +213,18 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in overflow-y-auto">
-            <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden my-2 sm:my-4">
-                <div className="flex items-start justify-between p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in">
+            <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+                <div className="flex-none flex items-start justify-between p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50">
                     <h2 className="text-lg sm:text-xl font-bold text-white truncate">Editar Bloque</h2>
                     <button onClick={onClose} className="text-slate-400 hover:text-white p-1 shrink-0 ml-2">
                         <X size={20} />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh] sm:max-h-[80vh]">
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                    {/* Zona scrollable: todo el contenido del formulario */}
+                    <div className="flex-1 overflow-y-auto">
                     {/* Información básica del bloque */}
                     <div className="p-3 sm:p-4 border-b border-slate-800 space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -336,7 +338,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                     </div>
 
                     {/* Editor del día seleccionado */}
-                    <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
+                    <div className="p-3 sm:p-4 space-y-3">
                         {currentDay && (
                             <>
                                 <div className="flex items-end gap-2">
@@ -659,6 +661,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                             </>
                         )}
                     </div>
+                    </div>{/* fin zona scrollable */}
 
                     {/* Pie del modal */}
                     <div className="p-3 sm:p-4 border-t border-slate-800 flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-2 bg-slate-950/50">
