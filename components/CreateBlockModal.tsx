@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Button, Input, Card, CardContent } from './ui';
 import { Loader2, Plus, Trash2, X } from 'lucide-react';
 import { TrainingBlock, TrainingWeek, TrainingDay, Exercise, ExerciseSet } from '../types';
+import {
+    SQUAT_VARIANTS, BENCH_VARIANTS, DEADLIFT_VARIANTS,
+    ACCESSORY_LIST, getPrimarySelectValue, getExerciseCategory, getVariantSubgroup
+} from '../utils/exerciseLists';
 
 interface CreateBlockModalProps {
     isOpen: boolean;
@@ -82,7 +86,36 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
     // Gestión de semanas: añadir y eliminar
     const addWeek = () => {
-        const newWeek = createDefaultWeek(weeks.length + 1);
+        const lastWeek = weeks[weeks.length - 1];
+        // Clonar la última semana con nuevos IDs
+        const newWeek: TrainingWeek = {
+            id: generateId(),
+            blockId: '',
+            weekNumber: weeks.length + 1,
+            days: lastWeek.days.map(day => ({
+                ...day,
+                id: generateId(),
+                weekId: '',
+                isCompleted: false,
+                athleteNotes: undefined,
+                exercises: day.exercises.map(ex => ({
+                    ...ex,
+                    id: generateId(),
+                    dayId: '',
+                    sets: ex.sets.map(set => ({
+                        ...set,
+                        id: generateId(),
+                        exerciseId: '',
+                        // Mantener prescripción (targetReps, targetRpe, suggestedWeight)
+                        // pero limpiar datos reales rellenados
+                        weight: undefined,
+                        rpe: undefined,
+                        estimated1rm: undefined,
+                        isCompleted: false
+                    }))
+                }))
+            }))
+        };
         setWeeks([...weeks, newWeek]);
     };
 
@@ -370,42 +403,116 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                         <Card key={exercise.id} className="border-slate-700 bg-slate-800/50">
                                             <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                                                 {/* Cabecera del ejercicio */}
-                                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                                                    <select
-                                                        value={['Comp SQ', 'Comp BP', 'Comp DL'].includes(exercise.name) ? exercise.name : 'custom'}
-                                                        onChange={(e) => {
-                                                            if (e.target.value === 'custom') {
-                                                                updateExercise(exIndex, 'name', '');
-                                                            } else {
-                                                                updateExercise(exIndex, 'name', e.target.value);
-                                                            }
-                                                        }}
-                                                        className="h-9 px-2 sm:px-3 rounded-md bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-500 outline-none flex-1 sm:flex-none"
-                                                    >
-                                                        <option value="">Seleccionar...</option>
-                                                        <option value="Comp SQ">Sentadilla</option>
-                                                        <option value="Comp BP">Banca</option>
-                                                        <option value="Comp DL">Peso Muerto</option>
-                                                        <option value="custom">Accesorio</option>
-                                                    </select>
-                                                    {!['Comp SQ', 'Comp BP', 'Comp DL'].includes(exercise.name) && (
-                                                        <Input
-                                                            placeholder="Nombre"
-                                                            value={exercise.name}
-                                                            onChange={(e) => updateExercise(exIndex, 'name', e.target.value)}
-                                                            className="flex-1 text-xs sm:text-sm"
-                                                        />
+                                                <div className="space-y-2">
+                                                    {/* Fila 1: selector principal + botón borrar */}
+                                                    <div className="flex items-center gap-2">
+                                                        <select
+                                                            value={getPrimarySelectValue(exercise.name)}
+                                                            onChange={(e) => {
+                                                                const val = e.target.value;
+                                                                if (val === 'Comp SQ') updateExercise(exIndex, 'name', 'Comp SQ');
+                                                                else if (val === 'Comp BP') updateExercise(exIndex, 'name', 'Comp BP');
+                                                                else if (val === 'Comp DL') updateExercise(exIndex, 'name', 'Comp DL');
+                                                                else if (val === 'variant') updateExercise(exIndex, 'name', SQUAT_VARIANTS[0]);
+                                                                else if (val === 'accessory') updateExercise(exIndex, 'name', ACCESSORY_LIST[0]);
+                                                                else updateExercise(exIndex, 'name', '');
+                                                            }}
+                                                            className="flex-1 h-9 px-2 sm:px-3 rounded-md bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
+                                                        >
+                                                            <option value="">Seleccionar...</option>
+                                                            <option value="Comp SQ">Sentadilla (Comp)</option>
+                                                            <option value="Comp BP">Banca (Comp)</option>
+                                                            <option value="Comp DL">Peso Muerto (Comp)</option>
+                                                            <option value="variant">Variantes</option>
+                                                            <option value="accessory">Accesorios</option>
+                                                        </select>
+                                                        <Button
+                                                            type="button"
+                                                            variant="danger"
+                                                            size="sm"
+                                                            onClick={() => removeExercise(exIndex)}
+                                                            className="h-9 px-2 shrink-0"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </Button>
+                                                    </div>
+
+                                                    {/* Fila 2: segundo selector (Variantes) */}
+                                                    {getPrimarySelectValue(exercise.name) === 'variant' && (() => {
+                                                        const subgroup = getVariantSubgroup('variant', exercise.name);
+                                                        return (
+                                                            <div className="flex items-center gap-2">
+                                                                <select
+                                                                    value={subgroup}
+                                                                    onChange={(e) => {
+                                                                        const sg = e.target.value;
+                                                                        if (sg === 'sq') updateExercise(exIndex, 'name', SQUAT_VARIANTS[0]);
+                                                                        else if (sg === 'bp') updateExercise(exIndex, 'name', BENCH_VARIANTS[0]);
+                                                                        else updateExercise(exIndex, 'name', DEADLIFT_VARIANTS[0]);
+                                                                    }}
+                                                                    className="h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none shrink-0"
+                                                                >
+                                                                    <option value="sq">Squat</option>
+                                                                    <option value="bp">Bench Press</option>
+                                                                    <option value="dl">Deadlift</option>
+                                                                </select>
+                                                                <select
+                                                                    value={exercise.name}
+                                                                    onChange={(e) => updateExercise(exIndex, 'name', e.target.value)}
+                                                                    className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
+                                                                >
+                                                                    {(subgroup === 'sq' ? SQUAT_VARIANTS : subgroup === 'bp' ? BENCH_VARIANTS : DEADLIFT_VARIANTS)
+                                                                        .map(v => <option key={v} value={v}>{v}</option>)}
+                                                                </select>
+                                                            </div>
+                                                        );
+                                                    })()}
+
+                                                    {/* Fila 2: segundo selector (Accesorios) */}
+                                                    {getPrimarySelectValue(exercise.name) === 'accessory' && (
+                                                        <div className="flex items-center gap-2">
+                                                            <select
+                                                                value={getExerciseCategory(exercise.name) === 'accessory_other' ? '__other__' : exercise.name}
+                                                                onChange={(e) => {
+                                                                    if (e.target.value === '__other__') {
+                                                                        updateExercise(exIndex, 'name', '__otro__');
+                                                                    } else {
+                                                                        updateExercise(exIndex, 'name', e.target.value);
+                                                                    }
+                                                                }}
+                                                                className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
+                                                            >
+                                                                {ACCESSORY_LIST.filter(a => a !== 'Otros').map(a => (
+                                                                    <option key={a} value={a}>{a}</option>
+                                                                ))}
+                                                                <option value="__other__">Otro...</option>
+                                                            </select>
+                                                            {getExerciseCategory(exercise.name) === 'accessory_other' && (
+                                                                <Input
+                                                                    placeholder="Nombre del accesorio"
+                                                                    value={exercise.name === '__otro__' ? '' : exercise.name}
+                                                                    onChange={(e) => updateExercise(exIndex, 'name', e.target.value || '__otro__')}
+                                                                    className="flex-1 text-xs sm:text-sm min-w-0"
+                                                                />
+                                                            )}
+                                                        </div>
                                                     )}
-                                                    <Button
-                                                        type="button"
-                                                        variant="danger"
-                                                        size="sm"
-                                                        onClick={() => removeExercise(exIndex)}
-                                                        className="h-9 px-2 shrink-0"
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </Button>
                                                 </div>
+
+                                                {/* Input de tempo o pausa si aplica */}
+                                                {(exercise.name.toLowerCase().includes('tempo') || exercise.name.toLowerCase().includes('pausa')) && (
+                                                    <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2">
+                                                        <span className="text-amber-400 text-xs font-semibold uppercase tracking-wide whitespace-nowrap">
+                                                            {exercise.name.toLowerCase().includes('tempo') ? '⏱ Tempo:' : '⏸ Pausa:'}
+                                                        </span>
+                                                        <Input
+                                                            placeholder={exercise.name.toLowerCase().includes('tempo') ? 'Ej: 3-1-3-1' : 'Ej: 2 seg'}
+                                                            value={exercise.notes || ''}
+                                                            onChange={(e) => updateExercise(exIndex, 'notes', e.target.value)}
+                                                            className="flex-1 text-xs h-8 bg-transparent border-amber-500/40 text-amber-100 placeholder:text-amber-600"
+                                                        />
+                                                    </div>
+                                                )}
 
                                                 {/* Series del ejercicio - Responsive */}
                                                 <div className="space-y-3">
@@ -414,15 +521,25 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                         {/* Header con labels */}
                                                         <div className="grid grid-cols-[40px_1fr_1fr_1fr_40px] gap-2 items-center px-2 py-1">
                                                             <div className="text-xs text-slate-500 uppercase font-medium">#</div>
+                                                            <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">Kg (sug.)</label>
                                                             <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">Reps</label>
                                                             <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">RPE</label>
-                                                            <label className="text-xs text-slate-400 uppercase tracking-wide font-medium">Kg (opt)</label>
                                                             <div></div>
                                                         </div>
                                                         {/* Filas de inputs */}
                                                         {exercise.sets.map((set, setIndex) => (
                                                             <div key={set.id} className="grid grid-cols-[40px_1fr_1fr_1fr_40px] gap-2 items-center bg-slate-950/50 p-2 rounded-md">
                                                                 <div className="flex items-center justify-center text-slate-500 text-xs font-mono">{setIndex + 1}</div>
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="80"
+                                                                    min="0"
+                                                                    step="0.5"
+                                                                    value={set.suggestedWeight || ''}
+                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                                                    className="h-10 text-sm"
+                                                                />
+
                                                                 <Input
                                                                     type="text"
                                                                     inputMode="numeric"
@@ -433,12 +550,15 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     autoComplete="off"
                                                                 />
                                                                 <Input
-                                                                    type="text"
-                                                                    inputMode="numeric"
+                                                                    type="number"
+                                                                    inputMode="decimal"
                                                                     placeholder="7"
+                                                                    min="1"
+                                                                    step="0.5"
+                                                                    max="10"
                                                                     value={set.targetRpe || ''}
                                                                     onChange={(e) => {
-                                                                        const val = parseInt(e.target.value);
+                                                                        const val = parseFloat(e.target.value);
                                                                         if (!isNaN(val) && val >= 1 && val <= 10) {
                                                                             updateSet(exIndex, setIndex, 'targetRpe', val);
                                                                         } else if (e.target.value === '') {
@@ -448,15 +568,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     className="h-10 text-sm"
                                                                     autoComplete="off"
                                                                 />
-                                                                <Input
-                                                                    type="number"
-                                                                    placeholder="80"
-                                                                    min="0"
-                                                                    step="0.5"
-                                                                    value={set.suggestedWeight || ''}
-                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
-                                                                    className="h-10 text-sm"
-                                                                />
+
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => removeSet(exIndex, setIndex)}
@@ -493,8 +605,22 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
                                                                 {/* Grid de inputs - 3 columnas en móvil */}
                                                                 <div className="grid grid-cols-3 gap-2.5">
+
                                                                     <div className="space-y-1.5">
-                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Repeticiones</label>
+                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Kg (sug.)</label>
+                                                                        <Input
+                                                                            type="number"
+                                                                            inputMode="decimal"
+                                                                            placeholder="80"
+                                                                            min="0"
+                                                                            step="0.5"
+                                                                            value={set.suggestedWeight || ''}
+                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-1.5">
+                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Reps</label>
                                                                         <Input
                                                                             type="text"
                                                                             inputMode="numeric"
@@ -508,14 +634,15 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     <div className="space-y-1.5">
                                                                         <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">RPE</label>
                                                                         <Input
-                                                                            type="text"
-                                                                            inputMode="numeric"
+                                                                            type="number"
+                                                                            inputMode="decimal"
                                                                             placeholder="7"
                                                                             min="1"
+                                                                            step="0.5"
                                                                             max="10"
                                                                             value={set.targetRpe || ''}
                                                                             onChange={(e) => {
-                                                                                const val = parseInt(e.target.value);
+                                                                                const val = parseFloat(e.target.value);
                                                                                 if (!isNaN(val) && val >= 1 && val <= 10) {
                                                                                     updateSet(exIndex, setIndex, 'targetRpe', val);
                                                                                 } else if (e.target.value === '') {
@@ -526,19 +653,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                             autoComplete="off"
                                                                         />
                                                                     </div>
-                                                                    <div className="space-y-1.5">
-                                                                        <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Kg</label>
-                                                                        <Input
-                                                                            type="number"
-                                                                            inputMode="decimal"
-                                                                            placeholder="80"
-                                                                            min="0"
-                                                                            step="0.5"
-                                                                            value={set.suggestedWeight || ''}
-                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
-                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
-                                                                        />
-                                                                    </div>
+
                                                                 </div>
                                                             </div>
                                                         ))}
