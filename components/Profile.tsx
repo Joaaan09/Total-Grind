@@ -183,7 +183,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
     return (
         <>
             <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Perfil de Usuario</h1>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-50">Perfil de Usuario</h1>
 
                 {/* Tarjeta de perfil principal */}
                 <Card>
@@ -206,7 +206,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                                 )}
                                 </div>
                                 <button
-                                    className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-0.5 sm:p-1 text-white shadow-lg hover:bg-blue-500 transition-colors"
+                                    className="absolute bottom-0 right-0 bg-brandRed-600 rounded-full p-0.5 sm:p-1 text-slate-50 shadow-lg hover:bg-brandRed-500 transition-colors"
                                     onClick={() => fileInputRef.current?.click()}
                                     disabled={isUploadingImage || isDeletingImage}
                                 >
@@ -224,7 +224,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                                 </button>
                                 {user.profilePicture && (
                                     <button
-                                        className="absolute bottom-0 -left-1 bg-red-600 rounded-full p-0.5 sm:p-1 text-white shadow-lg hover:bg-red-500 transition-colors"
+                                        className="absolute bottom-0 -left-1 bg-slate-900 border border-slate-700 rounded-full p-0.5 sm:p-1 text-slate-400 shadow-lg hover:text-red-500 hover:border-red-900/50 hover:bg-red-900/20 transition-colors"
                                         onClick={handleDeleteAvatar}
                                         disabled={isDeletingImage || isUploadingImage}
                                         title="Eliminar foto"
@@ -248,7 +248,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                                 <CardTitle>{user.name}</CardTitle>
                                 <p className="text-slate-500 text-sm sm:text-base truncate">{user.email}</p>
                                 {uploadStatus && (
-                                    <p className={`text-xs font-bold mt-1 ${uploadStatus.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                                    <p className={`text-xs font-bold mt-1 ${uploadStatus.type === 'success' ? 'text-emerald-500' : 'text-red-500'}`}>
                                         {uploadStatus.message}
                                     </p>
                                 )}
@@ -268,7 +268,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
-                                        <Shield size={20} className="text-blue-500" /> Mi Entrenador
+                                        <Shield size={20} className="text-brandRed-500" /> Mi Entrenador
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
@@ -281,12 +281,12 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                                                     className="h-10 w-10 rounded-full object-cover flex-shrink-0"
                                                 />
                                             ) : (
-                                                <div className="h-10 w-10 rounded-full bg-blue-900/30 text-blue-500 flex items-center justify-center font-bold flex-shrink-0">
+                                                <div className="h-10 w-10 rounded-full bg-brandRed-900/30 text-brandRed-500 flex items-center justify-center font-bold flex-shrink-0">
                                                     {typeof user.coachId === 'object' ? user.coachId.name.substring(0, 2).toUpperCase() : 'EC'}
                                                 </div>
                                             )}
                                             <div className="min-w-0">
-                                                <p className="font-medium text-white truncate">
+                                                <p className="font-medium text-slate-50 truncate">
                                                     {typeof user.coachId === 'object' ? user.coachId.name : 'Tu Entrenador'}
                                                 </p>
                                                 <p className="text-xs text-slate-500 truncate">
@@ -296,7 +296,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                                         </div>
                                         <button
                                             onClick={() => setShowRemoveCoachConfirm(true)}
-                                            className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors flex-shrink-0"
+                                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-900/20 rounded-lg transition-colors flex-shrink-0"
                                             title="Eliminar entrenador"
                                         >
                                             <UserMinus className="w-4 h-4" />
@@ -308,31 +308,31 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
 
                         {/* Invitaciones pendientes */}
                         {!user.coachId && invites.length > 0 && (
-                            <Card className="border-blue-500/30 bg-blue-950/10">
+                            <Card className="border-slate-700 bg-brandRed-950/10">
                                 <CardHeader>
                                     <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
-                                        <Mail size={20} className="text-blue-400" /> Invitaciones Pendientes
+                                        <Mail size={20} className="text-brandRed-500" /> Invitaciones Pendientes
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     {invites.map(invite => (
                                         <div key={invite._id || invite.coachId} className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-800">
                                             <div>
-                                                <p className="font-medium text-white">{invite.coachName}</p>
+                                                <p className="font-medium text-slate-50">{invite.coachName}</p>
                                                 <p className="text-xs text-slate-400">Quiere ser tu entrenador</p>
                                             </div>
                                             <div className="flex gap-2">
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    className="text-red-400 hover:text-red-300 border-slate-700"
+                                                    className="text-red-500 hover:text-red-300 border-slate-700"
                                                     onClick={() => handleRejectInvite(invite.coachId)}
                                                 >
                                                     Rechazar
                                                 </Button>
                                                 <Button
                                                     size="sm"
-                                                    className="bg-blue-600 hover:bg-blue-700 text-white border-none"
+                                                    className="bg-brandRed-600 hover:bg-brandRed-700 text-slate-50 border-none"
                                                     onClick={() => handleAcceptInvite(invite.coachId)}
                                                 >
                                                     Aceptar
@@ -363,7 +363,7 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                                 <Button size="sm" onClick={handleSaveName} disabled={isSavingName} className="h-9 px-3">
                                     {isSavingName ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                                 </Button>
-                                <Button size="sm" variant="ghost" onClick={() => { setIsEditingName(false); setEditName(user.name); }} disabled={isSavingName} className="h-9 px-3 text-red-400">
+                                <Button size="sm" variant="ghost" onClick={() => { setIsEditingName(false); setEditName(user.name); }} disabled={isSavingName} className="h-9 px-3 text-red-500">
                                     <X size={16} />
                                 </Button>
                             </div>
@@ -385,13 +385,13 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
             {showRemoveCoachConfirm && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-md w-full">
-                        <div className="flex items-center gap-3 text-red-400 mb-4">
+                        <div className="flex items-center gap-3 text-red-500 mb-4">
                             <UserMinus className="w-6 h-6" />
                             <h3 className="text-xl font-bold">Eliminar Entrenador</h3>
                         </div>
-                        <p className="text-slate-300 mb-6">
+                        <p className="text-slate-50 mb-6">
                             ¿Estás seguro de que quieres dejar de entrenar con{' '}
-                            <strong className="text-white">
+                            <strong className="text-slate-50">
                                 {typeof user.coachId === 'object' ? user.coachId.name : 'tu entrenador'}
                             </strong>
                             ? Ya no tendrá acceso a tu progreso y dejará de poder asignarte bloques.

@@ -58,27 +58,27 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
             <Card className="w-full max-w-md bg-slate-950 border-slate-800 shadow-xl relative animate-in zoom-in-95">
                 <button
                     onClick={onClose}
-                    className="absolute right-2 sm:right-4 top-2 sm:top-4 text-slate-400 hover:text-white"
+                    className="absolute right-2 sm:right-4 top-2 sm:top-4 text-slate-400 hover:text-slate-50"
                 >
                     <X size={18} className="sm:block hidden" />
                     <X size={16} className="sm:hidden" />
                 </button>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                        <Lock className="text-blue-500 flex-shrink-0 hidden sm:block" size={18} />
-                        <Lock className="text-blue-500 flex-shrink-0 sm:hidden" size={16} />
+                        <Lock className="text-brandRed-500 flex-shrink-0 hidden sm:block" size={18} />
+                        <Lock className="text-brandRed-500 flex-shrink-0 sm:hidden" size={16} />
                         Cambiar Contraseña
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     {success ? (
-                        <div className="text-center py-6 sm:py-8 text-green-500">
+                        <div className="text-center py-6 sm:py-8 text-emerald-500">
                             <p className="font-bold text-base sm:text-lg">¡Contraseña actualizada!</p>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                             {error && (
-                                <div className="p-2 sm:p-3 bg-red-900/20 border border-red-900 text-red-400 text-xs sm:text-sm rounded">
+                                <div className="p-2 sm:p-3 bg-red-900/20 border border-red-900 text-red-500 text-xs sm:text-sm rounded">
                                     {error}
                                 </div>
                             )}

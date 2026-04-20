@@ -41,7 +41,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
             {/* Sección de bienvenida con nombre del usuario */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
                 <div className="min-w-0 flex-1">
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white truncate">Hola, {user.name.split(' ')[0]} 👋</h1>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-50 truncate">Hola, {user.name.split(' ')[0]} 👋</h1>
                     <p className="text-slate-400 text-xs sm:text-sm mt-1">Listo para romper tus PRs hoy?</p>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
@@ -53,15 +53,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
 
             {/* Grid de estadísticas rápidas */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-                <Card className="bg-blue-900/20 border-blue-900/50">
+                <Card>
                     <CardContent className="p-3 sm:p-4">
                         <div className="flex flex-col items-start gap-2">
-                            <div className="p-2 bg-blue-600/20 text-blue-500 rounded-lg">
+                            <div className="p-2 bg-brandRed-600/20 text-brandRed-500 rounded-lg">
                                 <Activity size={16} />
                             </div>
                             <div className="w-full">
                                 <p className="text-xs sm:text-sm text-slate-400">Sesiones</p>
-                                <p className="text-xl sm:text-2xl font-bold text-white">{totalSessions}</p>
+                                <p className="text-xl sm:text-2xl font-bold text-slate-50">{totalSessions}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -69,12 +69,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
                 <Card>
                     <CardContent className="p-3 sm:p-4">
                         <div className="flex flex-col items-start gap-2">
-                            <div className="p-2 bg-green-600/20 text-green-500 rounded-lg">
+                            <div className="p-2 bg-green-600/20 text-emerald-500 rounded-lg">
                                 <TrendingUp size={16} />
                             </div>
                             <div className="w-full">
                                 <p className="text-xs sm:text-sm text-slate-400">SBD Total</p>
-                                <p className="text-xl sm:text-2xl font-bold text-white">{sbdTotal > 0 ? sbdTotal : '-'} <span className="text-xs sm:text-sm font-normal text-slate-500">kg</span></p>
+                                <p className="text-xl sm:text-2xl font-bold text-slate-50">{sbdTotal > 0 ? sbdTotal : '-'} <span className="text-xs sm:text-sm font-normal text-slate-500">kg</span></p>
                             </div>
                         </div>
                     </CardContent>
@@ -87,7 +87,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
                             </div>
                             <div className="w-full">
                                 <p className="text-xs sm:text-sm text-slate-400">Racha</p>
-                                <p className="text-xl sm:text-2xl font-bold text-white">{streak} días</p>
+                                <p className="text-xl sm:text-2xl font-bold text-slate-50">{streak} días</p>
                             </div>
                         </div>
                     </CardContent>
@@ -95,12 +95,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
                 <Card>
                     <CardContent className="p-3 sm:p-4">
                         <div className="flex flex-col items-start gap-2">
-                            <div className="p-2 bg-orange-600/20 text-orange-500 rounded-lg">
+                            <div className="p-2 bg-orange-600/20 text-amber-500 rounded-lg">
                                 <Users size={16} />
                             </div>
                             <div className="w-full min-w-0">
                                 <p className="text-xs sm:text-sm text-slate-400">Coach</p>
-                                <p className="text-xl sm:text-2xl font-bold text-white truncate">
+                                <p className="text-xl sm:text-2xl font-bold text-slate-50 truncate">
                                     {user.coachId && typeof user.coachId === 'object' ? user.coachId.name : (user.coachId ? 'Entrenador' : '-')}
                                 </p>
                             </div>
@@ -112,8 +112,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
             {/* Próximos Entrenamientos */}
             <section>
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold text-white">Próximos Entrenamientos</h2>
-                    <Button variant="ghost" size="sm" className="text-blue-500" onClick={() => onNavigate('/training')}>
+                    <h2 className="text-xl font-bold text-slate-50">Próximos Entrenamientos</h2>
+                    <Button variant="ghost" size="sm" className="text-brandRed-500" onClick={() => onNavigate('/training')}>
                         Ver todo <ArrowRight size={16} className="ml-1" />
                     </Button>
                 </div>
@@ -133,23 +133,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
                             {pendingDays.map((day, index) => (
                                 <Card
                                     key={`${day.blockId}-${day.id}`}
-                                    className="group cursor-pointer hover:border-blue-500/50 transition-all hover:bg-slate-900"
+                                    className="group cursor-pointer hover:border-slate-600 transition-all hover:bg-slate-900"
                                     onClick={() => onNavigate(`/training/${day.blockId}`)}
                                 >
                                     <CardContent className="p-4">
                                         <div className="flex items-start justify-between gap-2">
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-xs text-blue-400 font-medium uppercase tracking-wide mb-1 truncate">
+                                                <p className="text-xs text-brandRed-500 font-medium uppercase tracking-wide mb-1 truncate">
                                                     {day.blockTitle}
                                                 </p>
-                                                <h3 className="text-lg font-semibold text-white truncate">
+                                                <h3 className="text-lg font-semibold text-slate-50 truncate">
                                                     {day.dayName}
                                                 </h3>
                                                 <p className="text-sm text-slate-500 mt-1">
                                                     {day.exercises?.length || 0} ejercicios
                                                 </p>
                                             </div>
-                                            <div className="p-2 bg-blue-600/20 text-blue-400 rounded-lg shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                            <div className="p-2 bg-slate-800 text-slate-400 rounded-lg shrink-0 group-hover:bg-brandRed-600 group-hover:text-slate-50 transition-colors">
                                                 <ArrowRight size={18} />
                                             </div>
                                         </div>

@@ -230,12 +230,12 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                 {/* Cabecera del modal - Responsiva */}
                 <div className="flex-none flex items-start justify-between p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50">
                     <div className="flex flex-col flex-1 min-w-0">
-                        <h2 className="text-lg sm:text-xl font-bold text-white truncate">Nuevo Bloque</h2>
+                        <h2 className="text-lg sm:text-xl font-bold text-slate-50 truncate">Nuevo Bloque</h2>
                         {targetAthleteName && (
-                            <p className="text-xs sm:text-sm text-blue-400 truncate">Para: {targetAthleteName}</p>
+                            <p className="text-xs sm:text-sm text-brandRed-500 truncate">Para: {targetAthleteName}</p>
                         )}
                     </div>
-                    <button onClick={onClose} className="text-slate-400 hover:text-white p-1 shrink-0 ml-2">
+                    <button onClick={onClose} className="text-slate-400 hover:text-slate-50 p-1 shrink-0 ml-2">
                         <X size={20} />
                     </button>
                 </div>
@@ -247,7 +247,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                     <div className="p-3 sm:p-4 border-b border-slate-800 space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-1.5">
-                                <label className="text-xs sm:text-sm font-medium text-slate-300">Nombre</label>
+                                <label className="text-xs sm:text-sm font-medium text-slate-50">Nombre</label>
                                 <Input
                                     placeholder="Ej: Fuerza"
                                     value={title}
@@ -257,7 +257,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-xs sm:text-sm font-medium text-slate-300">Fecha Inicio</label>
+                                <label className="text-xs sm:text-sm font-medium text-slate-50">Fecha Inicio</label>
                                 <Input
                                     type="date"
                                     value={startDate}
@@ -269,13 +269,13 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                         </div>
                         {/* Descripción solo en desktop */}
                         <div className="hidden sm:block space-y-1.5">
-                            <label className="text-xs sm:text-sm font-medium text-slate-300">Descripción (opcional)</label>
+                            <label className="text-xs sm:text-sm font-medium text-slate-50">Descripción (opcional)</label>
                             <textarea
                                 placeholder="Objetivo, fase, notas..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={2}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-slate-100 text-xs sm:text-sm focus:border-blue-500 outline-none resize-none"
+                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none resize-none"
                             />
                         </div>
                     </div>
@@ -305,8 +305,8 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                         type="button"
                                         onClick={() => { setSelectedWeekIndex(i); setSelectedDayIndex(0); }}
                                         className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${selectedWeekIndex === i
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-slate-800 text-slate-400 hover:text-white'
+                                            ? 'bg-brandRed-600 text-slate-50'
+                                            : 'bg-slate-800 text-slate-400 hover:text-slate-50'
                                             }`}
                                     >
                                         S{week.weekNumber}
@@ -348,8 +348,8 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                         type="button"
                                         onClick={() => setSelectedDayIndex(i)}
                                         className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors truncate max-w-[80px] sm:max-w-none ${selectedDayIndex === i
-                                            ? 'bg-green-600 text-white'
-                                            : 'bg-slate-800 text-slate-400 hover:text-white'
+                                            ? 'bg-green-600 text-slate-50'
+                                            : 'bg-slate-800 text-slate-400 hover:text-slate-50'
                                             }`}
                                     >
                                         {day.dayName}
@@ -393,7 +393,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                         value={currentDay.description || ''}
                                         onChange={(e) => updateDayDescription(e.target.value)}
                                         rows={2}
-                                        className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-slate-100 text-xs sm:text-sm focus:border-blue-500 outline-none resize-none"
+                                        className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none resize-none"
                                     />
                                 </div>
 
@@ -424,7 +424,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                 else if (val === 'accessory') updateExercise(exIndex, 'name', ACCESSORY_LIST[0]);
                                                                 else updateExercise(exIndex, 'name', '');
                                                             }}
-                                                            className="flex-1 h-9 px-2 sm:px-3 rounded-md bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
+                                                            className="flex-1 h-9 px-2 sm:px-3 rounded-md bg-slate-950 border border-slate-700 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none min-w-0"
                                                         >
                                                             <option value="">Seleccionar...</option>
                                                             <option value="Comp SQ">Sentadilla (Comp)</option>
@@ -457,7 +457,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                         else if (sg === 'bp') updateExercise(exIndex, 'name', BENCH_VARIANTS[0]);
                                                                         else updateExercise(exIndex, 'name', DEADLIFT_VARIANTS[0]);
                                                                     }}
-                                                                    className="h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none shrink-0"
+                                                                    className="h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none shrink-0"
                                                                 >
                                                                     <option value="sq">Squat</option>
                                                                     <option value="bp">Bench Press</option>
@@ -466,7 +466,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                 <select
                                                                     value={exercise.name}
                                                                     onChange={(e) => updateExercise(exIndex, 'name', e.target.value)}
-                                                                    className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
+                                                                    className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none min-w-0"
                                                                 >
                                                                     {(subgroup === 'sq' ? SQUAT_VARIANTS : subgroup === 'bp' ? BENCH_VARIANTS : DEADLIFT_VARIANTS)
                                                                         .map(v => <option key={v} value={v}>{v}</option>)}
@@ -487,7 +487,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                         updateExercise(exIndex, 'name', e.target.value);
                                                                     }
                                                                 }}
-                                                                className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-200 text-xs sm:text-sm focus:border-blue-500 outline-none min-w-0"
+                                                                className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none min-w-0"
                                                             >
                                                                 {ACCESSORY_LIST.filter(a => a !== 'Otros').map(a => (
                                                                     <option key={a} value={a}>{a}</option>
@@ -509,14 +509,14 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                 {/* Input de tempo o pausa si aplica */}
                                                 {(exercise.name.toLowerCase().includes('tempo') || exercise.name.toLowerCase().includes('pausa')) && (
                                                     <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2">
-                                                        <span className="text-amber-400 text-xs font-semibold uppercase tracking-wide whitespace-nowrap">
+                                                        <span className="text-amber-500 text-xs font-semibold uppercase tracking-wide whitespace-nowrap">
                                                             {exercise.name.toLowerCase().includes('tempo') ? '⏱ Tempo:' : '⏸ Pausa:'}
                                                         </span>
                                                         <Input
                                                             placeholder={exercise.name.toLowerCase().includes('tempo') ? 'Ej: 3-1-3-1' : 'Ej: 2 seg'}
                                                             value={exercise.notes || ''}
                                                             onChange={(e) => updateExercise(exIndex, 'notes', e.target.value)}
-                                                            className="flex-1 text-xs h-8 bg-transparent border-amber-500/40 text-amber-100 placeholder:text-amber-600"
+                                                            className="flex-1 text-xs h-8 bg-transparent border-amber-500/40 text-amber-100 placeholder:text-amber-500"
                                                         />
                                                     </div>
                                                 )}
@@ -580,7 +580,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     type="button"
                                                                     onClick={() => removeSet(exIndex, setIndex)}
                                                                     disabled={exercise.sets.length <= 1}
-                                                                    className="text-slate-500 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
+                                                                    className="text-slate-500 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
                                                                 >
                                                                     <X size={16} />
                                                                 </button>
@@ -591,20 +591,20 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                     {/* Móvil: Cards grandes y visuales */}
                                                     <div className="sm:hidden space-y-2.5">
                                                         {exercise.sets.map((set, setIndex) => (
-                                                            <div key={set.id} className="bg-slate-800/60 border border-slate-700 rounded-lg p-3 space-y-2.5 transform transition-all hover:border-blue-500/50">
+                                                            <div key={set.id} className="bg-slate-800/60 border border-slate-700 rounded-lg p-3 space-y-2.5 transform transition-all hover:border-slate-600">
                                                                 {/* Header de la serie */}
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center gap-2">
-                                                                        <div className="w-8 h-8 bg-blue-600/20 text-blue-400 rounded-full flex items-center justify-center text-sm font-bold border border-blue-500/30">
+                                                                        <div className="w-8 h-8 bg-brandRed-600/20 text-brandRed-500 rounded-full flex items-center justify-center text-sm font-bold border border-slate-700">
                                                                             {setIndex + 1}
                                                                         </div>
-                                                                        <span className="text-slate-300 font-medium">Serie {setIndex + 1}</span>
+                                                                        <span className="text-slate-50 font-medium">Serie {setIndex + 1}</span>
                                                                     </div>
                                                                     <button
                                                                         type="button"
                                                                         onClick={() => removeSet(exIndex, setIndex)}
                                                                         disabled={exercise.sets.length <= 1}
-                                                                        className="text-slate-500 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed p-1.5 hover:bg-red-900/20 rounded transition-colors"
+                                                                        className="text-slate-500 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed p-1.5 hover:bg-red-900/20 rounded transition-colors"
                                                                     >
                                                                         <X size={18} />
                                                                     </button>
@@ -623,7 +623,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                             step="0.5"
                                                                             value={set.suggestedWeight || ''}
                                                                             onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
-                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-slate-500 focus:bg-slate-900 pointer-events-auto"
                                                                         />
                                                                     </div>
                                                                     <div className="space-y-1.5">
@@ -634,7 +634,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                             placeholder="8"
                                                                             value={set.targetReps || ''}
                                                                             onChange={(e) => updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
-                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-slate-500 focus:bg-slate-900 pointer-events-auto"
                                                                             autoComplete="off"
                                                                         />
                                                                     </div>
@@ -656,7 +656,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                                     updateSet(exIndex, setIndex, 'targetRpe', undefined);
                                                                                 }
                                                                             }}
-                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-blue-500 focus:bg-slate-900 pointer-events-auto"
+                                                                            className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-slate-500 focus:bg-slate-900 pointer-events-auto"
                                                                             autoComplete="off"
                                                                         />
                                                                     </div>
@@ -672,7 +672,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() => addSet(exIndex)}
-                                                        className="w-full text-xs sm:text-sm h-9 sm:h-8 text-slate-400 hover:text-slate-300 bg-slate-950/30 hover:bg-slate-900/50"
+                                                        className="w-full text-xs sm:text-sm h-9 sm:h-8 text-slate-400 hover:text-slate-50 bg-slate-950/30 hover:bg-slate-900/50"
                                                     >
                                                         <Plus size={16} className="mr-1.5" /> Añadir Serie
                                                     </Button>
