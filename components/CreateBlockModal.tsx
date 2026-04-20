@@ -116,7 +116,10 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                 }))
             }))
         };
+        const newWeekIndex = weeks.length;
         setWeeks([...weeks, newWeek]);
+        setSelectedWeekIndex(newWeekIndex);
+        setSelectedDayIndex(0);
     };
 
     const removeWeek = (weekIndex: number) => {
@@ -132,10 +135,11 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     // Gestión de días: añadir, actualizar nombre y eliminar
     const addDay = () => {
         const newDay = createDefaultDay(currentWeek.days.length + 1);
+        const newDayIndex = currentWeek.days.length;
         const updatedWeeks = [...weeks];
         updatedWeeks[selectedWeekIndex].days.push(newDay);
         setWeeks(updatedWeeks);
-        setSelectedDayIndex(currentWeek.days.length);
+        setSelectedDayIndex(newDayIndex);
     };
 
     const updateDayName = (name: string) => {
@@ -221,10 +225,10 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in overflow-y-auto">
-            <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden my-2 sm:my-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in">
+            <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
                 {/* Cabecera del modal - Responsiva */}
-                <div className="flex items-start justify-between p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50">
+                <div className="flex-none flex items-start justify-between p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50">
                     <div className="flex flex-col flex-1 min-w-0">
                         <h2 className="text-lg sm:text-xl font-bold text-white truncate">Nuevo Bloque</h2>
                         {targetAthleteName && (
@@ -236,7 +240,9 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh] sm:max-h-[80vh]">
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                    {/* Zona scrollable: todo el contenido del formulario */}
+                    <div className="flex-1 overflow-y-auto">
                     {/* Información básica del bloque */}
                     <div className="p-3 sm:p-4 border-b border-slate-800 space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -324,9 +330,16 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                         <div className="space-y-1 sm:space-y-2">
                             <div className="hidden sm:flex items-center justify-between">
                                 <span className="text-xs sm:text-sm font-medium text-slate-400">Día {selectedDayIndex + 1} de {currentWeek?.days.length || 0}</span>
-                                <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-8 px-2 text-xs">
-                                    <Plus size={14} />
-                                </Button>
+                                <div className="flex gap-1">
+                                    <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-8 px-2 text-xs">
+                                        <Plus size={14} />
+                                    </Button>
+                                    {currentWeek?.days.length > 1 && (
+                                        <Button type="button" variant="danger" size="sm" onClick={() => removeDay(selectedDayIndex)} className="h-8 px-2 text-xs">
+                                            <Trash2 size={14} />
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                             <div className="flex gap-0.5 overflow-x-auto pb-1 sm:gap-1">
                                 {currentWeek?.days.map((day, i) => (
@@ -342,40 +355,34 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                         {day.dayName}
                                     </button>
                                 ))}
-                                {/* Botón add/remove en móvil */}
-                                <Button type="button" variant="ghost" size="sm" onClick={addDay} className="sm:hidden h-7 px-1.5 text-xs flex-shrink-0">
-                                    <Plus size={12} />
-                                </Button>
+                                {/* Botones add/remove en móvil */}
+                                <div className="sm:hidden flex gap-0.5 ml-auto flex-shrink-0">
+                                    <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-7 px-1.5 text-xs">
+                                        <Plus size={12} />
+                                    </Button>
+                                    {currentWeek?.days.length > 1 && (
+                                        <Button type="button" variant="danger" size="sm" onClick={() => removeDay(selectedDayIndex)} className="h-7 px-1.5 text-xs">
+                                            <Trash2 size={12} />
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Editor del día seleccionado */}
-                    <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
+                    <div className="p-3 sm:p-4 space-y-3">
                         {currentDay && (
                             <>
                                 {/* Nombre del día editable */}
-                                <div className="flex items-end gap-2">
-                                    <div className="flex-1">
-                                        <label className="text-xs text-slate-400 block mb-1">Nombre del día</label>
-                                        <Input
-                                            placeholder="Ej: Día 1"
-                                            value={currentDay.dayName}
-                                            onChange={(e) => updateDayName(e.target.value)}
-                                            className="text-sm"
-                                        />
-                                    </div>
-                                    {currentWeek.days.length > 1 && (
-                                        <Button
-                                            type="button"
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => removeDay(selectedDayIndex)}
-                                            className="h-9 px-2"
-                                        >
-                                            <Trash2 size={16} />
-                                        </Button>
-                                    )}
+                                <div className="flex-1">
+                                    <label className="text-xs text-slate-400 block mb-1">Nombre del día</label>
+                                    <Input
+                                        placeholder="Ej: Día 1"
+                                        value={currentDay.dayName}
+                                        onChange={(e) => updateDayName(e.target.value)}
+                                        className="text-sm"
+                                    />
                                 </div>
 
                                 {/* Descripción del día */}
@@ -686,6 +693,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                             </>
                         )}
                     </div>
+                    </div>{/* fin zona scrollable */}
 
                     {/* Pie del modal - Responsive */}
                     <div className="p-3 sm:p-4 border-t border-slate-800 flex flex-col-reverse sm:flex-row justify-end gap-2 bg-slate-950/50">
