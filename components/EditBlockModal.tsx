@@ -126,10 +126,11 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
             isCompleted: false,
             exercises: []
         };
+        const newDayIndex = currentWeek.days.length;
         const updatedWeeks = [...weeks];
         updatedWeeks[selectedWeekIndex].days.push(newDay);
         setWeeks(updatedWeeks);
-        setSelectedDayIndex(currentWeek.days.length);
+        setSelectedDayIndex(newDayIndex);
     };
 
     const updateDayName = (name: string) => {
@@ -311,9 +312,16 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                         <div className="space-y-1 sm:space-y-2">
                             <div className="hidden sm:flex items-center justify-between">
                                 <span className="text-xs sm:text-sm font-medium text-slate-400">Día {selectedDayIndex + 1} de {currentWeek?.days.length || 0}</span>
-                                <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-8 px-2 text-xs">
-                                    <Plus size={14} />
-                                </Button>
+                                <div className="flex gap-1">
+                                    <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-8 px-2 text-xs">
+                                        <Plus size={14} />
+                                    </Button>
+                                    {currentWeek?.days.length > 1 && (
+                                        <Button type="button" variant="danger" size="sm" onClick={() => removeDay(selectedDayIndex)} className="h-8 px-2 text-xs">
+                                            <Trash2 size={14} />
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                             <div className="flex gap-0.5 overflow-x-auto pb-1 sm:gap-1">
                                 {currentWeek?.days.map((day, i) => (
@@ -329,10 +337,17 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                         {day.dayName}
                                     </button>
                                 ))}
-                                {/* Botón add/remove en móvil */}
-                                <Button type="button" variant="ghost" size="sm" onClick={addDay} className="sm:hidden h-7 px-1.5 text-xs flex-shrink-0">
-                                    <Plus size={12} />
-                                </Button>
+                                {/* Botones add/remove en móvil */}
+                                <div className="sm:hidden flex gap-0.5 ml-auto flex-shrink-0">
+                                    <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-7 px-1.5 text-xs">
+                                        <Plus size={12} />
+                                    </Button>
+                                    {currentWeek?.days.length > 1 && (
+                                        <Button type="button" variant="danger" size="sm" onClick={() => removeDay(selectedDayIndex)} className="h-7 px-1.5 text-xs">
+                                            <Trash2 size={12} />
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -341,27 +356,14 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                     <div className="p-3 sm:p-4 space-y-3">
                         {currentDay && (
                             <>
-                                <div className="flex items-end gap-2">
-                                    <div className="flex-1">
-                                        <label className="text-xs text-slate-400 block mb-1">Nombre del día</label>
-                                        <Input
-                                            placeholder="Ej: Día 1"
-                                            value={currentDay.dayName}
-                                            onChange={(e) => updateDayName(e.target.value)}
-                                            className="text-sm"
-                                        />
-                                    </div>
-                                    {currentWeek.days.length > 1 && (
-                                        <Button
-                                            type="button"
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => removeDay(selectedDayIndex)}
-                                            className="h-9 px-2"
-                                        >
-                                            <Trash2 size={16} />
-                                        </Button>
-                                    )}
+                                <div className="flex-1">
+                                    <label className="text-xs text-slate-400 block mb-1">Nombre del día</label>
+                                    <Input
+                                        placeholder="Ej: Día 1"
+                                        value={currentDay.dayName}
+                                        onChange={(e) => updateDayName(e.target.value)}
+                                        className="text-sm"
+                                    />
                                 </div>
 
                                 <div className="space-y-1">
