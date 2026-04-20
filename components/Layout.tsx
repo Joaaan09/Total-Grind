@@ -53,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
           <button 
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 font-bold text-base sm:text-lg md:text-xl text-blue-500 min-w-0 hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 font-bold text-base sm:text-lg md:text-xl text-brandRed-500 min-w-0 hover:opacity-80 transition-opacity"
           >
             <img src="/logo.png" alt="Total Grind Logo" className="h-6 sm:h-8 w-6 sm:w-8 object-contain flex-shrink-0" />
             <span className="truncate">TotalGrind</span>
@@ -74,7 +74,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 sm:gap-3 rounded-md px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  `flex items-center gap-2 sm:gap-3 rounded-md px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors ${isActive ? 'bg-slate-800 text-brandRed-500' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-50'
                   }`
                 }
               >
@@ -84,7 +84,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             ))}
             <Button
               variant="outline"
-              className="mt-3 sm:mt-4 w-full justify-start gap-2 sm:gap-3 border-red-900/50 text-red-400 hover:bg-red-950 hover:text-red-300 text-xs sm:text-sm"
+              className="mt-3 sm:mt-4 w-full justify-start gap-2 sm:gap-3 border-slate-800 text-slate-400 hover:bg-red-900/20 hover:text-red-500 text-xs sm:text-sm"
               onClick={handleLogout}
             >
               <LogOut size={18} className="flex-shrink-0" />
@@ -100,7 +100,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex h-16 items-center border-b border-slate-800 px-6">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 font-bold text-xl text-blue-500 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 font-bold text-xl text-brandRed-500 hover:opacity-80 transition-opacity"
             >
               <img src="/logo.png" alt="Total Grind Logo" className="h-8 w-8 object-contain" />
               <span>TotalGrind</span>
@@ -110,7 +110,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* Información del usuario */}
           {user && (
             <div className="px-4 py-3 border-b border-slate-800">
-              <p className="text-sm font-medium text-white truncate">{user.name}</p>
+              <p className="text-sm font-medium text-slate-50 truncate">{user.name}</p>
               <p className="text-xs text-slate-500 truncate">{user.email}</p>
             </div>
           )}
@@ -121,7 +121,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-md px-4 py-3 text-sm font-medium transition-colors ${isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  `flex items-center gap-3 rounded-md px-4 py-3 text-sm font-medium transition-colors ${isActive ? 'bg-slate-800 text-brandRed-500' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-50'
                   }`
                 }
               >
@@ -133,7 +133,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="border-t border-slate-800 p-4">
             <Button
               variant="ghost"
-              className="w-full justify-start gap-3 text-slate-400 hover:text-red-400 hover:bg-red-950/30"
+              className="w-full justify-start gap-3 text-slate-400 hover:text-red-500 hover:bg-red-950/30"
               onClick={handleLogout}
             >
               <LogOut size={20} />

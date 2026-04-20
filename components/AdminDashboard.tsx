@@ -273,7 +273,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <RefreshCw className="w-8 h-8 animate-spin text-blue-500" />
+                <RefreshCw className="w-8 h-8 animate-spin text-slate-500" />
             </div>
         );
     }
@@ -282,8 +282,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
         <div className="p-1 sm:p-4 md:p-6 max-w-7xl mx-auto">
             {/* Header con estadísticas */}
             <div className="mb-6 sm:mb-8">
-                <h1 className="text-lg sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-6 flex items-center gap-2 sm:gap-3">
-                    <BarChart3 className="w-5 sm:w-8 h-5 sm:h-8 text-blue-400 flex-shrink-0" />
+                <h1 className="text-lg sm:text-2xl md:text-3xl font-bold text-slate-50 mb-3 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                    <BarChart3 className="w-5 sm:w-8 h-5 sm:h-8 text-slate-400 flex-shrink-0" />
                     <span className="truncate">Panel de Admin</span>
                 </h1>
 
@@ -318,13 +318,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
             {/* Lista de usuarios */}
             <div className="bg-slate-800 rounded-xl shadow-lg overflow-hidden">
                 <div className="p-3 sm:p-4 border-b border-slate-700 flex items-center justify-between">
-                    <h2 className="text-base sm:text-xl font-semibold text-white flex items-center gap-2">
+                    <h2 className="text-base sm:text-xl font-semibold text-slate-50 flex items-center gap-2">
                         <Users className="w-4 sm:w-5 h-4 sm:h-5" />
                         Usuarios
                     </h2>
                     <button
                         onClick={() => setShowCreateUserModal(true)}
-                        className="flex items-center gap-1 px-2 sm:px-3 py-1.5 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors text-xs sm:text-sm text-white"
+                        className="flex items-center gap-1 px-2 sm:px-3 py-1.5 bg-brandRed-500 hover:bg-brandRed-600 rounded-lg transition-colors text-xs sm:text-sm text-slate-50"
                     >
                         <Plus className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                         <span className="hidden sm:inline">Crear Usuario</span>
@@ -336,11 +336,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                     <table className="w-full">
                         <thead className="bg-slate-700">
                             <tr>
-                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-300">Usuario</th>
-                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-300 hidden md:table-cell">Email</th>
-                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-300">Rol</th>
-                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-300 hidden md:table-cell">Registro</th>
-                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm font-medium text-slate-300"></th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-50">Usuario</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-50 hidden md:table-cell">Email</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-50">Rol</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-slate-50 hidden md:table-cell">Registro</th>
+                                <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm font-medium text-slate-50"></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700">
@@ -355,20 +355,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                     className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0"
                                                 />
                                             ) : (
-                                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-600 flex items-center justify-center text-white text-xs sm:text-sm font-medium flex-shrink-0">
+                                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-600 flex items-center justify-center text-slate-50 text-xs sm:text-sm font-medium flex-shrink-0">
                                                     {user.name.charAt(0).toUpperCase()}
                                                 </div>
                                             )}
-                                            <span className="text-white font-medium text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none">{user.name}</span>
+                                            <span className="text-slate-50 font-medium text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none">{user.name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-2 sm:px-4 py-2 sm:py-3 text-slate-300 text-sm hidden md:table-cell">{user.email}</td>
+                                    <td className="px-2 sm:px-4 py-2 sm:py-3 text-slate-50 text-sm hidden md:table-cell">{user.email}</td>
                                     <td className="px-2 sm:px-4 py-2 sm:py-3">
                                         <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${user.role === 'admin'
-                                            ? 'bg-yellow-500/20 text-yellow-400'
+                                            ? 'bg-yellow-500/20 text-amber-500'
                                             : user.role === 'coach'
                                                 ? 'bg-purple-500/20 text-purple-400'
-                                                : 'bg-green-500/20 text-green-400'
+                                                : 'bg-green-500/20 text-emerald-500'
                                             }`}>
                                             {user.role === 'admin' ? 'Admin' : user.role === 'coach' ? 'Coach' : 'Atleta'}
                                         </span>
@@ -379,7 +379,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                     <td className="px-2 sm:px-4 py-2 sm:py-3 text-right">
                                         <button
                                             onClick={() => viewUserDetail(user._id)}
-                                            className="p-1.5 sm:p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg transition-colors"
+                                            className="p-1.5 sm:p-2 text-slate-400 hover:bg-slate-700 rounded-lg transition-colors"
                                             title="Ver detalle"
                                         >
                                             <Eye className="w-4 h-4" />
@@ -404,7 +404,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                     <div className="bg-slate-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
                         {/* Header del modal */}
                         <div className="sticky top-0 bg-slate-800 border-b border-slate-700 p-4 flex items-center justify-between">
-                            <h3 className="text-xl font-bold text-white">
+                            <h3 className="text-xl font-bold text-slate-50">
                                 {editMode ? 'Editar Usuario' : 'Detalle de Usuario'}
                             </h3>
                             <button
@@ -430,7 +430,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                 className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover flex-shrink-0"
                                             />
                                         ) : (
-                                            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-600 flex items-center justify-center text-xl sm:text-2xl text-white font-medium flex-shrink-0">
+                                            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-600 flex items-center justify-center text-xl sm:text-2xl text-slate-50 font-medium flex-shrink-0">
                                                 {selectedUser.user.name.charAt(0).toUpperCase()}
                                             </div>
                                         )}
@@ -440,20 +440,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                     type="text"
                                                     value={editData.name}
                                                     onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                                                    className="bg-slate-600 text-white px-3 py-1.5 rounded-lg w-full"
+                                                    className="bg-slate-600 text-slate-50 px-3 py-1.5 rounded-lg w-full"
                                                     placeholder="Nombre"
                                                 />
                                                 <input
                                                     type="email"
                                                     value={editData.email}
                                                     onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                                                    className="bg-slate-600 text-white px-3 py-1.5 rounded-lg w-full"
+                                                    className="bg-slate-600 text-slate-50 px-3 py-1.5 rounded-lg w-full"
                                                     placeholder="Email"
                                                 />
                                                 <select
                                                     value={editData.role}
                                                     onChange={(e) => setEditData({ ...editData, role: e.target.value })}
-                                                    className="bg-slate-600 text-white px-3 py-1.5 rounded-lg w-full"
+                                                    className="bg-slate-600 text-slate-50 px-3 py-1.5 rounded-lg w-full"
                                                 >
                                                     <option value="athlete">Atleta</option>
                                                     <option value="coach">Entrenador</option>
@@ -461,13 +461,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                             </div>
                                         ) : (
                                             <div className="min-w-0">
-                                                <h4 className="text-lg sm:text-xl font-bold text-white truncate">{selectedUser.user.name}</h4>
+                                                <h4 className="text-lg sm:text-xl font-bold text-slate-50 truncate">{selectedUser.user.name}</h4>
                                                 <p className="text-sm text-slate-400 truncate">{selectedUser.user.email}</p>
                                                 <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${selectedUser.user.role === 'admin'
-                                                    ? 'bg-yellow-500/20 text-yellow-400'
+                                                    ? 'bg-yellow-500/20 text-amber-500'
                                                     : selectedUser.user.role === 'coach'
                                                         ? 'bg-purple-500/20 text-purple-400'
-                                                        : 'bg-green-500/20 text-green-400'
+                                                        : 'bg-green-500/20 text-emerald-500'
                                                     }`}>
                                                     {selectedUser.user.role === 'admin' ? 'Admin' : selectedUser.user.role === 'coach' ? 'Entrenador' : 'Atleta'}
                                                 </span>
@@ -476,7 +476,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                     <div className="mt-2 flex items-center gap-2 text-sm">
                                                         <Users className="w-4 h-4 text-purple-400" />
                                                         <span className="text-slate-400">Entrenador:</span>
-                                                        <span className="text-white font-medium">
+                                                        <span className="text-slate-50 font-medium">
                                                             {typeof selectedUser.user.coachId === 'object'
                                                                 ? selectedUser.user.coachId.name
                                                                 : selectedUser.user.coachId}
@@ -496,23 +496,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                         onClick={handleUpdateUser}
                                                         className="p-2 bg-green-500 hover:bg-green-600 rounded-lg transition-colors"
                                                     >
-                                                        <Check className="w-4 h-4 text-white" />
+                                                        <Check className="w-4 h-4 text-slate-50" />
                                                     </button>
                                                     <button
                                                         onClick={() => setEditMode(false)}
                                                         className="p-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors"
                                                     >
-                                                        <X className="w-4 h-4 text-white" />
+                                                        <X className="w-4 h-4 text-slate-50" />
                                                     </button>
                                                 </>
                                             ) : (
                                                 <>
                                                     <button
                                                         onClick={() => setEditMode(true)}
-                                                        className="p-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors"
+                                                        className="p-2 bg-brandRed-500 hover:bg-brandRed-600 rounded-lg transition-colors"
                                                         title="Editar"
                                                     >
-                                                        <Edit2 className="w-4 h-4 text-white" />
+                                                        <Edit2 className="w-4 h-4 text-slate-50" />
                                                     </button>
                                                     <button
                                                         onClick={() => {
@@ -525,14 +525,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                         className="p-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors"
                                                         title="Cambiar contraseña"
                                                     >
-                                                        <Lock className="w-4 h-4 text-white" />
+                                                        <Lock className="w-4 h-4 text-slate-50" />
                                                     </button>
                                                     <button
                                                         onClick={() => setConfirmDelete(selectedUser.user._id)}
-                                                        className="p-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+                                                        className="p-2 border border-slate-700 text-slate-400 hover:text-red-500 hover:border-red-900/50 hover:bg-red-900/20 rounded-lg transition-colors"
                                                         title="Eliminar"
                                                     >
-                                                        <Trash2 className="w-4 h-4 text-white" />
+                                                        <Trash2 className="w-4 h-4" />
                                                     </button>
                                                 </>
                                             )}
@@ -545,13 +545,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                             {selectedUser.user.role === 'coach' && (
                                 <div className="bg-slate-700/50 rounded-xl p-4">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                                        <h4 className="text-lg font-semibold text-slate-50 flex items-center gap-2">
                                             <Users className="w-5 h-5 text-purple-400" />
                                             Atletas ({coachAthletes.length})
                                         </h4>
                                         <button
                                             onClick={openAddAthleteModal}
-                                            className="flex items-center gap-1 px-3 py-1.5 bg-purple-500 hover:bg-purple-600 rounded-lg transition-colors text-sm text-white"
+                                            className="flex items-center gap-1 px-3 py-1.5 bg-purple-500 hover:bg-purple-600 rounded-lg transition-colors text-sm text-slate-50"
                                         >
                                             <UserPlus className="w-4 h-4" />
                                             Añadir
@@ -569,18 +569,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                                 className="w-8 h-8 rounded-full object-cover"
                                                             />
                                                         ) : (
-                                                            <div className="w-8 h-8 rounded-full bg-slate-500 flex items-center justify-center text-white font-medium">
+                                                            <div className="w-8 h-8 rounded-full bg-slate-500 flex items-center justify-center text-slate-50 font-medium">
                                                                 {athlete.name.charAt(0).toUpperCase()}
                                                             </div>
                                                         )}
                                                         <div>
-                                                            <p className="text-white font-medium">{athlete.name}</p>
+                                                            <p className="text-slate-50 font-medium">{athlete.name}</p>
                                                             <p className="text-xs text-slate-400">{athlete.email}</p>
                                                         </div>
                                                     </div>
                                                     <button
                                                         onClick={() => handleRemoveAthlete(athlete._id)}
-                                                        className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
+                                                        className="p-2 text-red-500 hover:bg-red-500/20 rounded-lg transition-colors"
                                                         title="Quitar atleta"
                                                     >
                                                         <UserMinus className="w-4 h-4" />
@@ -598,8 +598,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
 
                             {/* Mejores marcas */}
                             <div className="bg-slate-700/50 rounded-xl p-4">
-                                    <h4 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
-                                        <Dumbbell className="w-4 sm:w-5 h-4 sm:h-5 text-blue-400" />
+                                    <h4 className="text-base sm:text-lg font-semibold text-slate-50 mb-3 sm:mb-4 flex items-center gap-2">
+                                        <Dumbbell className="w-4 sm:w-5 h-4 sm:h-5 text-brandRed-500" />
                                         Mejores Marcas
                                     </h4>
                                     <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
@@ -613,13 +613,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                             {/* Bloques de entrenamiento */}
                             <div className="bg-slate-700/50 rounded-xl p-4">
                                 <div className="flex items-center justify-between mb-4">
-                                    <h4 className="text-lg font-semibold text-white flex items-center gap-2">
-                                        <BarChart3 className="w-5 h-5 text-green-400" />
+                                    <h4 className="text-lg font-semibold text-slate-50 flex items-center gap-2">
+                                        <BarChart3 className="w-5 h-5 text-emerald-500" />
                                         Bloques de Entrenamiento ({selectedUser.blocks.length})
                                     </h4>
                                     <button
                                         onClick={() => setShowCreateBlockModal(true)}
-                                        className="flex items-center gap-1 px-3 py-1.5 bg-green-500 hover:bg-green-600 rounded-lg transition-colors text-sm text-white"
+                                        className="flex items-center gap-1 px-3 py-1.5 bg-green-500 hover:bg-green-600 rounded-lg transition-colors text-sm text-slate-50"
                                     >
                                         <Plus className="w-4 h-4" />
                                         Crear Bloque
@@ -639,10 +639,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                         ) : (
                                                             <ChevronRight className="w-4 h-4 text-slate-400" />
                                                         )}
-                                                        <span className="text-white font-medium">{block.title}</span>
+                                                        <span className="text-slate-50 font-medium">{block.title}</span>
                                                         <span className={`px-2 py-0.5 rounded text-xs ${block.source === 'assigned'
                                                             ? 'bg-purple-500/20 text-purple-400'
-                                                            : 'bg-blue-500/20 text-blue-400'
+                                                            : 'bg-slate-800 text-brandRed-500'
                                                             }`}>
                                                             {block.source === 'assigned' ? 'Asignado' : 'Personal'}
                                                         </span>
@@ -654,10 +654,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                                 window.location.hash = `/training/${block.id}`;
                                                                 setShowUserModal(false);
                                                             }}
-                                                            className="p-1.5 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors"
+                                                            className="p-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors"
                                                             title="Editar bloque"
                                                         >
-                                                            <ExternalLink className="w-3 h-3 text-white" />
+                                                            <ExternalLink className="w-3 h-3 text-slate-50" />
                                                         </button>
                                                         <span className="text-slate-400 text-sm">
                                                             {block.weeks.length} semanas
@@ -669,7 +669,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                     <div className="px-3 pb-3 border-t border-slate-500/50">
                                                         {block.weeks.map((week, weekIdx) => (
                                                             <div key={week.id} className="mt-2">
-                                                                <p className="text-slate-300 text-sm font-medium mb-1">
+                                                                <p className="text-slate-50 text-sm font-medium mb-1">
                                                                     Semana {weekIdx + 1}
                                                                 </p>
                                                                 <div className="pl-4 space-y-1">
@@ -705,24 +705,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
             {confirmDelete && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full">
-                        <div className="flex items-center gap-3 text-red-400 mb-4">
+                        <div className="flex items-center gap-3 text-red-500 mb-4">
                             <AlertCircle className="w-6 h-6" />
                             <h3 className="text-xl font-bold">Confirmar Eliminación</h3>
                         </div>
-                        <p className="text-slate-300 mb-6">
+                        <p className="text-slate-50 mb-6">
                             ¿Estás seguro de que deseas eliminar este usuario? Esta acción eliminará
                             todos sus datos (bloques, progreso, etc.) y <strong>no se puede deshacer</strong>.
                         </p>
                         <div className="flex gap-3 justify-end">
                             <button
                                 onClick={() => setConfirmDelete(null)}
-                                className="px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-white"
+                                className="px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-slate-50"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={() => handleDeleteUser(confirmDelete)}
-                                className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors text-white"
+                                className="px-4 py-2 border border-slate-700 text-slate-400 hover:text-red-500 hover:border-red-900/50 hover:bg-red-900/20 rounded-lg transition-colors"
                             >
                                 Eliminar
                             </button>
@@ -736,7 +736,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full max-h-[70vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                            <h3 className="text-xl font-bold text-slate-50 flex items-center gap-2">
                                 <UserPlus className="w-5 h-5 text-purple-400" />
                                 Añadir Atleta
                             </h3>
@@ -762,12 +762,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                                 className="w-10 h-10 rounded-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-10 h-10 rounded-full bg-slate-500 flex items-center justify-center text-white font-medium">
+                                            <div className="w-10 h-10 rounded-full bg-slate-500 flex items-center justify-center text-slate-50 font-medium">
                                                 {athlete.name.charAt(0).toUpperCase()}
                                             </div>
                                         )}
                                         <div className="text-left">
-                                            <p className="text-white font-medium">{athlete.name}</p>
+                                            <p className="text-slate-50 font-medium">{athlete.name}</p>
                                             <p className="text-xs text-slate-400">{athlete.email}</p>
                                         </div>
                                     </button>
@@ -787,8 +787,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                <Plus className="w-5 h-5 text-green-400" />
+                            <h3 className="text-xl font-bold text-slate-50 flex items-center gap-2">
+                                <Plus className="w-5 h-5 text-emerald-500" />
                                 Crear Bloque para {selectedUser.user.name}
                             </h3>
                             <button
@@ -806,20 +806,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                     value={newBlockTitle}
                                     onChange={(e) => setNewBlockTitle(e.target.value)}
                                     placeholder="Ej: Fase de Fuerza"
-                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-green-500 focus:outline-none"
+                                    className="w-full bg-slate-700 text-slate-50 px-4 py-2.5 rounded-lg border border-slate-600 focus:border-green-500 focus:outline-none"
                                 />
                             </div>
                             <div className="flex gap-3 pt-2">
                                 <button
                                     onClick={() => setShowCreateBlockModal(false)}
-                                    className="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-white"
+                                    className="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-slate-50"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     onClick={handleCreateBlock}
                                     disabled={!newBlockTitle.trim() || creatingBlock}
-                                    className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-white flex items-center justify-center gap-2"
+                                    className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-slate-50 flex items-center justify-center gap-2"
                                 >
                                     {creatingBlock ? (
                                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -841,8 +841,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                <UserPlus className="w-5 h-5 text-blue-400" />
+                            <h3 className="text-xl font-bold text-slate-50 flex items-center gap-2">
+                                <UserPlus className="w-5 h-5 text-slate-400" />
                                 Crear Usuario
                             </h3>
                             <button
@@ -858,7 +858,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                         </div>
                         <div className="space-y-4">
                             {createUserError && (
-                                <div className="flex items-center gap-2 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+                                <div className="flex items-center gap-2 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-500 text-sm">
                                     <AlertCircle className="w-4 h-4" />
                                     {createUserError}
                                 </div>
@@ -870,7 +870,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                     value={newUserData.name}
                                     onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
                                     placeholder="Nombre completo"
-                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none"
+                                    className="w-full bg-slate-700 text-slate-50 px-4 py-2.5 rounded-lg border border-slate-600 focus:border-slate-500 focus:outline-none"
                                 />
                             </div>
                             <div>
@@ -880,7 +880,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                     value={newUserData.email}
                                     onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
                                     placeholder="email@ejemplo.com"
-                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none"
+                                    className="w-full bg-slate-700 text-slate-50 px-4 py-2.5 rounded-lg border border-slate-600 focus:border-slate-500 focus:outline-none"
                                 />
                             </div>
                             <div>
@@ -890,7 +890,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                     value={newUserData.password}
                                     onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
                                     placeholder="Mínimo 6 caracteres"
-                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none"
+                                    className="w-full bg-slate-700 text-slate-50 px-4 py-2.5 rounded-lg border border-slate-600 focus:border-slate-500 focus:outline-none"
                                 />
                             </div>
                             <div>
@@ -898,7 +898,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                 <select
                                     value={newUserData.role}
                                     onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
-                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none"
+                                    className="w-full bg-slate-700 text-slate-50 px-4 py-2.5 rounded-lg border border-slate-600 focus:border-slate-500 focus:outline-none"
                                 >
                                     <option value="athlete">Atleta</option>
                                     <option value="coach">Entrenador</option>
@@ -911,14 +911,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                         setCreateUserError(null);
                                         setNewUserData({ name: '', email: '', password: '', role: 'athlete' });
                                     }}
-                                    className="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-white"
+                                    className="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-slate-50"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     onClick={handleCreateUser}
                                     disabled={creatingUser}
-                                    className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-white flex items-center justify-center gap-2"
+                                    className="flex-1 px-4 py-2 bg-brandRed-500 hover:bg-brandRed-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-slate-50 flex items-center justify-center gap-2"
                                 >
                                     {creatingUser ? (
                                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -940,8 +940,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                <Lock className="w-5 h-5 text-orange-400" />
+                            <h3 className="text-xl font-bold text-slate-50 flex items-center gap-2">
+                                <Lock className="w-5 h-5 text-amber-500" />
                                 Cambiar Contraseña
                             </h3>
                             <button
@@ -958,17 +958,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                             </button>
                         </div>
                         <p className="text-sm text-slate-400 mb-4">
-                            Cambiar contraseña de <span className="text-white font-medium">{selectedUser.user.name}</span>
+                            Cambiar contraseña de <span className="text-slate-50 font-medium">{selectedUser.user.name}</span>
                         </p>
                         <div className="space-y-4">
                             {changePasswordError && (
-                                <div className="flex items-center gap-2 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+                                <div className="flex items-center gap-2 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-500 text-sm">
                                     <AlertCircle className="w-4 h-4 flex-shrink-0" />
                                     {changePasswordError}
                                 </div>
                             )}
                             {changePasswordSuccess && (
-                                <div className="flex items-center gap-2 p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                                <div className="flex items-center gap-2 p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-emerald-500 text-sm">
                                     <Check className="w-4 h-4 flex-shrink-0" />
                                     {changePasswordSuccess}
                                 </div>
@@ -980,7 +980,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder="Mínimo 6 caracteres"
-                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-orange-500 focus:outline-none"
+                                    className="w-full bg-slate-700 text-slate-50 px-4 py-2.5 rounded-lg border border-slate-600 focus:border-orange-500 focus:outline-none"
                                 />
                             </div>
                             <div>
@@ -990,7 +990,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="Repite la contraseña"
-                                    className="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:border-orange-500 focus:outline-none"
+                                    className="w-full bg-slate-700 text-slate-50 px-4 py-2.5 rounded-lg border border-slate-600 focus:border-orange-500 focus:outline-none"
                                 />
                             </div>
                             <div className="flex gap-3 pt-2">
@@ -1002,14 +1002,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
                                         setNewPassword('');
                                         setConfirmPassword('');
                                     }}
-                                    className="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-white"
+                                    className="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors text-slate-50"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     onClick={handleChangePassword}
                                     disabled={changingPassword || !newPassword.trim() || !confirmPassword.trim()}
-                                    className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-white flex items-center justify-center gap-2"
+                                    className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors text-slate-50 flex items-center justify-center gap-2"
                                 >
                                     {changingPassword ? (
                                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1037,10 +1037,10 @@ const StatCard: React.FC<{
     color: 'blue' | 'green' | 'purple' | 'orange';
 }> = ({ title, value, icon, color }) => {
     const colors = {
-        blue: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-        green: 'bg-green-500/20 text-green-400 border-green-500/30',
+        blue: 'bg-slate-800 text-brandRed-500 border-slate-700',
+        green: 'bg-green-500/20 text-emerald-500 border-green-500/30',
         purple: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-        orange: 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+        orange: 'bg-orange-500/20 text-amber-500 border-orange-500/30'
     };
 
     return (
@@ -1048,7 +1048,7 @@ const StatCard: React.FC<{
             <div className="flex items-center justify-between mb-2">
                 {icon}
             </div>
-            <p className="text-2xl md:text-3xl font-bold text-white">{value}</p>
+            <p className="text-2xl md:text-3xl font-bold text-slate-50">{value}</p>
             <p className="text-sm text-slate-400">{title}</p>
         </div>
     );
@@ -1062,17 +1062,17 @@ const LiftCard: React.FC<{
 }> = ({ title, data, isTotal }) => {
     return (
         <div className={`${isTotal ? 'bg-yellow-500/10 border border-yellow-500/30' : 'bg-slate-600/50'} rounded-lg p-3`}>
-            <p className={`text-sm font-medium ${isTotal ? 'text-yellow-400' : 'text-slate-400'} mb-2`}>
+            <p className={`text-sm font-medium ${isTotal ? 'text-amber-500' : 'text-slate-400'} mb-2`}>
                 {title}
             </p>
             <div className="space-y-1">
                 <div className="flex justify-between items-center">
                     <span className="text-xs text-slate-500">Est:</span>
-                    <span className="text-white font-bold">{data.estimated || '-'} kg</span>
+                    <span className="text-slate-50 font-bold">{data.estimated || '-'} kg</span>
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-xs text-slate-500">Real:</span>
-                    <span className="text-green-400 font-bold">{data.actual || '-'} kg</span>
+                    <span className="text-emerald-500 font-bold">{data.actual || '-'} kg</span>
                 </div>
             </div>
         </div>

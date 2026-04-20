@@ -140,10 +140,10 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
   if (sessionComplete) {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh] text-center space-y-4 animate-in zoom-in-50">
-        <div className="h-20 w-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center">
+        <div className="h-20 w-20 bg-green-500/20 text-emerald-500 rounded-full flex items-center justify-center">
           <CheckCircle2 size={48} />
         </div>
-        <h2 className="text-3xl font-bold text-white">¡Entrenamiento Guardado!</h2>
+        <h2 className="text-3xl font-bold text-slate-50">¡Entrenamiento Guardado!</h2>
         <p className="text-slate-400">Datos sincronizados con la base de datos.</p>
       </div>
     )
@@ -156,7 +156,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
         <button
           onClick={() => setShowExitConfirm(true)}
           disabled={isSaving}
-          className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm disabled:opacity-50"
+          className="flex items-center gap-1 text-slate-400 hover:text-slate-50 transition-colors text-sm disabled:opacity-50"
         >
           <ChevronLeft size={18} />
           <span>Volver al bloque</span>
@@ -165,7 +165,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">{day.dayName}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-50">{day.dayName}</h1>
           <p className="text-slate-400 text-sm mt-1">Registra tus series reales</p>
         </div>
         <Button onClick={handleSave} className="gap-2 hidden md:flex w-full sm:w-auto" variant="primary" disabled={isSaving}>
@@ -180,7 +180,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
           <Button
             variant="ghost"
             size="sm"
-            className="text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-2"
+            className="text-slate-400 hover:text-red-500 hover:bg-red-900/20 gap-2"
             onClick={() => setShowResetConfirm(true)}
             disabled={isSaving}
           >
@@ -194,11 +194,11 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       {showResetConfirm && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full space-y-4">
-            <div className="flex items-center gap-3 text-red-400">
+            <div className="flex items-center gap-3 text-red-500">
               <Trash2 size={24} />
-              <h3 className="text-xl font-bold text-white">¿Borrar sesión?</h3>
+              <h3 className="text-xl font-bold text-slate-50">¿Borrar sesión?</h3>
             </div>
-            <p className="text-slate-300">
+            <p className="text-slate-50">
               Se eliminarán todos los datos de esta sesión (peso, reps, notas) y volverá a aparecer como pendiente.
             </p>
             <div className="flex gap-3 pt-2">
@@ -228,11 +228,11 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       {showExitConfirm && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-slate-800 rounded-xl p-6 max-w-md w-full space-y-4">
-            <div className="flex items-center gap-3 text-yellow-400">
+            <div className="flex items-center gap-3 text-amber-500">
               <AlertTriangle size={24} />
-              <h3 className="text-xl font-bold text-white">¿Salir sin guardar?</h3>
+              <h3 className="text-xl font-bold text-slate-50">¿Salir sin guardar?</h3>
             </div>
-            <p className="text-slate-300">
+            <p className="text-slate-50">
               Los datos que hayas introducido en esta sesión se perderán si no los guardas primero.
             </p>
             <div className="flex gap-3 pt-2">
@@ -260,8 +260,8 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
 
       {/* Descripción de la sesión (si el entrenador la puso) */}
       {day.description && (
-        <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-          <p className="text-sm text-blue-300">
+        <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
+          <p className="text-sm text-slate-400">
             <span className="font-semibold">Notas del entrenador:</span> {day.description}
           </p>
         </div>
@@ -270,7 +270,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       {exercises.map((exercise) => (
         <Card key={exercise.id} className="overflow-hidden border-slate-800 bg-slate-900/40">
           <CardHeader className="bg-slate-900/60 pb-4 border-b border-slate-800">
-            <CardTitle className="text-lg text-blue-400">
+            <CardTitle className="text-lg text-brandRed-500">
               <span>{exercise.name}</span>
             </CardTitle>
             {exercise.notes && <p className="text-xs text-slate-500 mt-1">{exercise.notes}</p>}
@@ -299,7 +299,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                           <span>{set.targetReps} reps</span>
                           <span className="text-slate-600">@ RPE {set.targetRpe}</span>
                           {set.suggestedWeight && (
-                            <span className="text-blue-300 font-semibold">Kg: {set.suggestedWeight}</span>
+                            <span className="text-slate-400 font-semibold">Kg: {set.suggestedWeight}</span>
                           )}
                         </div>
                       </td>
@@ -307,7 +307,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                         <Input
                           type="number"
                           placeholder="0"
-                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-slate-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.weight || ''}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'weight', e.target.value)}
                         />
@@ -316,7 +316,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                         <Input
                           type="number"
                           placeholder="0"
-                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-slate-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.reps || ''}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'reps', e.target.value)}
                         />
@@ -326,7 +326,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                           type="number"
                           placeholder="-"
                           max={10}
-                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-slate-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.rpe || ''}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'rpe', e.target.value)}
                         />
@@ -337,7 +337,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                       <td className="p-3 text-center">
                         <button
                           onClick={() => toggleSetComplete(exercise.id, set.id)}
-                          className={`p-1 rounded-full transition-colors ${set.isCompleted ? 'text-green-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-400'}`}
+                          className={`p-1 rounded-full transition-colors ${set.isCompleted ? 'text-emerald-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-400'}`}
                         >
                           {set.isCompleted ? <CheckCircle2 size={20} /> : <Circle size={20} />}
                         </button>
@@ -362,12 +362,12 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                   {/* Encabezado de la serie */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl font-bold text-blue-400 bg-slate-800/50 px-3 py-1 rounded-lg">
+                      <span className="text-2xl font-bold text-brandRed-500 bg-slate-800/50 px-3 py-1 rounded-lg">
                         {index + 1}
                       </span>
                       <div>
                         <p className="text-sm text-slate-400">Objetivo</p>
-                        <p className="text-lg font-semibold text-white">
+                        <p className="text-lg font-semibold text-slate-50">
                           {set.targetReps} <span className="text-slate-400 text-base">reps @ {set.targetRpe}</span>
                         </p>
                       </div>
@@ -375,7 +375,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                     <button
                       onClick={() => toggleSetComplete(exercise.id, set.id)}
                       className={`p-2 rounded-full transition-colors flex-shrink-0 ${
-                        set.isCompleted ? 'text-green-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-300 hover:bg-slate-700/50'
+                        set.isCompleted ? 'text-emerald-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-50 hover:bg-slate-700/50'
                       }`}
                     >
                       {set.isCompleted ? <CheckCircle2 size={28} /> : <Circle size={28} />}
@@ -384,9 +384,9 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
 
                   {/* Peso sugerido */}
                   {set.suggestedWeight && (
-                    <div className="px-3 py-2 bg-blue-600/10 border border-blue-500/30 rounded-md">
+                    <div className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-md">
                       <p className="text-xs text-slate-400">Peso sugerido</p>
-                      <p className="text-lg font-bold text-blue-300">{set.suggestedWeight} kg</p>
+                      <p className="text-lg font-bold text-slate-400">{set.suggestedWeight} kg</p>
                     </div>
                   )}
 
@@ -400,7 +400,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                       <Input
                         type="number"
                         placeholder="0"
-                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-blue-500 text-center text-2xl font-bold text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-slate-500 text-center text-2xl font-bold text-slate-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         value={set.weight || ''}
                         onChange={(e) => handleSetUpdate(exercise.id, set.id, 'weight', e.target.value)}
                       />
@@ -414,7 +414,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                       <Input
                         type="number"
                         placeholder="0"
-                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-blue-500 text-center text-2xl font-bold text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-slate-500 text-center text-2xl font-bold text-slate-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         value={set.reps || ''}
                         onChange={(e) => handleSetUpdate(exercise.id, set.id, 'reps', e.target.value)}
                       />
@@ -429,7 +429,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                         type="number"
                         placeholder="-"
                         max={10}
-                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-blue-500 text-center text-2xl font-bold text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="w-full h-12 bg-slate-900 border-slate-600 focus:border-slate-500 text-center text-2xl font-bold text-slate-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         value={set.rpe || ''}
                         onChange={(e) => handleSetUpdate(exercise.id, set.id, 'rpe', e.target.value)}
                       />
@@ -440,7 +440,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                   {set.estimated1rm && (
                     <div className="mt-3 pt-3 border-t border-slate-700/50">
                       <p className="text-xs text-slate-500 mb-1">E1RM Estimado</p>
-                      <p className="text-lg font-bold text-blue-400">
+                      <p className="text-lg font-bold text-brandRed-500">
                         {Math.round(set.estimated1rm)} kg
                       </p>
                     </div>
@@ -454,13 +454,13 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
 
       {/* Notas del atleta */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-4 space-y-2">
-        <label className="text-sm font-medium text-slate-300">Mis notas de la sesión</label>
+        <label className="text-sm font-medium text-slate-50">Mis notas de la sesión</label>
         <textarea
           placeholder="Sensaciones, observaciones, fatiga, dolor art..."
           value={athleteNotes}
           onChange={(e) => setAthleteNotes(e.target.value)}
           rows={3}
-          className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-white text-sm focus:border-blue-500 outline-none resize-none"
+          className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-slate-50 text-sm focus:border-slate-500 outline-none resize-none"
         />
       </div>
 

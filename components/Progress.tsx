@@ -21,7 +21,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-900 border border-slate-700 p-3 rounded-md shadow-xl">
-        <p className="text-slate-300 text-sm mb-2">{label}</p>
+        <p className="text-slate-50 text-sm mb-2">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} style={{ color: entry.color }} className="font-semibold">
             {entry.name}: {entry.value} kg
@@ -79,14 +79,14 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white">Progreso de Competición</h1>
+          <h1 className="text-3xl font-bold text-slate-50">Progreso de Competición</h1>
           <p className="text-slate-400">Historial de tus levantamientos principales (SQ, BP, DL).</p>
         </div>
         <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-slate-800 rounded-lg bg-slate-900/20">
           <div className="p-4 bg-slate-800 rounded-full mb-4">
             <TrendingUp size={32} className="text-slate-500" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">Sin datos de progreso</h3>
+          <h3 className="text-xl font-bold text-slate-50 mb-2">Sin datos de progreso</h3>
           <p className="text-slate-400 max-w-sm">
             Completa sesiones de entrenamiento con ejercicios de competición (Comp SQ, Comp BP, Comp DL) para ver tu progreso aquí.
           </p>
@@ -107,7 +107,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Progreso de Competición</h1>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-50">Progreso de Competición</h1>
         <p className="text-slate-400 text-xs sm:text-sm mt-1">Historial de tus levantamientos principales (SQ, BP, DL).</p>
       </div>
 
@@ -120,8 +120,8 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
                   key={d.exerciseName}
                   onClick={() => setSelectedExercise(d.exerciseName)}
                   className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${selectedExercise === d.exerciseName
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-800 text-slate-400 hover:text-white'
+                    ? 'bg-brandRed-600 text-slate-50'
+                    : 'bg-slate-800 text-slate-400 hover:text-slate-50'
                     }`}
                 >
                   {LIFT_LABELS[d.exerciseName] || d.exerciseName}
@@ -131,8 +131,8 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
               <button
                 onClick={() => setSelectedExercise('Total')}
                 className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${selectedExercise === 'Total'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-purple-600 text-slate-50'
+                  : 'bg-slate-800 text-slate-400 hover:text-slate-50'
                   }`}
               >
                 Total SBD
@@ -152,21 +152,21 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
               <div className="grid grid-cols-3 gap-8 text-center">
                 <div>
                   <p className="text-slate-500 text-sm">Sentadilla</p>
-                  <p className="text-2xl font-bold text-blue-400">{sqBest || '-'} <span className="text-sm text-slate-500">kg</span></p>
+                  <p className="text-2xl font-bold text-brandRed-500">{sqBest || '-'} <span className="text-sm text-slate-500">kg</span></p>
                 </div>
                 <div>
                   <p className="text-slate-500 text-sm">Banca</p>
-                  <p className="text-2xl font-bold text-blue-400">{bpBest || '-'} <span className="text-sm text-slate-500">kg</span></p>
+                  <p className="text-2xl font-bold text-brandRed-500">{bpBest || '-'} <span className="text-sm text-slate-500">kg</span></p>
                 </div>
                 <div>
                   <p className="text-slate-500 text-sm">Peso Muerto</p>
-                  <p className="text-2xl font-bold text-blue-400">{dlBest || '-'} <span className="text-sm text-slate-500">kg</span></p>
+                  <p className="text-2xl font-bold text-brandRed-500">{dlBest || '-'} <span className="text-sm text-slate-500">kg</span></p>
                 </div>
               </div>
 
               <div className="mt-8 text-center">
                 <p className="text-slate-500 text-sm mb-2">Total Real Levantado</p>
-                <p className="text-3xl font-bold text-green-400">
+                <p className="text-3xl font-bold text-emerald-500">
                   {totalActual > 0 ? totalActual : '-'} <span className="text-lg text-slate-500">kg</span>
                 </p>
               </div>
@@ -195,7 +195,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
                 <Legend
                   verticalAlign="top"
                   height={36}
-                  formatter={(value) => <span className="text-slate-300">{value}</span>}
+                  formatter={(value) => <span className="text-slate-50">{value}</span>}
                 />
                 <Line
                   type="monotone"
@@ -225,10 +225,10 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
         <Card className="bg-slate-900/50 border-slate-800">
           <CardContent className="p-6 flex flex-col items-center justify-center text-center">
             <span className="text-slate-500 text-sm uppercase font-bold tracking-wider">Mejor e1RM</span>
-            <span className="text-4xl font-bold text-blue-400 mt-2">
+            <span className="text-4xl font-bold text-brandRed-500 mt-2">
               {bestEstimated > 0 ? bestEstimated : '-'} <span className="text-lg text-slate-500 font-normal">kg</span>
             </span>
-            <span className="text-blue-500 text-xs mt-2 flex items-center gap-1">
+            <span className="text-brandRed-500 text-xs mt-2 flex items-center gap-1">
               {LIFT_LABELS[selectedExercise] || selectedExercise}
             </span>
           </CardContent>
@@ -236,10 +236,10 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
         <Card className="bg-slate-900/50 border-slate-800">
           <CardContent className="p-6 flex flex-col items-center justify-center text-center">
             <span className="text-slate-500 text-sm uppercase font-bold tracking-wider">Máximo Real</span>
-            <span className="text-4xl font-bold text-green-400 mt-2">
+            <span className="text-4xl font-bold text-emerald-500 mt-2">
               {bestActual > 0 ? bestActual : '-'} <span className="text-lg text-slate-500 font-normal">kg</span>
             </span>
-            <span className="text-green-500 text-xs mt-2 flex items-center gap-1">
+            <span className="text-emerald-500 text-xs mt-2 flex items-center gap-1">
               ▲ PR Levantado
             </span>
           </CardContent>
@@ -247,7 +247,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
         <Card className="bg-slate-900/50 border-slate-800">
           <CardContent className="p-6 flex flex-col items-center justify-center text-center">
             <span className="text-slate-500 text-sm uppercase font-bold tracking-wider">Última Sesión</span>
-            <span className="text-4xl font-bold text-white mt-2">
+            <span className="text-4xl font-bold text-slate-50 mt-2">
               {lastEntry?.estimatedMax || '-'} <span className="text-lg text-slate-500 font-normal">kg</span>
             </span>
             <span className="text-slate-600 text-xs mt-2">{lastEntry?.date || 'Sin datos'}</span>

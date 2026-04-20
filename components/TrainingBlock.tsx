@@ -20,7 +20,7 @@ export const TrainingBlockList: React.FC<TrainingBlockListProps> = ({ blocks, on
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Planificación</h1>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-50">Planificación</h1>
           <p className="text-slate-400 text-xs sm:text-sm mt-1">Gestiona tus mesociclos de entrenamiento.</p>
         </div>
         <Button onClick={onCreateBlock} className="gap-2 flex-shrink-0 text-xs sm:text-sm">
@@ -46,7 +46,7 @@ export const TrainingBlockList: React.FC<TrainingBlockListProps> = ({ blocks, on
         {filteredBlocks.map((block) => (
           <Card
             key={block.id}
-            className="group cursor-pointer hover:border-blue-500/50 transition-all hover:bg-slate-900"
+            className="group cursor-pointer hover:border-slate-600 transition-all hover:bg-slate-900"
             onClick={() => onSelectBlock(block.id)}
           >
             <CardHeader className="pb-2 sm:pb-3">
@@ -56,7 +56,7 @@ export const TrainingBlockList: React.FC<TrainingBlockListProps> = ({ blocks, on
                 </Badge>
                 {block.source === 'assigned' && <User size={14} className="text-slate-500 flex-shrink-0" />}
               </div>
-              <CardTitle className="group-hover:text-blue-400 transition-colors text-base sm:text-lg truncate">{block.title}</CardTitle>
+              <CardTitle className="group-hover:text-slate-300 transition-colors text-base sm:text-lg truncate">{block.title}</CardTitle>
               {block.assignedBy && <p className="text-xs text-slate-500 truncate">Por: {block.assignedBy}</p>}
             </CardHeader>
             <CardContent className="p-3 sm:p-6 pt-0">
@@ -66,7 +66,7 @@ export const TrainingBlockList: React.FC<TrainingBlockListProps> = ({ blocks, on
               </div>
               <div className="flex items-center justify-between text-xs sm:text-sm">
                 <span className="text-slate-500">{block.weeks.length} semanas</span>
-                <ChevronRight size={14} className="text-slate-600 group-hover:text-blue-500 flex-shrink-0" />
+                <ChevronRight size={14} className="text-slate-600 group-hover:text-slate-400 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
@@ -76,7 +76,7 @@ export const TrainingBlockList: React.FC<TrainingBlockListProps> = ({ blocks, on
           <div className="col-span-full py-12 text-center border border-dashed border-slate-800 rounded-lg">
             <p className="text-slate-500">No hay planificaciones en esta sección.</p>
             {activeTab === 'personal' && (
-              <Button variant="ghost" className="mt-2 text-blue-500" onClick={onCreateBlock}>Crear mi primer bloque</Button>
+              <Button variant="ghost" className="mt-2 text-slate-400 hover:text-brandRed-500 hover:bg-slate-800" onClick={onCreateBlock}>Crear mi primer bloque</Button>
             )}
           </div>
         )}
@@ -112,7 +112,7 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 mb-6">
-        <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-400 hover:text-white pl-0">
+        <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-400 hover:text-slate-50 pl-0">
           &larr; Volver
         </Button>
       </div>
@@ -120,15 +120,15 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
       <div className="flex flex-col gap-6 border-b border-slate-800 pb-6">
         <div className="space-y-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white">{block.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-50">{block.title}</h1>
             <p className="text-slate-400 text-xs sm:text-sm mt-1">
               {block.source === 'assigned' ? `Asignado por ${block.assignedBy}` : 'Planificación Personal'}
             </p>
           </div>
           {block.description && (
             <div className="flex flex-col gap-2 bg-slate-800/60 border border-slate-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg max-w-full sm:max-w-xl">
-              <span className="text-blue-400 text-xs font-semibold uppercase tracking-wide">Descripción:</span>
-              <p className="text-slate-300 text-sm">{block.description}</p>
+              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Descripción:</span>
+              <p className="text-slate-50 text-sm">{block.description}</p>
             </div>
           )}
         </div>
@@ -147,7 +147,7 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
             key={week.id}
             onClick={() => setSelectedWeek(week.id)}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors border ${selectedWeek === week.id
-              ? 'bg-blue-600 border-blue-600 text-white'
+              ? 'bg-brandRed-600 border-brandRed-600 text-slate-50'
               : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-600'
               }`}
           >
@@ -161,7 +161,7 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
         {currentWeek?.days.map((day) => (
           <Card key={day.id} className="relative overflow-hidden group">
             {day.isCompleted && (
-              <div className="absolute top-0 right-0 p-2 bg-green-900/20 text-green-500 rounded-bl-lg">
+              <div className="absolute top-0 right-0 p-2 bg-green-900/20 text-emerald-500 rounded-bl-lg">
                 <Calendar size={16} />
               </div>
             )}

@@ -5,7 +5,7 @@
 /* Mejoras generales para móvil */
 @layer components {
   body {
-    @apply text-slate-100;
+    @apply bg-slate-950 text-slate-100;
   }
   
   html {
@@ -19,16 +19,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: theme('colors.slate.900');
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: theme('colors.slate.700');
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: theme('colors.slate.600');
 }
 
 /* Animation utilities */

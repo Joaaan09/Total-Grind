@@ -15,11 +15,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
     const variants = {
-      primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
-      secondary: 'bg-slate-700 text-slate-100 hover:bg-slate-600',
-      outline: 'border border-slate-600 bg-transparent hover:bg-slate-800 text-slate-100',
-      ghost: 'hover:bg-slate-800 text-slate-300 hover:text-white',
-      danger: 'bg-red-600 text-white hover:bg-red-700',
+      primary: 'bg-brandRed-600/20 text-brandRed-500 hover:bg-brandRed-600 hover:text-slate-50 shadow-sm',
+      secondary: 'bg-slate-700 text-slate-50 hover:bg-slate-600',
+      outline: 'border border-slate-600 bg-transparent hover:bg-slate-800 text-slate-50',
+      ghost: 'hover:bg-slate-800 text-slate-50 hover:text-slate-50',
+      danger: 'border border-slate-700 text-slate-400 hover:text-red-500 hover:border-red-900/50 hover:bg-red-900/20',
     };
 
     const sizes = {
@@ -33,7 +33,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none',
+          'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brandRed-500 disabled:opacity-50 disabled:pointer-events-none',
           variants[variant],
           sizes[size],
           className
@@ -47,7 +47,7 @@ Button.displayName = 'Button';
 
 // --- Tarjeta ---
 export const Card = ({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("rounded-lg border border-slate-800 bg-slate-900/50 text-slate-100 shadow-sm", className)} {...props}>
+  <div className={cn("rounded-lg border border-slate-800 bg-slate-900/50 text-slate-50 shadow-sm", className)} {...props}>
     {children}
   </div>
 );
@@ -77,7 +77,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
       <input
         type={type}
         className={cn(
-          "flex h-8 sm:h-10 w-full rounded-md border border-slate-700 bg-slate-950 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-100 ring-offset-slate-950 file:border-0 file:bg-transparent file:text-xs sm:file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-8 sm:h-10 w-full rounded-md border border-slate-700 bg-slate-950 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-50 ring-offset-slate-950 file:border-0 file:bg-transparent file:text-xs sm:file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brandRed-600 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}
@@ -91,10 +91,10 @@ Input.displayName = "Input";
 // --- Insignia/Etiqueta ---
 export const Badge = ({ className, variant = "default", ...props }: React.HTMLAttributes<HTMLDivElement> & { variant?: "default" | "secondary" | "outline" | "success" }) => {
   const variants = {
-    default: "border-transparent bg-blue-600 text-white hover:bg-blue-700",
-    secondary: "border-transparent bg-slate-700 text-slate-100 hover:bg-slate-600",
-    outline: "text-slate-100 border-slate-600",
-    success: "border-transparent bg-green-600 text-white"
+    default: "border-transparent bg-brandRed-600 text-slate-50 hover:bg-brandRed-700",
+    secondary: "border-transparent bg-slate-700 text-slate-50 hover:bg-slate-600",
+    outline: "text-slate-50 border-slate-600",
+    success: "border-transparent bg-green-600 text-slate-50"
   };
   return (
     <div className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", variants[variant], className)} {...props} />
@@ -121,7 +121,7 @@ export const TabsTrigger = ({ className, value, activeValue, onClick, children }
       onClick={() => onClick(value)}
       className={cn(
         "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-        isActive ? "bg-slate-950 text-white shadow-sm" : "hover:bg-slate-700/50 hover:text-slate-200",
+        isActive ? "bg-slate-950 text-slate-50 shadow-sm" : "hover:bg-slate-700/50 hover:text-slate-50",
         className
       )}
     >
@@ -136,7 +136,7 @@ export const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttribute
     <label
       ref={ref}
       className={cn(
-        "text-xs sm:text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-200",
+        "text-xs sm:text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-50",
         className
       )}
       {...props}
@@ -169,5 +169,5 @@ export const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLD
 );
 
 export const DialogTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h2 className={cn("text-lg font-semibold leading-none tracking-tight text-white", className)} {...props} />
+  <h2 className={cn("text-lg font-semibold leading-none tracking-tight text-slate-50", className)} {...props} />
 );

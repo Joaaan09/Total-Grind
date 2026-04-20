@@ -32,7 +32,7 @@ export const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchTo
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-2 sm:p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center pb-2">
-                    <div className="flex items-center justify-center gap-2 text-blue-500 mb-3 sm:mb-4">
+                    <div className="flex items-center justify-center gap-2 text-brandRed-500 mb-3 sm:mb-4">
                         <Dumbbell size={24} className="sm:block hidden" />
                         <Dumbbell size={20} className="sm:hidden" />
                         <span className="text-xl sm:text-2xl font-bold">TotalGrind</span>
@@ -43,7 +43,7 @@ export const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchTo
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                         {error && (
-                            <div className="bg-red-900/20 border border-red-900 text-red-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm">
+                            <div className="bg-red-900/20 border border-red-900 text-red-500 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm">
                                 {error}
                             </div>
                         )}
@@ -97,7 +97,7 @@ export const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchTo
                         <span className="text-slate-400">¿No tienes cuenta? </span>
                         <button
                             onClick={onSwitchToRegister}
-                            className="text-blue-500 hover:text-blue-400 font-medium"
+                            className="text-brandRed-500 hover:text-brandRed-500 font-medium"
                         >
                             Regístrate
                         </button>
@@ -134,7 +134,7 @@ export const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchTo
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-2 sm:p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center pb-2">
-                    <div className="flex items-center justify-center gap-2 text-blue-500 mb-3 sm:mb-4">
+                    <div className="flex items-center justify-center gap-2 text-brandRed-500 mb-3 sm:mb-4">
                         <Dumbbell size={24} className="sm:block hidden" />
                         <Dumbbell size={20} className="sm:hidden" />
                         <span className="text-xl sm:text-2xl font-bold">TotalGrind</span>
@@ -145,7 +145,7 @@ export const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchTo
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                         {error && (
-                            <div className="bg-red-900/20 border border-red-900 text-red-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm">
+                            <div className="bg-red-900/20 border border-red-900 text-red-500 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm">
                                 {error}
                             </div>
                         )}
@@ -205,7 +205,7 @@ export const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchTo
                                     type="button"
                                     onClick={() => setRole('athlete')}
                                     className={`p-2.5 sm:p-3 rounded-md border text-xs sm:text-sm font-medium transition-colors ${role === 'athlete'
-                                        ? 'bg-blue-600 border-blue-600 text-white'
+                                        ? 'bg-brandRed-600 border-brandRed-600 text-slate-50'
                                         : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600'
                                         }`}
                                 >
@@ -215,7 +215,7 @@ export const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchTo
                                     type="button"
                                     onClick={() => setRole('coach')}
                                     className={`p-2.5 sm:p-3 rounded-md border text-xs sm:text-sm font-medium transition-colors ${role === 'coach'
-                                        ? 'bg-blue-600 border-blue-600 text-white'
+                                        ? 'bg-brandRed-600 border-brandRed-600 text-slate-50'
                                         : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600'
                                         }`}
                                 >
@@ -240,7 +240,7 @@ export const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchTo
                         <span className="text-slate-400">¿Ya tienes cuenta? </span>
                         <button
                             onClick={onSwitchToLogin}
-                            className="text-blue-500 hover:text-blue-400 font-medium"
+                            className="text-brandRed-500 hover:text-brandRed-500 font-medium"
                         >
                             Inicia sesión
                         </button>

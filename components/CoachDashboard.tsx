@@ -151,7 +151,7 @@ export const CoachDashboard: React.FC = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center p-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brandRed-500"></div>
             </div>
         );
     }
@@ -167,7 +167,7 @@ export const CoachDashboard: React.FC = () => {
                             ← Volver
                         </Button>
                         <div>
-                            <h1 className="text-2xl font-bold text-white">{selectedAthlete.name}</h1>
+                            <h1 className="text-2xl font-bold text-slate-50">{selectedAthlete.name}</h1>
                             <p className="text-slate-400">{selectedAthlete.email}</p>
                         </div>
                     </div>
@@ -216,7 +216,7 @@ export const CoachDashboard: React.FC = () => {
                     </Button>
                     {view === 'blocks' && (
                         <Button
-                            className="ml-auto bg-blue-600 hover:bg-blue-700"
+                            className="ml-auto bg-brandRed-600 hover:bg-brandRed-700"
                             onClick={() => setIsCreateModalOpen(true)}
                         >
                             <Plus size={18} className="mr-2" /> Asignar Bloque
@@ -240,11 +240,11 @@ export const CoachDashboard: React.FC = () => {
                             </Card>
                         ) : (
                             athleteBlocks.map(block => (
-                                <Card key={block.id} className="hover:border-blue-500/50 transition-colors">
+                                <Card key={block.id} className="hover:border-slate-600 transition-colors">
                                     <CardContent className="p-4">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <h3 className="font-semibold text-white">{block.title}</h3>
+                                                <h3 className="font-semibold text-slate-50">{block.title}</h3>
                                                 <p className="text-sm text-slate-400">
                                                     {block.weeks.length} semanas · {block.source === 'assigned' ? 'Asignado' : 'Personal'}
                                                 </p>
@@ -253,7 +253,7 @@ export const CoachDashboard: React.FC = () => {
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => { setEditingBlock(block); setIsEditModalOpen(true); }}
-                                                className="text-slate-400 hover:text-white"
+                                                className="text-slate-400 hover:text-slate-50"
                                             >
                                                 <Edit2 size={16} />
                                             </Button>
@@ -273,7 +273,7 @@ export const CoachDashboard: React.FC = () => {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold text-white">Panel de Entrenador</h1>
+                <h1 className="text-3xl font-bold text-slate-50">Panel de Entrenador</h1>
                 <p className="text-slate-400">Gestiona a tus atletas y su progreso</p>
             </div>
 
@@ -299,13 +299,13 @@ export const CoachDashboard: React.FC = () => {
                         </Button>
                     </form>
                     {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-                    {successMessage && <p className="text-green-500 text-sm mt-2">{successMessage}</p>}
+                    {successMessage && <p className="text-emerald-500 text-sm mt-2">{successMessage}</p>}
                 </CardContent>
             </Card>
 
             {/* Grid de atletas con tarjetas clickeables */}
             <div>
-                <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-slate-50 mb-4 flex items-center gap-2">
                     <Users size={20} /> Mis Atletas ({athletes.length})
                 </h2>
 
@@ -313,7 +313,7 @@ export const CoachDashboard: React.FC = () => {
                     <Card className="border-dashed">
                         <CardContent className="p-8 text-center">
                             <Users size={48} className="mx-auto text-slate-500 mb-4" />
-                            <h3 className="text-lg font-semibold text-white mb-2">Sin atletas activos</h3>
+                            <h3 className="text-lg font-semibold text-slate-50 mb-2">Sin atletas activos</h3>
                             <p className="text-slate-400">Invita atletas usando su email. Aparecerán aquí cuando acepten.</p>
                         </CardContent>
                     </Card>
@@ -322,21 +322,21 @@ export const CoachDashboard: React.FC = () => {
                         {athletes.map(athlete => (
                             <Card
                                 key={athlete._id}
-                                className="hover:border-blue-500/50 transition-colors cursor-pointer"
+                                className="hover:border-slate-600 transition-colors cursor-pointer"
                                 onClick={() => { setSelectedAthlete(athlete); setView('progress'); }}
                             >
                                 <CardContent className="p-4">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden border-2 border-slate-700 flex-shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-brandRed-600 flex items-center justify-center overflow-hidden border-2 border-slate-700 flex-shrink-0">
                                                 {athlete.profilePicture ? (
                                                     <img src={athlete.profilePicture} alt={athlete.name} className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <User size={20} className="text-white" />
+                                                    <User size={20} className="text-slate-50" />
                                                 )}
                                             </div>
                                             <div>
-                                                <h3 className="font-semibold text-white">{athlete.name}</h3>
+                                                <h3 className="font-semibold text-slate-50">{athlete.name}</h3>
                                                 <p className="text-sm text-slate-400">{athlete.email}</p>
                                             </div>
                                         </div>
@@ -344,7 +344,7 @@ export const CoachDashboard: React.FC = () => {
                                             variant="ghost"
                                             size="sm"
                                             onClick={(e) => { e.stopPropagation(); handleRemoveAthlete(athlete._id); }}
-                                            className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                                            className="text-slate-400 hover:text-red-500 hover:bg-red-900/20"
                                         >
                                             <Trash2 size={16} />
                                         </Button>
