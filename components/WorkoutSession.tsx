@@ -283,10 +283,10 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                   <tr>
                     <th className="p-3 w-10 text-center">#</th>
                     <th className="p-3 min-w-[80px]">Objetivo</th>
-                    <th className="p-3 w-20">Kg</th>
-                    <th className="p-3 w-16">Reps</th>
-                    <th className="p-3 w-16">RPE</th>
-                    <th className="p-3 w-16 text-center">e1RM</th>
+                    <th className="p-3 w-28">Kg</th>
+                    <th className="p-3 w-24">Reps</th>
+                    <th className="p-3 w-24">RPE</th>
+                    <th className="p-3 w-20 text-center">e1RM</th>
                     <th className="p-3 w-12 text-center">Ok</th>
                   </tr>
                 </thead>
@@ -307,7 +307,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                         <Input
                           type="number"
                           placeholder="0"
-                          className="w-full h-10 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.weight || ''}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'weight', e.target.value)}
                         />
@@ -316,7 +316,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                         <Input
                           type="number"
                           placeholder="0"
-                          className="w-full h-10 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.reps || ''}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'reps', e.target.value)}
                         />
@@ -326,7 +326,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                           type="number"
                           placeholder="-"
                           max={10}
-                          className="w-full h-10 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-blue-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.rpe || ''}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'rpe', e.target.value)}
                         />
