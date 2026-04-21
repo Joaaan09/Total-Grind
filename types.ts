@@ -70,3 +70,34 @@ export interface ProgressData {
   exerciseName: string;
   history: OneRMHistory[];
 }
+
+export interface AdminStats {
+  totalUsers: number;
+  totalAthletes: number;
+  totalCoaches: number;
+  totalBlocks: number;
+}
+
+export interface UserListItem {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  profilePicture?: string;
+  coachId?: { _id: string; name: string; email: string } | null;
+}
+
+export interface BestLifts {
+  'Comp SQ': { estimated: number; actual: number };
+  'Comp BP': { estimated: number; actual: number };
+  'Comp DL': { estimated: number; actual: number };
+  'Total': { estimated: number; actual: number };
+}
+
+export interface UserDetail {
+  user: UserListItem;
+  blocks: TrainingBlock[];
+  progress: ProgressData[];
+  bestLifts: BestLifts;
+}
