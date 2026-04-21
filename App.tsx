@@ -9,7 +9,7 @@ import { CoachDashboard } from './components/CoachDashboard';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Login, Register } from './components/Auth';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { TrainingService } from './services/mockService';
+import { TrainingService } from './services/apiService';
 import { CreateBlockModal } from './components/CreateBlockModal';
 import { EditBlockModal } from './components/EditBlockModal';
 import { ConfirmDialog } from './components/ConfirmDialog';
@@ -209,6 +209,7 @@ function AppContent() {
             if (token) {
               await TrainingService.createBlock(token, {
                 title: blockData.title!,
+                description: blockData.description,
                 source: blockData.source,
                 startDate: blockData.startDate,
                 weeks: blockData.weeks

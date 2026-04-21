@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Input, Card, CardContent } from './ui';
 import { Loader2, Plus, Trash2, X } from 'lucide-react';
-import { TrainingBlock, TrainingWeek, TrainingDay, Exercise, ExerciseSet } from '../types';
+import { TrainingBlock } from '../types';
+import { useBlockEditor } from '../hooks/useBlockEditor';
 import {
     SQUAT_VARIANTS, BENCH_VARIANTS, DEADLIFT_VARIANTS,
     ACCESSORY_LIST, getPrimarySelectValue, getExerciseCategory, getVariantSubgroup
@@ -14,53 +15,20 @@ interface CreateBlockModalProps {
     targetAthleteName?: string;
 }
 
-// Genera IDs únicos para los elementos del bloque
-const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-// Crea una estructura de semana por defecto con un día inicial
-const createDefaultWeek = (weekNumber: number): TrainingWeek => ({
-    id: generateId(),
-    blockId: '',
-    weekNumber,
-    days: [createDefaultDay(1)]
-});
-
-// Crea una estructura de día por defecto sin ejercicios
-const createDefaultDay = (dayNum: number): TrainingDay => ({
-    id: generateId(),
-    weekId: '',
-    dayName: `Día ${dayNum}`,
-    isCompleted: false,
-    exercises: []
-});
-
 export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
     isOpen,
     onClose,
     onCreate,
     targetAthleteName
 }) => {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
-    const [weeks, setWeeks] = useState<TrainingWeek[]>([createDefaultWeek(1)]);
     const [loading, setLoading] = useState(false);
-    const [selectedWeekIndex, setSelectedWeekIndex] = useState(0);
-    const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+    
+    const editor = useBlockEditor();
 
     if (!isOpen) return null;
 
-    const currentWeek = weeks[selectedWeekIndex];
-    const currentDay = currentWeek?.days[selectedDayIndex];
-
-    const resetForm = () => {
-        setTitle('');
-        setDescription('');
-        setStartDate(new Date().toISOString().split('T')[0]);
-        setWeeks([createDefaultWeek(1)]);
-        setSelectedWeekIndex(0);
-        setSelectedDayIndex(0);
-    };
+    const currentWeek = editor.currentWeek;
+    const currentDay = editor.currentDay;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -68,160 +36,19 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
         try {
             await onCreate({
-                title,
-                description: description || undefined,
-                startDate,
+                title: editor.title,
+                description: editor.description || undefined,
+                startDate: editor.startDate,
                 source: targetAthleteName ? 'assigned' : 'personal',
-                weeks
+                weeks: editor.weeks
             });
-            resetForm();
+            editor.resetForm();
             onClose();
         } catch (error) {
             console.error("Error creating block", error);
         } finally {
             setLoading(false);
         }
-    };
-
-
-    // Gestión de semanas: añadir y eliminar
-    const addWeek = () => {
-        const lastWeek = weeks[weeks.length - 1];
-        // Clonar la última semana con nuevos IDs
-        const newWeek: TrainingWeek = {
-            id: generateId(),
-            blockId: '',
-            weekNumber: weeks.length + 1,
-            days: lastWeek.days.map(day => ({
-                ...day,
-                id: generateId(),
-                weekId: '',
-                isCompleted: false,
-                athleteNotes: undefined,
-                exercises: day.exercises.map(ex => ({
-                    ...ex,
-                    id: generateId(),
-                    dayId: '',
-                    sets: ex.sets.map(set => ({
-                        ...set,
-                        id: generateId(),
-                        exerciseId: '',
-                        // Mantener prescripción (targetReps, targetRpe, suggestedWeight)
-                        // pero limpiar datos reales rellenados
-                        weight: undefined,
-                        rpe: undefined,
-                        estimated1rm: undefined,
-                        isCompleted: false
-                    }))
-                }))
-            }))
-        };
-        const newWeekIndex = weeks.length;
-        setWeeks([...weeks, newWeek]);
-        setSelectedWeekIndex(newWeekIndex);
-        setSelectedDayIndex(0);
-    };
-
-    const removeWeek = (weekIndex: number) => {
-        if (weeks.length <= 1) return;
-        const updatedWeeks = weeks.filter((_, i) => i !== weekIndex);
-        // Renumerar semanas después de eliminar
-        updatedWeeks.forEach((w, i) => w.weekNumber = i + 1);
-        setWeeks(updatedWeeks);
-        setSelectedWeekIndex(Math.max(0, selectedWeekIndex - 1));
-        setSelectedDayIndex(0);
-    };
-
-    // Gestión de días: añadir, actualizar nombre y eliminar
-    const addDay = () => {
-        const newDay = createDefaultDay(currentWeek.days.length + 1);
-        const newDayIndex = currentWeek.days.length;
-        const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days.push(newDay);
-        setWeeks(updatedWeeks);
-        setSelectedDayIndex(newDayIndex);
-    };
-
-    const updateDayName = (name: string) => {
-        const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].dayName = name;
-        setWeeks(updatedWeeks);
-    };
-
-    const updateDayDescription = (description: string) => {
-        const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].description = description || undefined;
-        setWeeks(updatedWeeks);
-    };
-
-    const removeDay = (dayIndex: number) => {
-        if (currentWeek.days.length <= 1) return;
-        const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days.splice(dayIndex, 1);
-        setWeeks(updatedWeeks);
-        setSelectedDayIndex(Math.max(0, selectedDayIndex - 1));
-    };
-
-    // Gestión de ejercicios: añadir, actualizar y eliminar
-    const addExercise = () => {
-        const newExercise: Exercise = {
-            id: generateId(),
-            dayId: currentDay.id,
-            name: '',
-            sets: [{
-                id: generateId(),
-                exerciseId: '',
-                targetReps: '8',
-                targetRpe: 7,
-                isCompleted: false
-            }],
-            notes: ''
-        };
-        const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises.push(newExercise);
-        setWeeks(updatedWeeks);
-    };
-
-    const updateExercise = (exerciseIndex: number, field: keyof Exercise, value: any) => {
-        const updatedWeeks = [...weeks];
-        (updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises[exerciseIndex] as any)[field] = value;
-        setWeeks(updatedWeeks);
-    };
-
-    const removeExercise = (exerciseIndex: number) => {
-        const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises.splice(exerciseIndex, 1);
-        setWeeks(updatedWeeks);
-    };
-
-    // Gestión de series: añadir, actualizar y eliminar
-    const addSet = (exerciseIndex: number) => {
-        const exercise = currentDay.exercises[exerciseIndex];
-        const lastSet = exercise.sets[exercise.sets.length - 1];
-        const newSet: ExerciseSet = {
-            id: generateId(),
-            exerciseId: exercise.id,
-            targetReps: lastSet?.targetReps || '8',
-            targetRpe: lastSet?.targetRpe || 7,
-            isCompleted: false
-        };
-        const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises[exerciseIndex].sets.push(newSet);
-        setWeeks(updatedWeeks);
-    };
-
-    const updateSet = (exerciseIndex: number, setIndex: number, field: keyof ExerciseSet, value: any) => {
-        const updatedWeeks = [...weeks];
-        (updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises[exerciseIndex].sets[setIndex] as any)[field] = value;
-        setWeeks(updatedWeeks);
-    };
-
-    const removeSet = (exerciseIndex: number, setIndex: number) => {
-        const exercise = currentDay.exercises[exerciseIndex];
-        if (exercise.sets.length <= 1) return;
-        const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises[exerciseIndex].sets.splice(setIndex, 1);
-        setWeeks(updatedWeeks);
     };
 
     return (
@@ -250,8 +77,8 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                 <label className="text-xs sm:text-sm font-medium text-slate-50">Nombre</label>
                                 <Input
                                     placeholder="Ej: Fuerza"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
+                                    value={editor.title}
+                                    onChange={(e) => editor.setTitle(e.target.value)}
                                     required
                                     className="text-sm"
                                 />
@@ -260,8 +87,8 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                 <label className="text-xs sm:text-sm font-medium text-slate-50">Fecha Inicio</label>
                                 <Input
                                     type="date"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
+                                    value={editor.startDate}
+                                    onChange={(e) => editor.setStartDate(e.target.value)}
                                     required
                                     className="text-sm"
                                 />
@@ -272,8 +99,8 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                             <label className="text-xs sm:text-sm font-medium text-slate-50">Descripción (opcional)</label>
                             <textarea
                                 placeholder="Objetivo, fase, notas..."
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                value={editor.description}
+                                onChange={(e) => editor.setDescription(e.target.value)}
                                 rows={2}
                                 className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none resize-none"
                             />
@@ -285,13 +112,13 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                         {/* Selector de semanas */}
                         <div className="space-y-1 sm:space-y-2">
                             <div className="hidden sm:flex items-center justify-between">
-                                <span className="text-xs sm:text-sm font-medium text-slate-400">Semana {selectedWeekIndex + 1} de {weeks.length}</span>
+                                <span className="text-xs sm:text-sm font-medium text-slate-400">Semana {editor.selectedWeekIndex + 1} de {editor.weeks.length}</span>
                                 <div className="flex gap-1">
-                                    <Button type="button" variant="ghost" size="sm" onClick={addWeek} className="h-8 px-2 text-xs">
+                                    <Button type="button" variant="ghost" size="sm" onClick={() => editor.addWeek('')} className="h-8 px-2 text-xs">
                                         <Plus size={14} />
                                     </Button>
-                                    {weeks.length > 1 && (
-                                        <Button type="button" variant="danger" size="sm" onClick={() => removeWeek(selectedWeekIndex)} className="h-8 px-2 text-xs">
+                                    {editor.weeks.length > 1 && (
+                                        <Button type="button" variant="danger" size="sm" onClick={() => editor.removeWeek(editor.selectedWeekIndex)} className="h-8 px-2 text-xs">
                                             <Trash2 size={14} />
                                         </Button>
                                     )}
@@ -299,12 +126,12 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                             </div>
                             {/* Móvil: botones más pequeños */}
                             <div className="flex gap-0.5 overflow-x-auto pb-1 sm:gap-1">
-                                {weeks.map((week, i) => (
+                                {editor.weeks.map((week, i) => (
                                     <button
                                         key={week.id}
                                         type="button"
-                                        onClick={() => { setSelectedWeekIndex(i); setSelectedDayIndex(0); }}
-                                        className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${selectedWeekIndex === i
+                                        onClick={() => { editor.setSelectedWeekIndex(i); editor.setSelectedDayIndex(0); }}
+                                        className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors ${editor.selectedWeekIndex === i
                                             ? 'bg-brandRed-600 text-slate-50'
                                             : 'bg-slate-800 text-slate-400 hover:text-slate-50'
                                             }`}
@@ -314,11 +141,11 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                 ))}
                                 {/* Botones add/remove en móvil */}
                                 <div className="sm:hidden flex gap-0.5 ml-auto flex-shrink-0">
-                                    <Button type="button" variant="ghost" size="sm" onClick={addWeek} className="h-7 px-1.5 text-xs">
+                                    <Button type="button" variant="ghost" size="sm" onClick={() => editor.addWeek('')} className="h-7 px-1.5 text-xs">
                                         <Plus size={12} />
                                     </Button>
-                                    {weeks.length > 1 && (
-                                        <Button type="button" variant="danger" size="sm" onClick={() => removeWeek(selectedWeekIndex)} className="h-7 px-1.5 text-xs">
+                                    {editor.weeks.length > 1 && (
+                                        <Button type="button" variant="danger" size="sm" onClick={() => editor.removeWeek(editor.selectedWeekIndex)} className="h-7 px-1.5 text-xs">
                                             <Trash2 size={12} />
                                         </Button>
                                     )}
@@ -329,13 +156,13 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                         {/* Selector de días */}
                         <div className="space-y-1 sm:space-y-2">
                             <div className="hidden sm:flex items-center justify-between">
-                                <span className="text-xs sm:text-sm font-medium text-slate-400">Día {selectedDayIndex + 1} de {currentWeek?.days.length || 0}</span>
+                                <span className="text-xs sm:text-sm font-medium text-slate-400">Día {editor.selectedDayIndex + 1} de {currentWeek?.days.length || 0}</span>
                                 <div className="flex gap-1">
-                                    <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-8 px-2 text-xs">
+                                    <Button type="button" variant="ghost" size="sm" onClick={editor.addDay} className="h-8 px-2 text-xs">
                                         <Plus size={14} />
                                     </Button>
                                     {currentWeek?.days.length > 1 && (
-                                        <Button type="button" variant="danger" size="sm" onClick={() => removeDay(selectedDayIndex)} className="h-8 px-2 text-xs">
+                                        <Button type="button" variant="danger" size="sm" onClick={() => editor.removeDay(editor.selectedDayIndex)} className="h-8 px-2 text-xs">
                                             <Trash2 size={14} />
                                         </Button>
                                     )}
@@ -346,8 +173,8 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                     <button
                                         key={day.id}
                                         type="button"
-                                        onClick={() => setSelectedDayIndex(i)}
-                                        className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors truncate max-w-[80px] sm:max-w-none ${selectedDayIndex === i
+                                        onClick={() => editor.setSelectedDayIndex(i)}
+                                        className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors truncate max-w-[80px] sm:max-w-none ${editor.selectedDayIndex === i
                                             ? 'bg-green-600 text-slate-50'
                                             : 'bg-slate-800 text-slate-400 hover:text-slate-50'
                                             }`}
@@ -357,11 +184,11 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                 ))}
                                 {/* Botones add/remove en móvil */}
                                 <div className="sm:hidden flex gap-0.5 ml-auto flex-shrink-0">
-                                    <Button type="button" variant="ghost" size="sm" onClick={addDay} className="h-7 px-1.5 text-xs">
+                                    <Button type="button" variant="ghost" size="sm" onClick={editor.addDay} className="h-7 px-1.5 text-xs">
                                         <Plus size={12} />
                                     </Button>
                                     {currentWeek?.days.length > 1 && (
-                                        <Button type="button" variant="danger" size="sm" onClick={() => removeDay(selectedDayIndex)} className="h-7 px-1.5 text-xs">
+                                        <Button type="button" variant="danger" size="sm" onClick={() => editor.removeDay(editor.selectedDayIndex)} className="h-7 px-1.5 text-xs">
                                             <Trash2 size={12} />
                                         </Button>
                                     )}
@@ -380,7 +207,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                     <Input
                                         placeholder="Ej: Día 1"
                                         value={currentDay.dayName}
-                                        onChange={(e) => updateDayName(e.target.value)}
+                                        onChange={(e) => editor.updateDayName(e.target.value)}
                                         className="text-sm"
                                     />
                                 </div>
@@ -391,7 +218,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                     <textarea
                                         placeholder="Ej: Volumen, técnica..."
                                         value={currentDay.description || ''}
-                                        onChange={(e) => updateDayDescription(e.target.value)}
+                                        onChange={(e) => editor.updateDayDescription(e.target.value)}
                                         rows={2}
                                         className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none resize-none"
                                     />
@@ -417,12 +244,12 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                             value={getPrimarySelectValue(exercise.name)}
                                                             onChange={(e) => {
                                                                 const val = e.target.value;
-                                                                if (val === 'Comp SQ') updateExercise(exIndex, 'name', 'Comp SQ');
-                                                                else if (val === 'Comp BP') updateExercise(exIndex, 'name', 'Comp BP');
-                                                                else if (val === 'Comp DL') updateExercise(exIndex, 'name', 'Comp DL');
-                                                                else if (val === 'variant') updateExercise(exIndex, 'name', SQUAT_VARIANTS[0]);
-                                                                else if (val === 'accessory') updateExercise(exIndex, 'name', ACCESSORY_LIST[0]);
-                                                                else updateExercise(exIndex, 'name', '');
+                                                                if (val === 'Comp SQ') editor.updateExercise(exIndex, 'name', 'Comp SQ');
+                                                                else if (val === 'Comp BP') editor.updateExercise(exIndex, 'name', 'Comp BP');
+                                                                else if (val === 'Comp DL') editor.updateExercise(exIndex, 'name', 'Comp DL');
+                                                                else if (val === 'variant') editor.updateExercise(exIndex, 'name', SQUAT_VARIANTS[0]);
+                                                                else if (val === 'accessory') editor.updateExercise(exIndex, 'name', ACCESSORY_LIST[0]);
+                                                                else editor.updateExercise(exIndex, 'name', '');
                                                             }}
                                                             className="flex-1 h-9 px-2 sm:px-3 rounded-md bg-slate-950 border border-slate-700 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none min-w-0"
                                                         >
@@ -437,7 +264,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                             type="button"
                                                             variant="danger"
                                                             size="sm"
-                                                            onClick={() => removeExercise(exIndex)}
+                                                            onClick={() => editor.removeExercise(exIndex)}
                                                             className="h-9 px-2 shrink-0"
                                                         >
                                                             <Trash2 size={14} />
@@ -453,9 +280,9 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     value={subgroup}
                                                                     onChange={(e) => {
                                                                         const sg = e.target.value;
-                                                                        if (sg === 'sq') updateExercise(exIndex, 'name', SQUAT_VARIANTS[0]);
-                                                                        else if (sg === 'bp') updateExercise(exIndex, 'name', BENCH_VARIANTS[0]);
-                                                                        else updateExercise(exIndex, 'name', DEADLIFT_VARIANTS[0]);
+                                                                        if (sg === 'sq') editor.updateExercise(exIndex, 'name', SQUAT_VARIANTS[0]);
+                                                                        else if (sg === 'bp') editor.updateExercise(exIndex, 'name', BENCH_VARIANTS[0]);
+                                                                        else editor.updateExercise(exIndex, 'name', DEADLIFT_VARIANTS[0]);
                                                                     }}
                                                                     className="h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none shrink-0"
                                                                 >
@@ -465,7 +292,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                 </select>
                                                                 <select
                                                                     value={exercise.name}
-                                                                    onChange={(e) => updateExercise(exIndex, 'name', e.target.value)}
+                                                                    onChange={(e) => editor.updateExercise(exIndex, 'name', e.target.value)}
                                                                     className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none min-w-0"
                                                                 >
                                                                     {(subgroup === 'sq' ? SQUAT_VARIANTS : subgroup === 'bp' ? BENCH_VARIANTS : DEADLIFT_VARIANTS)
@@ -482,9 +309,9 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                 value={getExerciseCategory(exercise.name) === 'accessory_other' ? '__other__' : exercise.name}
                                                                 onChange={(e) => {
                                                                     if (e.target.value === '__other__') {
-                                                                        updateExercise(exIndex, 'name', '__otro__');
+                                                                        editor.updateExercise(exIndex, 'name', '__otro__');
                                                                     } else {
-                                                                        updateExercise(exIndex, 'name', e.target.value);
+                                                                        editor.updateExercise(exIndex, 'name', e.target.value);
                                                                     }
                                                                 }}
                                                                 className="flex-1 h-9 px-2 rounded-md bg-slate-900 border border-slate-600 text-slate-50 text-xs sm:text-sm focus:border-slate-500 outline-none min-w-0"
@@ -498,7 +325,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                 <Input
                                                                     placeholder="Nombre del accesorio"
                                                                     value={exercise.name === '__otro__' ? '' : exercise.name}
-                                                                    onChange={(e) => updateExercise(exIndex, 'name', e.target.value || '__otro__')}
+                                                                    onChange={(e) => editor.updateExercise(exIndex, 'name', e.target.value || '__otro__')}
                                                                     className="flex-1 text-xs sm:text-sm min-w-0"
                                                                 />
                                                             )}
@@ -515,7 +342,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                         <Input
                                                             placeholder={exercise.name.toLowerCase().includes('tempo') ? 'Ej: 3-1-3-1' : 'Ej: 2 seg'}
                                                             value={exercise.notes || ''}
-                                                            onChange={(e) => updateExercise(exIndex, 'notes', e.target.value)}
+                                                            onChange={(e) => editor.updateExercise(exIndex, 'notes', e.target.value)}
                                                             className="flex-1 text-xs h-8 bg-transparent border-amber-500/40 text-amber-100 placeholder:text-amber-500"
                                                         />
                                                     </div>
@@ -543,7 +370,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     min="0"
                                                                     step="0.5"
                                                                     value={set.suggestedWeight || ''}
-                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                                                    onChange={(e) => editor.updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
                                                                     className="h-10 text-sm"
                                                                 />
 
@@ -552,7 +379,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     inputMode="numeric"
                                                                     placeholder="8"
                                                                     value={set.targetReps || ''}
-                                                                    onChange={(e) => updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
+                                                                    onChange={(e) => editor.updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
                                                                     className="h-10 text-sm"
                                                                     autoComplete="off"
                                                                 />
@@ -567,9 +394,9 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     onChange={(e) => {
                                                                         const val = parseFloat(e.target.value);
                                                                         if (!isNaN(val) && val >= 1 && val <= 10) {
-                                                                            updateSet(exIndex, setIndex, 'targetRpe', val);
+                                                                            editor.updateSet(exIndex, setIndex, 'targetRpe', val);
                                                                         } else if (e.target.value === '') {
-                                                                            updateSet(exIndex, setIndex, 'targetRpe', undefined);
+                                                                            editor.updateSet(exIndex, setIndex, 'targetRpe', undefined);
                                                                         }
                                                                     }}
                                                                     className="h-10 text-sm"
@@ -578,7 +405,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
 
                                                                 <button
                                                                     type="button"
-                                                                    onClick={() => removeSet(exIndex, setIndex)}
+                                                                    onClick={() => editor.removeSet(exIndex, setIndex)}
                                                                     disabled={exercise.sets.length <= 1}
                                                                     className="text-slate-500 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
                                                                 >
@@ -602,7 +429,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                     </div>
                                                                     <button
                                                                         type="button"
-                                                                        onClick={() => removeSet(exIndex, setIndex)}
+                                                                        onClick={() => editor.removeSet(exIndex, setIndex)}
                                                                         disabled={exercise.sets.length <= 1}
                                                                         className="text-slate-500 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed p-1.5 hover:bg-red-900/20 rounded transition-colors"
                                                                     >
@@ -622,7 +449,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                             min="0"
                                                                             step="0.5"
                                                                             value={set.suggestedWeight || ''}
-                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                                                            onChange={(e) => editor.updateSet(exIndex, setIndex, 'suggestedWeight', e.target.value ? parseFloat(e.target.value) : undefined)}
                                                                             className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-slate-500 focus:bg-slate-900 pointer-events-auto"
                                                                         />
                                                                     </div>
@@ -633,7 +460,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                             inputMode="numeric"
                                                                             placeholder="8"
                                                                             value={set.targetReps || ''}
-                                                                            onChange={(e) => updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
+                                                                            onChange={(e) => editor.updateSet(exIndex, setIndex, 'targetReps', e.target.value)}
                                                                             className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-slate-500 focus:bg-slate-900 pointer-events-auto"
                                                                             autoComplete="off"
                                                                         />
@@ -651,9 +478,9 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                                             onChange={(e) => {
                                                                                 const val = parseFloat(e.target.value);
                                                                                 if (!isNaN(val) && val >= 1 && val <= 10) {
-                                                                                    updateSet(exIndex, setIndex, 'targetRpe', val);
+                                                                                    editor.updateSet(exIndex, setIndex, 'targetRpe', val);
                                                                                 } else if (e.target.value === '') {
-                                                                                    updateSet(exIndex, setIndex, 'targetRpe', undefined);
+                                                                                    editor.updateSet(exIndex, setIndex, 'targetRpe', undefined);
                                                                                 }
                                                                             }}
                                                                             className="h-11 text-lg font-bold text-center bg-slate-950 border-slate-600 focus:border-slate-500 focus:bg-slate-900 pointer-events-auto"
@@ -671,7 +498,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                                         type="button"
                                                         variant="ghost"
                                                         size="sm"
-                                                        onClick={() => addSet(exIndex)}
+                                                        onClick={() => editor.addSet(exIndex)}
                                                         className="w-full text-xs sm:text-sm h-9 sm:h-8 text-slate-400 hover:text-slate-50 bg-slate-950/30 hover:bg-slate-900/50"
                                                     >
                                                         <Plus size={16} className="mr-1.5" /> Añadir Serie
@@ -684,7 +511,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        onClick={addExercise}
+                                        onClick={editor.addExercise}
                                         className="w-full text-xs sm:text-sm h-9"
                                     >
                                         <Plus size={16} className="mr-1.5" /> Ejercicio
@@ -700,7 +527,7 @@ export const CreateBlockModal: React.FC<CreateBlockModalProps> = ({
                         <Button type="button" variant="ghost" onClick={onClose} disabled={loading} className="text-xs sm:text-sm h-9 sm:h-10">
                             Cancelar
                         </Button>
-                        <Button type="submit" disabled={loading || !title} className="text-xs sm:text-sm h-9 sm:h-10 gap-1.5">
+                        <Button type="submit" disabled={loading || !editor.title} className="text-xs sm:text-sm h-9 sm:h-10 gap-1.5">
                             {loading ? <Loader2 className="animate-spin" size={16} /> : <Plus size={16} />}
                             Crear
                         </Button>
