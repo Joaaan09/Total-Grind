@@ -79,7 +79,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
     });
 
     setIsSaving(true);
-    
+
     // Preparar el objeto del día actualizado con los ejercicios y notas
     const updatedDay: TrainingDay = {
       ...day,
@@ -353,11 +353,10 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
               {exercise.sets.map((set, index) => (
                 <div
                   key={set.id}
-                  className={`rounded-lg p-4 border-2 transition-all ${
-                    set.isCompleted
+                  className={`rounded-lg p-4 border-2 transition-all ${set.isCompleted
                       ? 'bg-green-900/20 border-green-500/50'
                       : 'bg-slate-950/50 border-slate-700 hover:border-slate-600'
-                  }`}
+                    }`}
                 >
                   {/* Encabezado de la serie */}
                   <div className="flex items-center justify-between mb-4">
@@ -374,9 +373,8 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                     </div>
                     <button
                       onClick={() => toggleSetComplete(exercise.id, set.id)}
-                      className={`p-2 rounded-full transition-colors flex-shrink-0 ${
-                        set.isCompleted ? 'text-emerald-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-50 hover:bg-slate-700/50'
-                      }`}
+                      className={`p-2 rounded-full transition-colors flex-shrink-0 ${set.isCompleted ? 'text-emerald-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-50 hover:bg-slate-700/50'
+                        }`}
                     >
                       {set.isCompleted ? <CheckCircle2 size={28} /> : <Circle size={28} />}
                     </button>
@@ -465,22 +463,22 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       </div>
 
       {/* Botón flotante de guardar para móviles */}
-      <div className="md:hidden fixed bottom-6 right-6 left-6 z-50 flex gap-2">
+      <div className="md:hidden fixed bottom-4 right-4 left-4 z-50 flex gap-3 p-2 bg-slate-900/90 backdrop-blur-lg border border-slate-700/50 rounded-2xl shadow-2xl items-center">
         <Button
-          variant="ghost"
-          className="flex-1"
+          variant="secondary"
+          className="flex-1 h-12 text-sm font-semibold"
           onClick={() => setShowExitConfirm(true)}
           disabled={isSaving}
         >
           Cancelar
         </Button>
         <Button
-          size="md"
-          className="flex-1 gap-2 h-14 text-base"
+          variant="primary"
+          className="flex-1 gap-2 h-12 text-sm font-bold bg-brandRed-600 text-white border-none shadow-lg shadow-brandRed-900/20"
           onClick={handleSave}
           disabled={isSaving}
         >
-          {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+          {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
           {isSaving ? 'Guardando...' : 'Guardar'}
         </Button>
       </div>
