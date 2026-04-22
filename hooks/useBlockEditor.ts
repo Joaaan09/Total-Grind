@@ -107,40 +107,48 @@ export const useBlockEditor = ({
     };
 
     // --- D Í A S ---
-    const addDay = () => {
-        const newDay = createDefaultDay(currentWeek.days.length + 1);
-        const newDayIndex = currentWeek.days.length;
+    const addDay = (weekIndex?: number) => {
+        const targetWeekIndex = weekIndex !== undefined ? weekIndex : selectedWeekIndex;
+        const targetWeek = weeks[targetWeekIndex];
+        const newDay = createDefaultDay(targetWeek.days.length + 1);
+        const newDayIndex = targetWeek.days.length;
         const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days.push(newDay);
+        updatedWeeks[targetWeekIndex].days.push(newDay);
         setWeeks(updatedWeeks);
+        setSelectedWeekIndex(targetWeekIndex);
         setSelectedDayIndex(newDayIndex);
     };
 
-    const updateDayName = (name: string) => {
+    const updateDayName = (weekIdx: number, dayIdx: number, name: string) => {
         const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].dayName = name;
+        updatedWeeks[weekIdx].days[dayIdx].dayName = name;
         setWeeks(updatedWeeks);
     };
 
-    const updateDayDescription = (desc: string) => {
+    const updateDayDescription = (weekIdx: number, dayIdx: number, desc: string) => {
         const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].description = desc || undefined;
+        updatedWeeks[weekIdx].days[dayIdx].description = desc || undefined;
         setWeeks(updatedWeeks);
     };
 
-    const removeDay = (dayIndex: number) => {
-        if (currentWeek.days.length <= 1) return;
+    const removeDay = (dayIndex: number, weekIndex?: number) => {
+        const targetWeekIndex = weekIndex !== undefined ? weekIndex : selectedWeekIndex;
+        const targetWeek = weeks[targetWeekIndex];
+        if (targetWeek.days.length <= 1) return;
         const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days.splice(dayIndex, 1);
+        updatedWeeks[targetWeekIndex].days.splice(dayIndex, 1);
         setWeeks(updatedWeeks);
-        setSelectedDayIndex(Math.max(0, selectedDayIndex - 1));
+        if (targetWeekIndex === selectedWeekIndex) {
+            setSelectedDayIndex(Math.max(0, selectedDayIndex - 1));
+        }
     };
 
     // --- E J E R C I C I O S ---
-    const addExercise = () => {
+    const addExercise = (weekIdx: number, dayIdx: number) => {
+        const targetDay = weeks[weekIdx].days[dayIdx];
         const newExercise: Exercise = {
             id: generateId(),
-            dayId: currentDay.id,
+            dayId: targetDay.id,
             name: '',
             sets: [{
                 id: generateId(),
@@ -152,25 +160,25 @@ export const useBlockEditor = ({
             notes: ''
         };
         const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises.push(newExercise);
+        updatedWeeks[weekIdx].days[dayIdx].exercises.push(newExercise);
         setWeeks(updatedWeeks);
     };
 
-    const updateExercise = (exerciseIndex: number, field: keyof Exercise, value: any) => {
+    const updateExercise = (weekIdx: number, dayIdx: number, exerciseIndex: number, field: keyof Exercise, value: any) => {
         const updatedWeeks = [...weeks];
-        (updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises[exerciseIndex] as any)[field] = value;
+        (updatedWeeks[weekIdx].days[dayIdx].exercises[exerciseIndex] as any)[field] = value;
         setWeeks(updatedWeeks);
     };
 
-    const removeExercise = (exerciseIndex: number) => {
+    const removeExercise = (weekIdx: number, dayIdx: number, exerciseIndex: number) => {
         const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises.splice(exerciseIndex, 1);
+        updatedWeeks[weekIdx].days[dayIdx].exercises.splice(exerciseIndex, 1);
         setWeeks(updatedWeeks);
     };
 
     // --- S E R I E S ---
-    const addSet = (exerciseIndex: number) => {
-        const exercise = currentDay.exercises[exerciseIndex];
+    const addSet = (weekIdx: number, dayIdx: number, exerciseIndex: number) => {
+        const exercise = weeks[weekIdx].days[dayIdx].exercises[exerciseIndex];
         const lastSet = exercise.sets[exercise.sets.length - 1];
         const newSet: ExerciseSet = {
             id: generateId(),
@@ -180,21 +188,21 @@ export const useBlockEditor = ({
             isCompleted: false
         };
         const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises[exerciseIndex].sets.push(newSet);
+        updatedWeeks[weekIdx].days[dayIdx].exercises[exerciseIndex].sets.push(newSet);
         setWeeks(updatedWeeks);
     };
 
-    const updateSet = (exerciseIndex: number, setIndex: number, field: keyof ExerciseSet, value: any) => {
+    const updateSet = (weekIdx: number, dayIdx: number, exerciseIndex: number, setIndex: number, field: keyof ExerciseSet, value: any) => {
         const updatedWeeks = [...weeks];
-        (updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises[exerciseIndex].sets[setIndex] as any)[field] = value;
+        (updatedWeeks[weekIdx].days[dayIdx].exercises[exerciseIndex].sets[setIndex] as any)[field] = value;
         setWeeks(updatedWeeks);
     };
 
-    const removeSet = (exerciseIndex: number, setIndex: number) => {
-        const exercise = currentDay.exercises[exerciseIndex];
+    const removeSet = (weekIdx: number, dayIdx: number, exerciseIndex: number, setIndex: number) => {
+        const exercise = weeks[weekIdx].days[dayIdx].exercises[exerciseIndex];
         if (exercise.sets.length <= 1) return;
         const updatedWeeks = [...weeks];
-        updatedWeeks[selectedWeekIndex].days[selectedDayIndex].exercises[exerciseIndex].sets.splice(setIndex, 1);
+        updatedWeeks[weekIdx].days[dayIdx].exercises[exerciseIndex].sets.splice(setIndex, 1);
         setWeeks(updatedWeeks);
     };
 
