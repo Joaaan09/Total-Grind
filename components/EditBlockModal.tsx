@@ -120,7 +120,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                 <div key={week.id} className="flex flex-col w-[380px] shrink-0 bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/5">
 
                                     {/* Header semana - sticky */}
-                                    <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-slate-800/40 border-b border-slate-800 backdrop-blur-md">
+                                    <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-slate-800/40 border-b border-slate-800 backdrop-blur-md rounded-t-2xl">
                                         <div className="flex items-center gap-2">
                                             <div className="w-1.5 h-1.5 rounded-full bg-brandRed-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
                                             <span className="text-xs font-black text-brandRed-400 uppercase tracking-widest">Semana {week.weekNumber}</span>
@@ -183,7 +183,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
 
                                                         {day.exercises.map((exercise, exIndex) => (
                                                             <Card key={exercise.id} className="border-slate-700/60 bg-slate-900/60">
-                                                                <CardContent className="p-2.5 space-y-2">
+                                                                <CardContent className="p-2.5 sm:p-4 md:p-6 space-y-4">
                                                                     {/* Selector principal + borrar */}
                                                                     <div className="flex items-center gap-1.5">
                                                                         <select
@@ -298,7 +298,7 @@ export const EditBlockModal: React.FC<EditBlockModalProps> = ({ isOpen, onClose,
                                                                             <div></div>
                                                                         </div>
                                                                         {exercise.sets.map((set, setIndex) => (
-                                                                            <div key={set.id} className="grid grid-cols-[24px_1fr_1fr_1fr_24px] gap-1 items-center bg-slate-950/50 rounded px-1 py-1">
+                                                                            <div key={set.id} className="grid grid-cols-[24px_1fr_1fr_1fr_24px] gap-1 items-center rounded px-1 py-1">
                                                                                 <div className="text-xs text-slate-600 text-center font-mono">{setIndex + 1}</div>
                                                                                 <Input
                                                                                     type="number"
