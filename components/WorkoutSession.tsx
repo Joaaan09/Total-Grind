@@ -8,11 +8,12 @@ import { useAuth } from '../contexts/AuthContext';
 // Props para el componente de sesión de entrenamiento
 interface WorkoutSessionProps {
   day: TrainingDay;
+  isCoachView?: boolean;
   onComplete: () => void;
   onCancel?: () => void;
 }
 
-const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCancel }) => {
+const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, isCoachView, onComplete, onCancel }) => {
   const { token } = useAuth();
   const [exercises, setExercises] = useState<Exercise[]>(day.exercises);
   const [athleteNotes, setAthleteNotes] = useState(day.athleteNotes || '');
@@ -166,16 +167,20 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-50">{day.dayName}</h1>
-          <p className="text-slate-400 text-sm mt-1">Registra tus series reales</p>
+          <p className="text-slate-400 text-sm mt-1">
+            {isCoachView ? 'Viendo sesión del atleta' : 'Registra tus series reales'}
+          </p>
         </div>
-        <Button onClick={handleSave} className="gap-2 hidden md:flex w-full sm:w-auto" variant="primary" disabled={isSaving}>
-          {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span>{isSaving ? 'Guardando...' : 'Guardar Sesión'}</span>
-        </Button>
+        {!isCoachView && (
+          <Button onClick={handleSave} className="gap-2 hidden md:flex w-full sm:w-auto" variant="primary" disabled={isSaving}>
+            {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            <span>{isSaving ? 'Guardando...' : 'Guardar Sesión'}</span>
+          </Button>
+        )}
       </div>
 
       {/* Botón borrar sesión (solo si ya está completada) */}
-      {day.isCompleted && (
+      {day.isCompleted && !isCoachView && (
         <div className="flex justify-end">
           <Button
             variant="ghost"
@@ -309,6 +314,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                           placeholder="0"
                           className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-slate-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.weight || ''}
+                          disabled={isCoachView}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'weight', e.target.value)}
                         />
                       </td>
@@ -318,6 +324,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                           placeholder="0"
                           className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-slate-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.reps || ''}
+                          disabled={isCoachView}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'reps', e.target.value)}
                         />
                       </td>
@@ -328,6 +335,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                           max={10}
                           className="w-full h-12 px-2 bg-slate-950 border-slate-700 focus:border-slate-500 text-center text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           value={set.rpe || ''}
+                          disabled={isCoachView}
                           onChange={(e) => handleSetUpdate(exercise.id, set.id, 'rpe', e.target.value)}
                         />
                       </td>
@@ -336,7 +344,8 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                       </td>
                       <td className="p-3 text-center">
                         <button
-                          onClick={() => toggleSetComplete(exercise.id, set.id)}
+                          onClick={() => { if (!isCoachView) toggleSetComplete(exercise.id, set.id); }}
+                          disabled={isCoachView}
                           className={`p-1 rounded-full transition-colors ${set.isCompleted ? 'text-emerald-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-400'}`}
                         >
                           {set.isCompleted ? <CheckCircle2 size={20} /> : <Circle size={20} />}
@@ -372,7 +381,8 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                       </div>
                     </div>
                     <button
-                      onClick={() => toggleSetComplete(exercise.id, set.id)}
+                      onClick={() => { if (!isCoachView) toggleSetComplete(exercise.id, set.id); }}
+                      disabled={isCoachView}
                       className={`p-2 rounded-full transition-colors flex-shrink-0 ${set.isCompleted ? 'text-emerald-500 bg-green-500/20' : 'text-slate-600 hover:text-slate-50 hover:bg-slate-700/50'
                         }`}
                     >
@@ -400,6 +410,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                         placeholder="0"
                         className="w-full h-12 bg-slate-900 border-slate-600 focus:border-slate-500 text-center text-2xl font-bold text-slate-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         value={set.weight || ''}
+                        disabled={isCoachView}
                         onChange={(e) => handleSetUpdate(exercise.id, set.id, 'weight', e.target.value)}
                       />
                     </div>
@@ -414,6 +425,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                         placeholder="0"
                         className="w-full h-12 bg-slate-900 border-slate-600 focus:border-slate-500 text-center text-2xl font-bold text-slate-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         value={set.reps || ''}
+                        disabled={isCoachView}
                         onChange={(e) => handleSetUpdate(exercise.id, set.id, 'reps', e.target.value)}
                       />
                     </div>
@@ -429,6 +441,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
                         max={10}
                         className="w-full h-12 bg-slate-900 border-slate-600 focus:border-slate-500 text-center text-2xl font-bold text-slate-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         value={set.rpe || ''}
+                        disabled={isCoachView}
                         onChange={(e) => handleSetUpdate(exercise.id, set.id, 'rpe', e.target.value)}
                       />
                     </div>
@@ -452,36 +465,41 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ day, onComplete, onCanc
 
       {/* Notas del atleta */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-4 space-y-2">
-        <label className="text-sm font-medium text-slate-50">Mis notas de la sesión</label>
+        <label className="text-sm font-medium text-slate-50">
+          {isCoachView ? 'Notas del atleta de la sesión' : 'Mis notas de la sesión'}
+        </label>
         <textarea
           placeholder="Sensaciones, observaciones, fatiga, dolor art..."
           value={athleteNotes}
           onChange={(e) => setAthleteNotes(e.target.value)}
           rows={3}
-          className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-slate-50 text-sm focus:border-slate-500 outline-none resize-none"
+          disabled={isCoachView}
+          className="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-slate-50 text-sm focus:border-slate-500 outline-none resize-none disabled:opacity-50"
         />
       </div>
 
       {/* Botón flotante de guardar para móviles */}
-      <div className="md:hidden fixed bottom-4 right-4 left-4 z-50 flex gap-3 p-2 bg-slate-900/90 backdrop-blur-lg border border-slate-700/50 rounded-2xl shadow-2xl items-center">
-        <Button
-          variant="secondary"
-          className="flex-1 h-12 text-sm font-semibold"
-          onClick={() => setShowExitConfirm(true)}
-          disabled={isSaving}
-        >
-          Cancelar
-        </Button>
-        <Button
-          variant="primary"
-          className="flex-1 gap-2 h-12 text-sm font-bold bg-brandRed-600 text-white border-none shadow-lg shadow-brandRed-900/20"
-          onClick={handleSave}
-          disabled={isSaving}
-        >
-          {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          {isSaving ? 'Guardando...' : 'Guardar'}
-        </Button>
-      </div>
+      {!isCoachView && (
+        <div className="md:hidden fixed bottom-4 right-4 left-4 z-50 flex gap-3 p-2 bg-slate-900/90 backdrop-blur-lg border border-slate-700/50 rounded-2xl shadow-2xl items-center">
+          <Button
+            variant="secondary"
+            className="flex-1 h-12 text-sm font-semibold"
+            onClick={() => setShowExitConfirm(true)}
+            disabled={isSaving}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="primary"
+            className="flex-1 gap-2 h-12 text-sm font-bold bg-brandRed-600 text-white border-none shadow-lg shadow-brandRed-900/20"
+            onClick={handleSave}
+            disabled={isSaving}
+          >
+            {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            {isSaving ? 'Guardando...' : 'Guardar'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
