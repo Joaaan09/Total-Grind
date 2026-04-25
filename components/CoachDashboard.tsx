@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, Button, Input } from './ui';
-import { Users, Plus, Trash2, TrendingUp, Calendar, User, ChevronRight, Edit2 } from 'lucide-react';
+import { Users, Plus, Trash2, TrendingUp, Calendar, User, ChevronRight, Edit2, Eye } from 'lucide-react';
 import { TrainingService } from '../services/mockService';
 import { useAuth } from '../contexts/AuthContext';
 import { ProgressData, TrainingBlock } from '../types';
@@ -8,6 +8,7 @@ import { ProgressCharts } from './Progress';
 import { CreateBlockModal } from './CreateBlockModal';
 import { EditBlockModal } from './EditBlockModal';
 import { ConfirmDialog } from './ConfirmDialog';
+import { BlockDetail } from './TrainingBlock';
 
 // Interfaz para representar un atleta en la lista del entrenador
 interface Athlete {
@@ -28,7 +29,9 @@ export const CoachDashboard: React.FC = () => {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(true);
-    const [view, setView] = useState<'list' | 'progress' | 'blocks'>('list');
+    const [view, setView] = useState<'list' | 'progress' | 'blocks' | 'block-detail'>('list');
+
+    const [selectedBlock, setSelectedBlock] = useState<TrainingBlock | null>(null);
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -163,7 +166,10 @@ export const CoachDashboard: React.FC = () => {
                 {/* Cabecera con botón de volver y nombre del atleta */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" onClick={() => { setSelectedAthlete(null); setView('list'); }}>
+                        <Button variant="ghost" onClick={() => { 
+                            if (view === 'block-detail') setView('blocks');
+                            else { setSelectedAthlete(null); setView('list'); }
+                        }}>
                             ← Volver
                         </Button>
                         <div>
@@ -216,7 +222,7 @@ export const CoachDashboard: React.FC = () => {
                     </Button>
                     {view === 'blocks' && (
                         <Button
-                            className="ml-auto bg-brandRed-600 hover:bg-brandRed-700"
+                            className="ml-auto bg-brandRed-600 hover:bg-brandRed-700 text-slate-50"
                             onClick={() => setIsCreateModalOpen(true)}
                         >
                             <Plus size={18} className="mr-2" /> Asignar Bloque
@@ -227,6 +233,23 @@ export const CoachDashboard: React.FC = () => {
                 {/* Contenido según la pestaña seleccionada */}
                 {view === 'progress' && (
                     <ProgressCharts data={athleteProgress} />
+                )}
+
+                {view === 'block-detail' && selectedBlock && (
+                    <div className="mt-4 border-t border-slate-800 pt-6">
+                        <BlockDetail
+                            block={selectedBlock}
+                            isCoachView={true}
+                            onBack={() => setView('blocks')}
+                            onEdit={(b) => { setEditingBlock(b); setIsEditModalOpen(true); }}
+                            onRefresh={async () => {
+                                const blocks = await TrainingService.getAthleteBlocks(token, selectedAthlete._id);
+                                setAthleteBlocks(blocks);
+                                const updated = blocks.find(b => b.id === selectedBlock.id);
+                                if (updated) setSelectedBlock(updated);
+                            }}
+                        />
+                    </div>
                 )}
 
                 {view === 'blocks' && (
@@ -249,14 +272,26 @@ export const CoachDashboard: React.FC = () => {
                                                     {block.weeks.length} semanas · {block.source === 'assigned' ? 'Asignado' : 'Personal'}
                                                 </p>
                                             </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => { setEditingBlock(block); setIsEditModalOpen(true); }}
-                                                className="text-slate-400 hover:text-slate-50"
-                                            >
-                                                <Edit2 size={16} />
-                                            </Button>
+                                            <div className="flex gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => { setSelectedBlock(block); setView('block-detail'); }}
+                                                    className="text-slate-400 hover:text-brandRed-400"
+                                                    title="Ver Sesiones"
+                                                >
+                                                    <Eye size={16} />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => { setEditingBlock(block); setIsEditModalOpen(true); }}
+                                                    className="text-slate-400 hover:text-slate-50"
+                                                    title="Editar Planificación"
+                                                >
+                                                    <Edit2 size={16} />
+                                                </Button>
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>

@@ -88,12 +88,13 @@ export const TrainingBlockList: React.FC<TrainingBlockListProps> = ({ blocks, on
 // Props para la vista de detalle de un bloque
 interface BlockDetailProps {
   block: TrainingBlock;
+  isCoachView?: boolean;
   onBack: () => void;
   onEdit: (block: TrainingBlock) => void;
   onRefresh?: () => void;
 }
 
-export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit, onRefresh }) => {
+export const BlockDetail: React.FC<BlockDetailProps> = ({ block, isCoachView, onBack, onEdit, onRefresh }) => {
   const [selectedWeek, setSelectedWeek] = useState<string>(block.weeks[0]?.id);
   const [activeSessionDay, setActiveSessionDay] = useState<TrainingDay | null>(null);
 
@@ -103,6 +104,7 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
     return (
       <WorkoutSession
         day={activeSessionDay}
+        isCoachView={isCoachView}
         onComplete={() => { setActiveSessionDay(null); onRefresh?.(); }}
         onCancel={() => setActiveSessionDay(null)}
       />
@@ -184,7 +186,9 @@ export const BlockDetail: React.FC<BlockDetailProps> = ({ block, onBack, onEdit,
                 onClick={() => setActiveSessionDay(day)}
               >
                 <PlayCircle size={18} />
-                {day.isCompleted ? 'Ver / Editar' : 'Iniciar Sesión'}
+                {day.isCompleted 
+                  ? (isCoachView ? 'Ver Sesión' : 'Ver / Editar') 
+                  : (isCoachView ? 'Ver Detalles' : 'Iniciar Sesión')}
               </Button>
             </CardContent>
           </Card>
