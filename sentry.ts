@@ -16,8 +16,10 @@ export const initSentry = () => {
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration(),
     ],
+    // Release tracking
+    release: import.meta.env.VITE_APP_VERSION,
     // Performance Monitoring
-    tracesSampleRate: 1.0, // Capture 100% of the transactions
+    tracesSampleRate: 0.1, // Adjusted to 10% for production-ready setup
     // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
     tracePropagationTargets: ["localhost", /^\//],
     // Session Replay
