@@ -12,6 +12,12 @@ RUN npm ci --include=dev
 # Copiar código fuente
 COPY . .
 
+# Argumentos de build para Vite (Sentry)
+ARG VITE_SENTRY_DSN
+ARG VITE_APP_VERSION
+ENV VITE_SENTRY_DSN=$VITE_SENTRY_DSN
+ENV VITE_APP_VERSION=$VITE_APP_VERSION
+
 # Build de producción
 RUN npm run build
 
