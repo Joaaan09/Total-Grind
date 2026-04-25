@@ -4,6 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - VITE_SENTRY_DSN=${VITE_SENTRY_DSN}
+        - VITE_APP_VERSION=${VITE_APP_VERSION}
     container_name: totalgrind-frontend
     restart: unless-stopped
     expose:
