@@ -191,19 +191,19 @@ export const Profile: React.FC<ProfileProps> = ({ user }) => {
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                             <div className="relative group flex-shrink-0">
                                 <div className="h-12 sm:h-16 w-12 sm:w-16 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 overflow-hidden border-2 border-slate-700">
-                                {user.profilePicture ? (
-                                    <img
-                                        key={`${user.profilePicture}-${user.profilePicture}`}
-                                        src={user.profilePicture}
-                                        alt="Profile"
-                                        className="h-full w-full object-cover"
-                                    />
-                                ) : (
-                                    <>
-                                        <UserIcon size={24} className="hidden sm:block" />
-                                        <UserIcon size={20} className="sm:hidden" />
-                                    </>
-                                )}
+                                    {user.profilePicture ? (
+                                        <img
+                                            key={`${user.profilePicture}-${user.profilePicture}`}
+                                            src={user.profilePicture}
+                                            alt="Profile"
+                                            className="h-full w-full object-cover"
+                                        />
+                                    ) : (
+                                        <>
+                                            <UserIcon size={24} className="hidden sm:block" />
+                                            <UserIcon size={20} className="sm:hidden" />
+                                        </>
+                                    )}
                                 </div>
                                 <button
                                     className="absolute bottom-0 right-0 bg-brandRed-600 rounded-full p-0.5 sm:p-1 text-slate-50 shadow-lg hover:bg-brandRed-500 transition-colors"
