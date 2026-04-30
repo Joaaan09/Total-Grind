@@ -73,6 +73,9 @@ app.use(express.json({ limit: '50mb' }));
 // Verificación de estado del servidor
 app.get('/', (req, res) => res.send('TotalGrind API is running'));
 
+// Endpoint de healthcheck para BetterStack
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok', message: 'API is running' }));
+
 // Autenticación (con rate limiting extra)
 app.use('/api/auth', authLimiter, authRoutes);
 
