@@ -1,6 +1,7 @@
 import React from 'react';
 import { Users, BarChart3, Dumbbell, RefreshCw } from 'lucide-react';
 import { useAdminDashboard } from '../hooks/useAdminDashboard';
+import { useAdminAuth } from '../contexts/AdminAuthContext';
 import {
     StatCard,
     UserTable,
@@ -12,12 +13,9 @@ import {
     UserDetailModal
 } from './admin';
 
-interface AdminDashboardProps {
-    token: string;
-}
-
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ token }) => {
-    const admin = useAdminDashboard(token);
+export const AdminDashboard: React.FC = () => {
+    const { token } = useAdminAuth();
+    const admin = useAdminDashboard(token || '');
 
     if (admin.loading) {
         return (

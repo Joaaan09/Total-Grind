@@ -1,16 +1,16 @@
 import React from 'react';
-import { User, TrainingBlock, ProgressData } from '../types';
+import { User } from '../types';
 import { Card, CardContent, CardHeader, CardTitle, Button } from './ui';
 import { Calendar, TrendingUp, Users, Activity, ArrowRight } from 'lucide-react';
+import { useTrainingData } from '../contexts/TrainingDataContext';
 
 interface DashboardProps {
     user: User;
-    activeBlocks: TrainingBlock[];
-    progressData: ProgressData[];
     onNavigate: (path: string) => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progressData, onNavigate }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate }) => {
+    const { blocks: activeBlocks, progressData } = useTrainingData();
     // Calcular estadísticas dinámicas: total de sesiones completadas
     const totalSessions = activeBlocks.reduce((acc, block) => {
         return acc + block.weeks.reduce((wAcc, week) => {
