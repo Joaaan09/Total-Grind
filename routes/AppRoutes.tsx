@@ -7,6 +7,7 @@ import { ProgressPage } from '../pages/ProgressPage';
 import { ProfilePage } from '../pages/ProfilePage';
 import { CoachDashboardPage } from '../pages/CoachDashboardPage';
 import { AdminDashboardPage } from '../pages/AdminDashboardPage';
+import { AdminTrainingPage } from '../pages/AdminTrainingPage';
 import { Login, Register } from '../components/Auth';
 import { AdminLogin } from '../components/AdminLogin';
 import { ProtectedRoute, AuthRoute, AdminProtectedRoute, AdminAuthRoute } from './RouteGuards';
@@ -48,6 +49,7 @@ export const AppRoutes: React.FC = () => {
             <AdminLayout>
               <Routes>
                 <Route path="" element={<AdminDashboardPage />} />
+                <Route path="training/:blockId" element={<AdminTrainingPage />} />
                 <Route path="*" element={<Navigate to="/admin" replace />} />
               </Routes>
             </AdminLayout>

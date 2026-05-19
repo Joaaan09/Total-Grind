@@ -281,7 +281,7 @@ export const UserDetailModal: React.FC<UserDetailModalProps> = ({
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        window.location.hash = `/training/${block.id}`;
+                                                        window.location.hash = `/admin/training/${block.id}`;
                                                         onClose();
                                                     }}
                                                     className="p-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors"
