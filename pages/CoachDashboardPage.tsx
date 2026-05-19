@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, Button, Input } from './ui';
+import { Card, CardContent, CardHeader, CardTitle, Button, Input } from '../components/ui';
 import { Users, Plus, Trash2, TrendingUp, Calendar, User, ChevronRight, Edit2, Eye } from 'lucide-react';
 import { TrainingService } from '../services/mockService';
 import { useAuth } from '../contexts/AuthContext';
 import { ProgressData, TrainingBlock } from '../types';
-import { ProgressCharts } from './Progress';
-import { CreateBlockModal } from './CreateBlockModal';
-import { EditBlockModal } from './EditBlockModal';
-import { ConfirmDialog } from './ConfirmDialog';
-import { BlockDetail } from './TrainingBlock';
+import { ProgressPage } from './ProgressPage';
+import { CreateBlockModal } from '../components/CreateBlockModal';
+import { EditBlockModal } from '../components/EditBlockModal';
+import { ConfirmDialog } from '../components/ConfirmDialog';
+import { BlockDetail } from '../components/TrainingBlock';
 
 // Interfaz para representar un atleta en la lista del entrenador
 interface Athlete {
@@ -18,7 +18,7 @@ interface Athlete {
     profilePicture?: string;
 }
 
-export const CoachDashboard: React.FC = () => {
+export const CoachDashboardPage: React.FC = () => {
     const { token } = useAuth();
     const [athletes, setAthletes] = useState<Athlete[]>([]);
     const [selectedAthlete, setSelectedAthlete] = useState<Athlete | null>(null);
@@ -232,7 +232,7 @@ export const CoachDashboard: React.FC = () => {
 
                 {/* Contenido según la pestaña seleccionada */}
                 {view === 'progress' && (
-                    <ProgressCharts data={athleteProgress} />
+                    <ProgressPage data={athleteProgress} />
                 )}
 
                 {view === 'block-detail' && selectedBlock && (

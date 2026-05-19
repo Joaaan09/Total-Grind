@@ -1,16 +1,16 @@
 import React from 'react';
-import { User, TrainingBlock, ProgressData } from '../types';
-import { Card, CardContent, CardHeader, CardTitle, Button } from './ui';
+import { User } from '../types';
+import { Card, CardContent, CardHeader, CardTitle, Button } from '../components/ui';
 import { Calendar, TrendingUp, Users, Activity, ArrowRight } from 'lucide-react';
+import { useTrainingData } from '../contexts/TrainingDataContext';
 
 interface DashboardProps {
     user: User;
-    activeBlocks: TrainingBlock[];
-    progressData: ProgressData[];
     onNavigate: (path: string) => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progressData, onNavigate }) => {
+export const DashboardPage: React.FC<DashboardProps> = ({ user, onNavigate }) => {
+    const { blocks: activeBlocks, progressData } = useTrainingData();
     // Calcular estadísticas dinámicas: total de sesiones completadas
     const totalSessions = activeBlocks.reduce((acc, block) => {
         return acc + block.weeks.reduce((wAcc, week) => {
@@ -52,55 +52,55 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, activeBlocks, progre
             </div>
 
             {/* Grid de estadísticas rápidas */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <Card>
-                    <CardContent className="p-3 sm:p-4">
-                        <div className="flex flex-col items-start gap-2">
+                    <CardContent className="p-4 sm:p-5">
+                        <div className="flex flex-col items-start gap-3">
                             <div className="p-2 bg-brandRed-600/20 text-brandRed-500 rounded-lg">
-                                <Activity size={16} />
+                                <Activity size={20} />
                             </div>
                             <div className="w-full">
-                                <p className="text-xs sm:text-sm text-slate-400">Sesiones</p>
-                                <p className="text-xl sm:text-2xl font-bold text-slate-50">{totalSessions}</p>
+                                <p className="text-sm font-medium text-slate-400">Sesiones</p>
+                                <p className="text-2xl font-bold text-slate-50 mt-1">{totalSessions}</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardContent className="p-3 sm:p-4">
-                        <div className="flex flex-col items-start gap-2">
+                    <CardContent className="p-4 sm:p-5">
+                        <div className="flex flex-col items-start gap-3">
                             <div className="p-2 bg-green-600/20 text-emerald-500 rounded-lg">
-                                <TrendingUp size={16} />
+                                <TrendingUp size={20} />
                             </div>
                             <div className="w-full">
-                                <p className="text-xs sm:text-sm text-slate-400">SBD Total</p>
-                                <p className="text-xl sm:text-2xl font-bold text-slate-50">{sbdTotal > 0 ? sbdTotal : '-'} <span className="text-xs sm:text-sm font-normal text-slate-500">kg</span></p>
+                                <p className="text-sm font-medium text-slate-400">SBD Total</p>
+                                <p className="text-2xl font-bold text-slate-50 mt-1">{sbdTotal > 0 ? sbdTotal : '-'} <span className="text-sm font-normal text-slate-500">kg</span></p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardContent className="p-3 sm:p-4">
-                        <div className="flex flex-col items-start gap-2">
+                    <CardContent className="p-4 sm:p-5">
+                        <div className="flex flex-col items-start gap-3">
                             <div className="p-2 bg-purple-600/20 text-purple-500 rounded-lg">
-                                <Calendar size={16} />
+                                <Calendar size={20} />
                             </div>
                             <div className="w-full">
-                                <p className="text-xs sm:text-sm text-slate-400">Racha</p>
-                                <p className="text-xl sm:text-2xl font-bold text-slate-50">{streak} días</p>
+                                <p className="text-sm font-medium text-slate-400">Racha</p>
+                                <p className="text-2xl font-bold text-slate-50 mt-1">{streak} días</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardContent className="p-3 sm:p-4">
-                        <div className="flex flex-col items-start gap-2">
+                    <CardContent className="p-4 sm:p-5">
+                        <div className="flex flex-col items-start gap-3">
                             <div className="p-2 bg-orange-600/20 text-amber-500 rounded-lg">
-                                <Users size={16} />
+                                <Users size={20} />
                             </div>
                             <div className="w-full min-w-0">
-                                <p className="text-xs sm:text-sm text-slate-400">Coach</p>
-                                <p className="text-xl sm:text-2xl font-bold text-slate-50 truncate">
+                                <p className="text-sm font-medium text-slate-400">Coach</p>
+                                <p className="text-xl sm:text-2xl font-bold text-slate-50 mt-1 truncate">
                                     {user.coachId && typeof user.coachId === 'object' ? user.coachId.name : (user.coachId ? 'Entrenador' : '-')}
                                 </p>
                             </div>

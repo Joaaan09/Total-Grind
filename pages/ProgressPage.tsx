@@ -1,12 +1,9 @@
 import React from 'react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { ProgressData } from '../types';
-import { Card, CardContent, CardHeader, CardTitle, Tabs, TabsList, TabsTrigger } from './ui';
+import { Card, CardContent, CardHeader, CardTitle, Tabs, TabsList, TabsTrigger } from '../components/ui';
 import { TrendingUp } from 'lucide-react';
-
-interface ProgressChartsProps {
-  data: ProgressData[];
-}
+import { useTrainingData } from '../contexts/TrainingDataContext';
 
 // Solo mostrar levantamientos de competición (SQ, BP, DL)
 const COMPETITION_LIFTS = ['Comp SQ', 'Comp BP', 'Comp DL'];
@@ -46,7 +43,13 @@ const getBestActual = (data: ProgressData[], exerciseName: string): number => {
   return Math.max(...exercise.history.map(h => h.actualMax || 0));
 };
 
-export const ProgressCharts: React.FC<ProgressChartsProps> = ({ data }) => {
+interface ProgressPageProps {
+  data?: ProgressData[];
+}
+
+export const ProgressPage: React.FC<ProgressPageProps> = ({ data: providedData }) => {
+  const { progressData: contextData } = useTrainingData();
+  const data = providedData || contextData;
   // Filtrar solo levantamientos de competición
   const competitionData = data.filter(d => COMPETITION_LIFTS.includes(d.exerciseName));
 

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { User } from '../types';
-import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge } from './ui';
+import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge } from '../components/ui';
 import { User as UserIcon, Mail, Shield, Loader2, Save, X, Camera, UserMinus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { TrainingService } from '../services/mockService';
-import { ChangePasswordModal } from './ChangePasswordModal';
+import { ChangePasswordModal } from '../components/ChangePasswordModal';
 
 interface ProfileProps {
     user: User;
 }
 
-export const Profile: React.FC<ProfileProps> = ({ user }) => {
+export const ProfilePage: React.FC<ProfileProps> = ({ user }) => {
     const { token, refreshUser } = useAuth();
     const [invites, setInvites] = useState<any[]>([]);
 
