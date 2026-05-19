@@ -9,7 +9,6 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
 
@@ -58,41 +57,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <img src="/logo.png" alt="Total Grind Logo" className="h-6 sm:h-8 w-6 sm:w-8 object-contain flex-shrink-0" />
             <span className="truncate">TotalGrind</span>
           </button>
-          <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </Button>
         </div>
       </header>
-
-      {/* Menú desplegable para móvil */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-30 top-14 sm:top-16 bg-slate-950 p-3 sm:p-4 lg:hidden animate-in fade-in slide-in-from-top-5 overflow-y-auto">
-          <nav className="flex flex-col gap-2 sm:gap-3">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 sm:gap-3 rounded-md px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors ${isActive ? 'bg-slate-800 text-brandRed-500' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-50'
-                  }`
-                }
-              >
-                <span className="flex-shrink-0">{React.cloneElement(item.icon as React.ReactElement, { size: 18 })}</span>
-                <span className="truncate">{item.name}</span>
-              </NavLink>
-            ))}
-            <Button
-              variant="outline"
-              className="mt-3 sm:mt-4 w-full justify-start gap-2 sm:gap-3 border-slate-800 text-slate-400 hover:bg-red-900/20 hover:text-red-500 text-xs sm:text-sm"
-              onClick={handleLogout}
-            >
-              <LogOut size={18} className="flex-shrink-0" />
-              <span className="truncate">Cerrar Sesión</span>
-            </Button>
-          </nav>
-        </div>
-      )}
 
       <div className="flex">
         {/* Barra lateral para escritorio (fija) */}
@@ -143,12 +109,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </aside>
 
         {/* Contenido principal de la página */}
-        <main className="flex-1 lg:pl-64">
+        <main className="flex-1 lg:pl-64 pb-20 lg:pb-0">
           <div className="container mx-auto max-w-5xl p-3 sm:p-4 md:p-6 lg:p-8">
             {children}
           </div>
         </main>
       </div>
+
+      {/* Barra de navegación inferior para móvil */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-slate-800 bg-slate-950/90 backdrop-blur-md pb-safe lg:hidden h-16 px-2">
+        {navItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              `flex flex-col items-center justify-center gap-1 w-full h-full transition-colors ${
+                isActive ? 'text-brandRed-500' : 'text-slate-400 hover:text-slate-50'
+              }`
+            }
+          >
+            {React.cloneElement(item.icon as React.ReactElement, { size: 24 })}
+            <span className="text-[10px] font-medium truncate w-full text-center px-1">{item.name}</span>
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 };

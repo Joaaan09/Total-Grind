@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, LogOut, Menu, X, ShieldAlert, Activity } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, ShieldAlert, Activity, ArrowLeft } from 'lucide-react';
 import { Button } from './ui';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 
@@ -9,7 +9,6 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const { logout, user } = useAdminAuth();
   const navigate = useNavigate();
 
@@ -34,52 +33,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <ShieldAlert size={24} className="flex-shrink-0" />
             <span className="truncate">Admin Panel</span>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" onClick={() => window.location.hash = '/'} className="text-slate-400 hover:text-slate-300" title="Volver a la App">
+              <ArrowLeft size={20} />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleLogout} className="text-slate-400 hover:text-red-500" title="Cerrar Sesión">
+              <LogOut size={20} />
+            </Button>
+          </div>
         </div>
       </header>
-
-      {/* Menú desplegable para móvil */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-30 top-14 sm:top-16 bg-slate-950 p-3 sm:p-4 lg:hidden animate-in fade-in slide-in-from-top-5 overflow-y-auto">
-          <nav className="flex flex-col gap-2 sm:gap-3">
-            {adminNavItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                end={item.end}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 sm:gap-3 rounded-md px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors ${isActive ? 'bg-purple-900/30 text-purple-400 border border-purple-900/50' : 'text-slate-400 hover:bg-slate-900 hover:text-slate-50'
-                  }`
-                }
-              >
-                <span className="flex-shrink-0">{React.cloneElement(item.icon as React.ReactElement, { size: 18 })}</span>
-                <span className="truncate">{item.name}</span>
-              </NavLink>
-            ))}
-            <div className="mt-4 pt-4 border-t border-slate-800">
-                <Button
-                variant="outline"
-                className="w-full justify-start gap-2 sm:gap-3 border-slate-800 text-slate-400 hover:bg-red-900/20 hover:text-red-500 text-xs sm:text-sm"
-                onClick={handleLogout}
-                >
-                <LogOut size={18} className="flex-shrink-0" />
-                <span className="truncate">Cerrar Sesión Admin</span>
-                </Button>
-                
-                <Button
-                variant="ghost"
-                className="mt-2 w-full justify-start gap-2 sm:gap-3 text-slate-500 hover:text-slate-300 text-xs sm:text-sm"
-                onClick={() => window.location.hash = '/'}
-                >
-                <span className="truncate">← Volver a la App</span>
-                </Button>
-            </div>
-          </nav>
-        </div>
-      )}
 
       <div className="flex">
         {/* Barra lateral para escritorio (fija) */}
@@ -139,12 +102,31 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </aside>
 
         {/* Contenido principal de la página admin */}
-        <main className="flex-1 lg:pl-64">
+        <main className="flex-1 lg:pl-64 pb-20 lg:pb-0">
           <div className="container mx-auto max-w-6xl p-3 sm:p-4 md:p-6 lg:p-8">
             {children}
           </div>
         </main>
       </div>
+
+      {/* Barra de navegación inferior para móvil */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-purple-900 bg-slate-950/90 backdrop-blur-md pb-safe lg:hidden h-16 px-2">
+        {adminNavItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            end={item.end}
+            className={({ isActive }) =>
+              `flex flex-col items-center justify-center gap-1 w-full h-full transition-colors ${
+                isActive ? 'text-purple-400' : 'text-slate-400 hover:text-slate-50'
+              }`
+            }
+          >
+            {React.cloneElement(item.icon as React.ReactElement, { size: 24 })}
+            <span className="text-[10px] font-medium truncate w-full text-center px-1">{item.name}</span>
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 };
