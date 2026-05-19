@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { ProgressData } from '../types';
-import { Card, CardContent, CardHeader, CardTitle, Tabs, TabsList, TabsTrigger } from './ui';
+import { Card, CardContent, CardHeader, CardTitle, Tabs, TabsList, TabsTrigger } from '../components/ui';
 import { TrendingUp } from 'lucide-react';
 import { useTrainingData } from '../contexts/TrainingDataContext';
 
@@ -43,8 +43,13 @@ const getBestActual = (data: ProgressData[], exerciseName: string): number => {
   return Math.max(...exercise.history.map(h => h.actualMax || 0));
 };
 
-export const ProgressCharts: React.FC = () => {
-  const { progressData: data } = useTrainingData();
+interface ProgressPageProps {
+  data?: ProgressData[];
+}
+
+export const ProgressPage: React.FC<ProgressPageProps> = ({ data: providedData }) => {
+  const { progressData: contextData } = useTrainingData();
+  const data = providedData || contextData;
   // Filtrar solo levantamientos de competición
   const competitionData = data.filter(d => COMPETITION_LIFTS.includes(d.exerciseName));
 

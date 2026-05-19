@@ -11,9 +11,9 @@ import {
     ChangePasswordModal,
     AdminCreateBlockModal,
     UserDetailModal
-} from './admin';
+} from '../components/admin';
 
-export const AdminDashboard: React.FC = () => {
+export const AdminDashboardPage: React.FC = () => {
     const { token } = useAdminAuth();
     const admin = useAdminDashboard(token || '');
 
@@ -151,4 +151,4 @@ export const AdminDashboard: React.FC = () => {
     );
 };
 
-export default AdminDashboard;
+export default AdminDashboardPage;

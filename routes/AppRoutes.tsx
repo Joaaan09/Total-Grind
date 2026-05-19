@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import AdminLayout from '../components/AdminLayout';
-import { Dashboard } from '../components/Dashboard';
-import { ProgressCharts } from '../components/Progress';
-import { Profile } from '../components/Profile';
-import { CoachDashboard } from '../components/CoachDashboard';
-import { AdminDashboard } from '../components/AdminDashboard';
+import { DashboardPage } from '../pages/DashboardPage';
+import { ProgressPage } from '../pages/ProgressPage';
+import { ProfilePage } from '../pages/ProfilePage';
+import { CoachDashboardPage } from '../pages/CoachDashboardPage';
+import { AdminDashboardPage } from '../pages/AdminDashboardPage';
 import { Login, Register } from '../components/Auth';
 import { AdminLogin } from '../components/AdminLogin';
 import { ProtectedRoute, AuthRoute, AdminProtectedRoute, AdminAuthRoute } from './RouteGuards';
@@ -47,7 +47,7 @@ export const AppRoutes: React.FC = () => {
           <AdminProtectedRoute>
             <AdminLayout>
               <Routes>
-                <Route path="" element={<AdminDashboard />} />
+                <Route path="" element={<AdminDashboardPage />} />
                 <Route path="*" element={<Navigate to="/admin" replace />} />
               </Routes>
             </AdminLayout>
@@ -82,7 +82,7 @@ export const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Layout>
-              <Dashboard
+              <DashboardPage
                 user={appUser!}
                 onNavigate={(path) => window.location.hash = path}
               />
@@ -105,7 +105,7 @@ export const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Layout>
-              <ProgressCharts />
+              <ProgressPage />
             </Layout>
           </ProtectedRoute>
         }
@@ -115,7 +115,7 @@ export const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Layout>
-              <Profile user={appUser!} />
+              <ProfilePage user={appUser!} />
             </Layout>
           </ProtectedRoute>
         }
@@ -125,7 +125,7 @@ export const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Layout>
-              <CoachDashboard />
+              <CoachDashboardPage />
             </Layout>
           </ProtectedRoute>
         }
