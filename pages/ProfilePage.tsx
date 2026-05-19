@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { User } from '../types';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge } from '../components/ui';
-import { User as UserIcon, Mail, Shield, Loader2, Save, X, Camera, UserMinus } from 'lucide-react';
+import { User as UserIcon, Mail, Shield, Loader2, Save, X, Camera, UserMinus, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { TrainingService } from '../services/mockService';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
@@ -11,7 +12,8 @@ interface ProfileProps {
 }
 
 export const ProfilePage: React.FC<ProfileProps> = ({ user }) => {
-    const { token, refreshUser } = useAuth();
+    const { token, refreshUser, logout } = useAuth();
+    const navigate = useNavigate();
     const [invites, setInvites] = useState<any[]>([]);
 
     // Estados para editar el nombre del usuario
@@ -33,6 +35,11 @@ export const ProfilePage: React.FC<ProfileProps> = ({ user }) => {
     // Estado para eliminar entrenador
     const [isRemovingCoach, setIsRemovingCoach] = useState(false);
     const [showRemoveCoachConfirm, setShowRemoveCoachConfirm] = useState(false);
+
+    const handleLogout = () => {
+        if (logout) logout();
+        navigate('/login');
+    };
 
     React.useEffect(() => {
         const loadInvites = async () => {
@@ -377,6 +384,12 @@ export const ProfilePage: React.FC<ProfileProps> = ({ user }) => {
                             Cambiar Contraseña
                             <ArrowRightIcon />
                         </Button>
+                        <div className="pt-4 mt-2 border-t border-slate-800">
+                            <Button variant="danger" className="w-full justify-center gap-2" onClick={handleLogout}>
+                                <LogOut size={18} />
+                                Cerrar Sesión
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
